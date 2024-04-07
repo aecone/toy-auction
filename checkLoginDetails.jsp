@@ -6,10 +6,9 @@
 
 <%
     String userid = request.getParameter("username");
-    System.out.println(userid);
     String pwd = request.getParameter("password");
-    Class.forName("com.mysql.jdbc.Driver");
-    Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/dbname","root", "dbpass");
+    ApplicationDB db = new ApplicationDB();
+    Connection con = db.getConnection();
     Statement st = con.createStatement();
     ResultSet rs;
     rs = st.executeQuery("select * from users where username='" + userid + "' and password='" + pwd

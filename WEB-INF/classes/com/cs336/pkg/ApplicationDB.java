@@ -11,10 +11,9 @@ public class ApplicationDB {
 	}
 
 	public Connection getConnection(){
-		
-		//Create a connection string
-		String connectionUrl = "jdbc:mysql://localhost:3306/EbayDupe";
 
+		//Create a connection string
+		final String connectionUrl = System.getenv("CONNECTION_STRING");
 		Connection connection = null;
 		
 		try {
