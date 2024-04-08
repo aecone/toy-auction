@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>Home</title>
 </head>
 <body>
 <%
@@ -18,10 +18,23 @@ You are not logged in<br/>
 <a href="login.jsp">Please Login</a>
 <%} else {
 %>
-Welcome <%=session.getAttribute("user")
+Welcome, <%=session.getAttribute("user")
 //this will display the username that is stored in the session.
+%>!<br>
+<%
+    // Check if the username is not "admin"
+    if (!"admin".equals(session.getAttribute("user"))) {
 %>
-<a href='logout.jsp'>Log out</a>
+<a href='createListing.jsp'>Create a Listing</a><br>
+<a href='myListings.jsp'>My Listings</a><br>
+<%
+    } else {
+        // when the username is "admin"
+        out.println("admin tools");
+    }
+%><br>
+
+<a href='logout.jsp'>Log Out</a>
 <%
     }
 %>
