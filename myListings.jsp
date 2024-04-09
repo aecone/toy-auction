@@ -30,7 +30,7 @@
     try {
 
         // Prepare and execute SQL query to fetch toy listings for the current user
-        String query = "SELECT * FROM toy_listing WHERE username = ?";
+        String query = "SELECT * FROM Toy_Listing WHERE username = ?";
         PreparedStatement pstmt = conn.prepareStatement(query);
         pstmt.setString(1, username);
         ResultSet rs = pstmt.executeQuery();
