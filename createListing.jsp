@@ -12,6 +12,7 @@
 <html>
 <head>
     <title>Create Listing</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
     <script>
         function showAdditionalFields() {
             var category = document.getElementsByName("category")[0].value;
@@ -79,7 +80,7 @@
     Price: <input type="number" name="price" step="0.01" /><br/>
 
     Increment: <input type=" number" name="increment" step="0.01"/> <br/>
-    Minimum price: <input type="number" name="min_price" step="0.01"/> <br/>
+    Minimum sale price: <input type="number" name="min_price" step="0.01"/> <br/>
     Closing date and time: <input type="datetime-local" name="endDT"/> <br/>
     <input type="submit" value="Submit"/>
 </form>

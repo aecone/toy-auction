@@ -9,6 +9,7 @@
 <html>
 <head>
     <title>Home</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
 <%
@@ -20,13 +21,16 @@ You are not logged in<br/>
 %>
 Welcome, <%=session.getAttribute("user")
 //this will display the username that is stored in the session.
-%>!<br>
+%>!
+<br>
 <%
     // Check if the username is not "admin"
     if (!"admin".equals(session.getAttribute("user"))) {
 %>
-<a href='createListing.jsp'>Create a Listing</a><br>
-<a href='myListings.jsp'>My Listings</a><br>
+<a href='createListing.jsp'>Create a Listing</a>
+<br>
+<a href='myListings.jsp'>My Listings</a>
+<br>
 <%
     } else {
         // when the username is "admin"

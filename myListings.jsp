@@ -12,6 +12,7 @@
 <%@ page import="java.time.LocalDateTime, java.time.format.DateTimeFormatter" %>
 <html>
 <head>
+    <link rel="stylesheet" type="text/css" href="styles.css">
     <title>My Listings</title>
 </head>
 <body>
@@ -70,6 +71,8 @@
         }
     }
 %>
+<br>
+<a href="success.jsp">Home</a>
 
 </body>
 </html>
