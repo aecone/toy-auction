@@ -14,9 +14,10 @@ VALUES ('admin', '0000');
 INSERT into users
 VALUES ('test', 'admin');
 
-CREATE TABLE Toy_Listing
+CREATE TABLE toy_listing
 (
     initial_price    double,
+    category         varchar(50),
     name             varchar(50),
     start_age        int,
     end_age          int,
@@ -30,32 +31,32 @@ CREATE TABLE Toy_Listing
     foreign key (username) references users (username)
 );
 
-CREATE TABLE Action_Figure
+CREATE TABLE action_figure
 (
     toy_id    INT NOT NULL,
     height    DOUBLE,
     can_move  BOOLEAN,
     character_name VARCHAR(50),
     PRIMARY KEY (toy_id),
-    FOREIGN KEY (toy_id) REFERENCES Toy_Listing (toy_id) on delete cascade
+    FOREIGN KEY (toy_id) REFERENCES toy_listing (toy_id) on delete cascade
 );
 
-CREATE TABLE Board_Game
+CREATE TABLE board_game
 (
     toy_id        INT NOT NULL,
     player_count  INT,
     brand         VARCHAR(50),
     is_cards_game BOOLEAN,
     PRIMARY KEY (toy_id),
-    FOREIGN KEY (toy_id) REFERENCES Toy_Listing (toy_id) on delete cascade
+    FOREIGN KEY (toy_id) REFERENCES toy_listing (toy_id) on delete cascade
 );
 
-CREATE TABLE Stuffed_Animal
+CREATE TABLE stuffed_animal
 (
     toy_id INT NOT NULL,
     color  VARCHAR(30),
     brand  VARCHAR(50),
     animal VARCHAR(100),
     PRIMARY KEY (toy_id),
-    FOREIGN KEY (toy_id) REFERENCES Toy_Listing (toy_id) on delete cascade
+    FOREIGN KEY (toy_id) REFERENCES toy_listing (toy_id) on delete cascade
 );

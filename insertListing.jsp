@@ -34,17 +34,18 @@
     Connection conn = db.getConnection();
 
 // Create and execute the SQL INSERT statement
-String sql = "INSERT INTO Toy_Listing (initial_price, name, start_age, end_age, secret_min_price, closing_datetime, increment, start_datetime, username) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+String sql = "INSERT INTO toy_listing (initial_price,category, name, start_age, end_age, secret_min_price, closing_datetime, increment, start_datetime, username) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?)";
 PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 pstmt.setDouble(1, price);
-pstmt.setString(2, name);
-pstmt.setInt(3, startAge);
-pstmt.setInt(4, endAge);
-pstmt.setDouble(5, minPrice);
-pstmt.setTimestamp(6, Timestamp.valueOf(endDT));
-pstmt.setDouble(7, increment);
-pstmt.setTimestamp(8, Timestamp.valueOf(startDT));
-pstmt.setString(9,session.getAttribute("user").toString());
+pstmt.setString(2, category);
+pstmt.setString(3, name);
+pstmt.setInt(4, startAge);
+pstmt.setInt(5, endAge);
+pstmt.setDouble(6, minPrice);
+pstmt.setTimestamp(7, Timestamp.valueOf(endDT));
+pstmt.setDouble(8, increment);
+pstmt.setTimestamp(9, Timestamp.valueOf(startDT));
+pstmt.setString(10,session.getAttribute("user").toString());
 
 pstmt.executeUpdate();
     ResultSet generatedKeys = pstmt.getGeneratedKeys();
@@ -59,7 +60,7 @@ pstmt.executeUpdate();
     // Insert into the corresponding subcategory table
     switch (category) {
       case "action_figure":
-        sql = "INSERT INTO Action_Figure (toy_id, height, can_move, character_name) VALUES (?, ?, ?, ?)";
+        sql = "INSERT INTO action_figure (toy_id, height, can_move, character_name) VALUES (?, ?, ?, ?)";
         pstmt = conn.prepareStatement(sql);
         pstmt.setString(1, toyId);
         pstmt.setDouble(2, Double.parseDouble(request.getParameter("height")));
@@ -67,7 +68,7 @@ pstmt.executeUpdate();
         pstmt.setString(4, request.getParameter("character"));
         break;
       case "stuffed_animal":
-        sql = "INSERT INTO Stuffed_Animal (toy_id, color, brand, animal) VALUES (?, ?, ?, ?)";
+        sql = "INSERT INTO stuffed_animal (toy_id, color, brand, animal) VALUES (?, ?, ?, ?)";
         pstmt = conn.prepareStatement(sql);
         pstmt.setString(1, toyId);
         pstmt.setString(2, request.getParameter("color"));
@@ -75,11 +76,11 @@ pstmt.executeUpdate();
         pstmt.setString(4, request.getParameter("animal"));
         break;
       case "board_game":
-        sql = "INSERT INTO Board_Game (toy_id, player_count, brand, is_cards_game) VALUES (?, ?, ?, ?)";
+        sql = "INSERT INTO board_game (toy_id, player_count, brand, is_cards_game) VALUES (?, ?, ?, ?)";
         pstmt = conn.prepareStatement(sql);
         pstmt.setString(1, toyId);
         pstmt.setInt(2, Integer.parseInt(request.getParameter("player_count")));
-        pstmt.setString(3, request.getParameter("brand"));
+        pstmt.setString(3, request.getParameter("game_brand"));
         pstmt.setBoolean(4, Boolean.parseBoolean(request.getParameter("is_cards_game")));
         break;
       default:

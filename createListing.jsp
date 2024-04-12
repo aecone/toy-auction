@@ -70,20 +70,21 @@
         <div id="boardGameFields" style="display: none;">
             Board Game Details <br><br>
             Player Count: <input type="number" name="player_count"/><br/>
-            Brand: <input type="text" name="brand"/><br/>
+            Brand: <input type="text" name="game_brand"/><br/>
             Is Cards Game: <input type="checkbox" name="is_cards_game"/><br/>
         </div>
         <br>
     </div>
 
-    Age range: <input type="number" name="start_age"/> - <input type='number' name="end_age"/><br/>
+    Age Range: <input type="number" name="start_age"/> - <input type='number' name="end_age"/><br/>
     Price: <input type="number" name="price" step="0.01" /><br/>
 
-    Increment: <input type=" number" name="increment" step="0.01"/> <br/>
-    Minimum sale price: <input type="number" name="min_price" step="0.01"/> <br/>
-    Closing date and time: <input type="datetime-local" name="endDT"/> <br/>
+    Increment: <input type="number" name="increment" step="0.01"/> <br/>
+    Minimum Sale Price: <input type="number" name="min_price" step="0.01"/> <br/>
+    Closing Date and Time: <input type="datetime-local" name="endDT"/> <br/>
     <input type="submit" value="Submit"/>
 </form>
+<a href="success.jsp">Cancel</a>
 <script>
     function validateForm() {
         var form = document.getElementById("listingForm");
@@ -135,10 +136,10 @@
                 return false; // Prevent form submission
             }
         } else if (category === "board_game") {
-            var brand = document.getElementsByName('brand')[0].value;
+            var brand = document.getElementsByName('game_brand')[0].value;
             var player_countStr = (document.getElementsByName("player_count")[0].value);
-            if (brand.trim() === "" || player_countStr.trim() === "") {
-                alert("Please fill in all fields for board game details.");
+            if (brand.trim() === "") {
+                alert("Please fill in the board game brand.");
                 return false; // Prevent form submission
             }
             var player_count = parseInt(player_countStr);
