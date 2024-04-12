@@ -93,7 +93,7 @@
         var visibleInputs = Array.from(inputs).filter(input => input.offsetParent !== null); // Filter out hidden inputs
         for (var i = 0; i < visibleInputs.length; i++) {
             if (visibleInputs[i].value.trim() === "") {
-                alert("Please fill in all fields. "+visibleInputs[i].name+" is missing.");
+                alert("Please fill in all fields: "+visibleInputs[i].name+" is missing.");
                 return false; // Prevent form submission
             }
         }

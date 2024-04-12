@@ -21,7 +21,9 @@
 <form action="checkLoginDetails.jsp" method="POST">
     Username: <input type="text" name="username"/> <br/>
     Password: <input type="password" name="password"/> <br/>
-    <input type="submit" value="Submit"/>
+    <input type="submit" value="Log In"/>
 </form>
+<br>
+<a href="createAccount.jsp">Create Account</a>
 </body>
 </html>
