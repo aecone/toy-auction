@@ -3,7 +3,13 @@
 <%@ page import="java.io.*,java.util.*,java.sql.*"%>
 <%@ page import="javax.servlet.http.*,javax.servlet.*" %>
 <%@ page import ="java.sql.*" %>
-
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <title>Error</title>
+</head>
+<body>
 <%
     String userid = request.getParameter("username");
     String pwd = request.getParameter("password");
@@ -19,6 +25,9 @@
         out.println("<a href='logout.jsp'>Log out</a>");
         response.sendRedirect("success.jsp");
     } else {
-        out.println("Invalid password <a href='login.jsp'>try again</a>");
+        out.println("Invalid password <br/><a href='login.jsp'>try again</a>");
     }
 %>
+</body>
+</html>
+
