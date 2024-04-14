@@ -22,7 +22,7 @@ You are not logged in<br/>
 Welcome, <%=session.getAttribute("user")
 //this will display the username that is stored in the session.
 %>!
-<br>
+<br> <br>
 <%
     // Check if the username is not "admin"
     if (!"admin".equals(session.getAttribute("user"))) {

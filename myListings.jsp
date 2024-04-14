@@ -46,30 +46,33 @@
         PreparedStatement pstmt = conn.prepareStatement(query);
         pstmt.setString(1, username);
         ResultSet rs = pstmt.executeQuery();
+        if(!rs.next()){
+            out.println("You have no listings.");
+        }
+        else {
+            // Display the data in a table
+            out.println("<table>");
+            out.println("<tr><th>Category</th><th>Name</th><th>Initial Price</th><th>Increment</th><th>Secret Min Price</th><th>Start Date Time</th><th>Closing Date Time</th></tr>");
+            while (rs.next()) {
+                String category = rs.getString("category");
 
-        // Display the data in a table
-        out.println("<table>");
-        out.println("<tr><th>Category</th><th>Name</th><th>Initial Price</th><th>Increment</th><th>Secret Min Price</th><th>Start Date Time</th><th>Closing Date Time</th></tr>");
-        while (rs.next()) {
-            String category = rs.getString("category");
-
-            int id = rs.getInt("toy_id");
-            String url = "myListingDetails.jsp?id=" + id + "&category=" + category;
-            out.println("<tr data-href=\"" + url + "\">");
-            category = category.replace("_"," ");
-            out.println("<td>" + category + "</td>");
-            out.println("<td>" + rs.getString("name") + "</td>");
-            out.println("<td>" + rs.getDouble("initial_price") + "</td>");
-            out.println("<td>" + rs.getDouble("increment") + "</td>");
+                int id = rs.getInt("toy_id");
+                String url = "myListingDetails.jsp?id=" + id + "&category=" + category;
+                out.println("<tr data-href=\"" + url + "\">");
+                category = category.replace("_", " ");
+                out.println("<td>" + category + "</td>");
+                out.println("<td>" + rs.getString("name") + "</td>");
+                out.println("<td>" + rs.getDouble("initial_price") + "</td>");
+                out.println("<td>" + rs.getDouble("increment") + "</td>");
 //            out.println("<td>" + rs.getInt("start_age") + "</td>");
 //            out.println("<td>" + rs.getInt("end_age") + "</td>");
-            out.println("<td>" + rs.getDouble("secret_min_price") + "</td>");
-            out.println("<td>" + rs.getTimestamp("start_datetime") + "</td>");
-            out.println("<td>" + rs.getTimestamp("closing_datetime") + "</td>");
-            out.println("</tr>");
+                out.println("<td>" + rs.getDouble("secret_min_price") + "</td>");
+                out.println("<td>" + rs.getTimestamp("start_datetime") + "</td>");
+                out.println("<td>" + rs.getTimestamp("closing_datetime") + "</td>");
+                out.println("</tr>");
+            }
+            out.println("</table>");
         }
-        out.println("</table>");
-
         // Close resources
         rs.close();
         pstmt.close();
