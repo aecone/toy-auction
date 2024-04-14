@@ -17,7 +17,8 @@
 %>
 You are not logged in<br/>
 <a href="login.jsp">Please Login</a>
-<%} else {
+<%
+} else {
 %>
 Welcome, <%=session.getAttribute("user")
 //this will display the username that is stored in the session.
@@ -27,6 +28,8 @@ Welcome, <%=session.getAttribute("user")
     // Check if the username is not "admin"
     if (!"admin".equals(session.getAttribute("user"))) {
 %>
+<a href="browseListings.jsp">Browse Listings</a>
+<br>
 <a href='createListing.jsp'>Create a Listing</a>
 <br>
 <a href='myListings.jsp'>My Listings</a>

@@ -3,6 +3,7 @@ body, input, select {
     font-family: Verdana, sans-serif;
     background-color: #DCEDFF;
     line-height: 1.5;
+    color:#1c2541;
 }
 
 form{
@@ -17,18 +18,33 @@ h1 {
 }
 table{
     border-collapse: collapse;
-    width: 90%;
+
 }
 table tr:hover {
-    background-color: #f5f5f5;
+    background-color: #f6fafa;
     cursor: pointer; /* Change cursor to pointer on hover */
 }
 
+tr{
+    border-bottom: 1px solid rgba(28, 37, 65, 0.14);
+}
+
 th {
-    /* Disable pointer events */
+    /* Disable pointer events on header*/
     pointer-events: none;
 }
-td {
+td,th {
     text-align: center;
+    padding: 10px;
+}
+
+a:visited, a:link {
+    color: #4961ac;
+    background-color: transparent;
+}
+
+a:hover{
+    background-color: #f6fafa;
+    padding: 2px 2px;
 }
 

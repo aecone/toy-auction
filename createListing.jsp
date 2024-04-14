@@ -9,6 +9,7 @@
          pageEncoding="ISO-8859-1" import="com.cs336.pkg.*" %>
 <%@ page import="java.io.*,java.util.*,java.sql.*" %>
 <%@ page import="javax.servlet.http.*,javax.servlet.*" %>
+<%@ page import="java.time.LocalDateTime, java.time.format.DateTimeFormatter" %>
 <html>
 <head>
     <title>Create Listing</title>
@@ -81,7 +82,9 @@
 
     Increment: <input type="number" name="increment" step="0.01"/> <br/>
     Minimum Sale Price: <input type="number" name="min_price" step="0.01"/> <br/>
-    Closing Date and Time: <input type="datetime-local" name="endDT"/> <br/>
+    <% LocalDateTime now = LocalDateTime.now().plusHours(1);
+        String minDateTime = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));%>
+    Closing Date and Time: <input type="datetime-local" name="endDT" min="<%= minDateTime %>"/> <br/>
     <input type="submit" value="Submit"/>
 </form>
 <a href="success.jsp">Cancel</a>
