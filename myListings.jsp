@@ -50,12 +50,11 @@
             out.println("You have no listings.");
         }
         else {
-            // Display the data in a table
+            rs.beforeFirst(); //reset rs cursor to front
             out.println("<table>");
             out.println("<tr><th>Category</th><th>Name</th><th>Initial Price</th><th>Increment</th><th>Secret Min Price</th><th>Start Date Time</th><th>Closing Date Time</th></tr>");
             while (rs.next()) {
                 String category = rs.getString("category");
-
                 int id = rs.getInt("toy_id");
                 String url = "myListingDetails.jsp?id=" + id + "&category=" + category;
                 out.println("<tr data-href=\"" + url + "\">");

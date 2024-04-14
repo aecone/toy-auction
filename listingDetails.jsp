@@ -33,8 +33,6 @@
         pstmt.setString(1, id);
         rs = pstmt.executeQuery();
 
-        int startAge = 0;
-        int endAge = 0;
         out.println("<table>");
         out.println("<tr><th>Category</th><th>Name</th><th>Age Range</th><th>Initial Price</th><th>Increment</th><th>Start Date Time</th><th>Closing Date Time</th></tr>");
         if(rs.next()) {
@@ -99,9 +97,10 @@
     } catch (SQLException e) {
         out.println("<p>Error: " + e.getMessage() + "</p>");
     }
-
+    String url = "bid.jsp?id=" + id + "&category=" + category;
+    out.println("<a href=\""+url+"\">Place a Bid</a><br>");
 %>
-<a href="myListings.jsp">Back to All Listings</a>
+<a href="browseListings.jsp">Back to All Listings</a>
 </body>
 </html>
 

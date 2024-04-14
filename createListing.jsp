@@ -42,7 +42,7 @@
 </head>
 <body>
 <form action="insertListing.jsp" id="listingForm" method="POST" onsubmit="return validateForm()">
-    Name: <input type="text" name="name"/> <br/>
+    Name: <input type="text" name="name"/>  <br>
     Category: <select name="category" onchange="showAdditionalFields()">
     <option value="" disabled selected hidden>select a toy category</option>
     <option value="action_figure">action figure</option>
@@ -54,37 +54,37 @@
         <!-- Action Figure Fields -->
         <div id="actionFigureFields" style="display: none;">
             Action Figure Details <br><br>
-            Height: <input type="number" name="height"/><br/>
-            Can Move: <input type="checkbox" name="can_move"/><br/>
-            Character: <input type="text" name="character"/><br/>
+            Height: <input type="number" name="height"/> <br>
+            Can Move: <input type="checkbox" name="can_move"/> <br>
+            Character: <input type="text" name="character"/> <br>
         </div>
 
         <!-- Stuffed Animal Fields -->
         <div id="stuffedAnimalFields" style="display: none;">
             Stuffed Animal Details <br><br>
-            Color: <input type="text" name="color"/><br/>
-            Brand: <input type="text" name="brand"/><br/>
-            Animal: <input type="text" name="animal"/><br/>
+            Color: <input type="text" name="color"/> <br>
+            Brand: <input type="text" name="brand"/> <br>
+            Animal: <input type="text" name="animal"/> <br>
         </div>
 
         <!-- Board Game Fields -->
         <div id="boardGameFields" style="display: none;">
             Board Game Details <br><br>
-            Player Count: <input type="number" name="player_count"/><br/>
-            Brand: <input type="text" name="game_brand"/><br/>
-            Is Cards Game: <input type="checkbox" name="is_cards_game"/><br/>
+            Player Count: <input type="number" name="player_count"/> <br>
+            Brand: <input type="text" name="game_brand"/> <br>
+            Is Cards Game: <input type="checkbox" name="is_cards_game"/> <br>
         </div>
         <br>
     </div>
 
-    Age Range: <input type="number" name="start_age"/> - <input type='number' name="end_age"/><br/>
-    Price: <input type="number" name="price" step="0.01" /><br/>
+    Age Range: <input type="number" name="start_age"/> - <input type='number' name="end_age"/> <br>
+    Price: <input type="number" name="price" step="0.01" /> <br>
 
-    Increment: <input type="number" name="increment" step="0.01"/> <br/>
-    Minimum Sale Price: <input type="number" name="min_price" step="0.01"/> <br/>
+    Increment: <input type="number" name="increment" step="0.01"/>  <br>
+    Minimum Sale Price: <input type="number" name="min_price" step="0.01"/>  <br>
     <% LocalDateTime now = LocalDateTime.now().plusHours(1);
         String minDateTime = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));%>
-    Closing Date and Time: <input type="datetime-local" name="endDT" min="<%= minDateTime %>"/> <br/>
+    Closing Date and Time: <input type="datetime-local" name="endDT" min="<%= minDateTime %>"/>  <br>
     <input type="submit" value="Submit"/>
 </form>
 <a href="success.jsp">Cancel</a>

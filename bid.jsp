@@ -1,8 +1,8 @@
 <%--
   Created by IntelliJ IDEA.
   User: jessicaluo
-  Date: 4/7/24
-  Time: 2:58 PM
+  Date: 4/14/24
+  Time: 12:40 PM
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
@@ -10,20 +10,23 @@
 <%@ page import="java.io.*,java.util.*,java.sql.*"%>
 <%@ page import="javax.servlet.http.*,javax.servlet.*" %>
 
-
-<!DOCTYPE html>
+<%@ page import="java.time.LocalDateTime, java.time.format.DateTimeFormatter" %>
 <html>
 <head>
+    <title>Details</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
-    <title>Login Form</title>
 </head>
 <body>
-<form action="checkLoginDetails.jsp" method="POST">
-    Username: <input type="text" name="username"/>  <br>
-    Password: <input type="password" name="password"/>  <br>
-    <input type="submit" value="Log In"/>
-</form>
-<br>
-<a href="createAccount.jsp">Create Account</a>
+<%
+    String id = request.getParameter("id");
+    String category = request.getParameter("category");
+
+    String url = "listingDetails.jsp?id=" + id + "&category=" + category;
+    out.println("<a href=\"" + url + "\">Back to Listing Details</a> <br>");
+
+%>
+<a href="browseListings.jsp">Back to All Listings</a>
 </body>
 </html>
+
+

@@ -56,7 +56,7 @@
         pstmt.setString(1, id);
         rs = pstmt.executeQuery();
 
-        out.println("<br/><p>Age Range: " + startAge+" - "+endAge + "</p>");
+        out.println(" <br><p>Age Range: " + startAge+" - "+endAge + "</p>");
         // Display details from category table
         if (rs.next()) {
             if (category.equals("action_figure")) {

@@ -32,7 +32,7 @@
         if (rs.next()) {
                 // Username already exists, handle the error
 
-                out.println("This username already exists: "+ userid+" <br/><a href='createAccount.jsp'>create account</a><br><a href='login.jsp'>login</a>");
+                out.println("This username already exists: "+ userid+"  <br><a href='createAccount.jsp'>create account</a><br><a href='login.jsp'>login</a>");
         } else {
                 // Username does not exist, proceed with insertion
                 String insertSql = "INSERT INTO user (username, password) VALUES (?,?)";

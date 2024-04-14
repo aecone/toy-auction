@@ -18,10 +18,10 @@
 </head>
 <body>
 <form action="insertAcc.jsp" id = "accInfo" method="POST" onsubmit="return validateForm()">
-    Username: <input type="text" name="username"/> <br/>
-    Password: <input type="password" name="password"/> <br/>
+    Username: <input type="text" name="username"/>  <br>
+    Password: <input type="password" name="password"/>  <br>
     <input type="submit" value="Create Account"/>
-</form><br/>
+</form> <br>
 <a href="login.jsp">Cancel</a>
 <script>
     function validateForm() {
