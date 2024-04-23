@@ -17,49 +17,46 @@
 </head>
 <body>
 <%
+    String id = request.getParameter("username");
+    String password = request.getParameter("password");
+    boolean loginSuccess = false; // Flag to track login status
+
     try {
         ApplicationDB db = new ApplicationDB();
         Connection con = db.getConnection();
-        log("DB Connection established.");
-
-        String id = request.getParameter("username");
-        String password = request.getParameter("password");
-        log("Received ID: " + id + " and password.");
 
         String lookup = "SELECT id, password FROM admin WHERE id=? AND password=?";
         PreparedStatement ps = con.prepareStatement(lookup);
         ps.setString(1, id);
         ps.setString(2, password);
-        log("Prepared statement for admin lookup.");
 
         ResultSet result = ps.executeQuery();
-        log("Query executed for admin.");
 
         if (result.next()) {
             session.setAttribute("employeeid", id);
-            log("Admin user validated, redirecting...");
+            loginSuccess = true;
             response.sendRedirect("AdminMain.jsp?user=" + id);
         } else {
-            log("Admin user not found, checking customer rep...");
             lookup = "SELECT id, password FROM customer_representative WHERE id=? AND password=?";
             ps = con.prepareStatement(lookup);
             ps.setString(1, id);
             ps.setString(2, password);
             result = ps.executeQuery();
-            log("Query executed for customer rep.");
 
             if (result.next()) {
                 session.setAttribute("employeeid", id);
-                log("Customer rep validated, redirecting...");
+                loginSuccess = true;
                 response.sendRedirect("CustomerRepresentativeMain.jsp?rep_id=" + id);
-            } else {
-                log("Customer rep not found, incorrect login.");
-                response.sendRedirect("AdminRepLogin.jsp?loginRet=" + URLEncoder.encode("Incorrect employee ID or password.", "ISO-8859-1"));
             }
         }
+
+        if (!loginSuccess) {
+            // If login wasn't successful for either admin or customer rep
+            out.println("Incorrect username or password. <a href='AdminRepLogin.jsp'>Try again</a>");
+        }
+
     } catch (Exception e) {
-        log("Exception caught: " + e.getMessage());
-        response.sendRedirect("AdminRepLogin.jsp?loginRet=" + URLEncoder.encode("Error logging in. Please try again.", "ISO-8859-1"));
+        out.println("Error during login process. Please contact system administrator.");
     }
 %>
 </body>
