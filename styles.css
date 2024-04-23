@@ -1,31 +1,45 @@
-
 body, input, select {
     font-family: Verdana, sans-serif;
     background-color: #DCEDFF;
     line-height: 1.5;
-    color:#1c2541;
+    color: #1c2541;
 }
 
-form{
+body, html {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.center-texts {
+    text-align: center;
+    display: block; /* Change to display block to make texts listed down */
+}
+
+form {
     line-height: 2;
 }
-body{
+
+body {
     margin: 2%;
 }
 
 h1 {
     color: #1c2541;
 }
-table{
-    border-collapse: collapse;
 
+table {
+    border-collapse: collapse;
 }
+
 table tr:hover {
     background-color: #f6fafa;
     cursor: pointer; /* Change cursor to pointer on hover */
 }
 
-tr{
+tr {
     border-bottom: 1px solid rgba(28, 37, 65, 0.14);
 }
 
@@ -33,7 +47,8 @@ th {
     /* Disable pointer events on header*/
     pointer-events: none;
 }
-td,th {
+
+td, th {
     text-align: center;
     padding: 10px;
 }
@@ -43,8 +58,7 @@ a:visited, a:link {
     background-color: transparent;
 }
 
-a:hover{
+a:hover {
     background-color: #f6fafa;
     padding: 2px 2px;
 }
-

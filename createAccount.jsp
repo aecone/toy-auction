@@ -11,15 +11,16 @@
 <%@ page import="javax.servlet.http.*,javax.servlet.*" %>
 <%@ page import ="java.sql.*" %>
 <!DOCTYPE html>
-<html>
 <head>
     <link rel="stylesheet" type="text/css" href="styles.css">
     <title>Create Account</title>
 </head>
 <body>
+<div class="center-texts">
 <form action="insertAcc.jsp" id = "accInfo" method="POST" onsubmit="return validateForm()">
     Username: <input type="text" name="username"/>  <br>
     Password: <input type="password" name="password"/>  <br>
+    <br>
     <input type="submit" value="Create Account"/>
 </form> <br>
 <a href="login.jsp">Cancel</a>
@@ -37,6 +38,7 @@
         return true; // Allow form submission
     }
 </script>
+</div>
 </body>
 
 </html>

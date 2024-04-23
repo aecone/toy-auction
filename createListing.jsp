@@ -87,7 +87,7 @@
     Closing Date and Time: <input type="datetime-local" name="endDT" min="<%= minDateTime %>"/>  <br>
     <input type="submit" value="Submit"/>
 </form>
-<a href="success.jsp">Cancel</a>
+<a href="CustomerMain.jsp">Cancel</a>
 <script>
     function validateForm() {
         var form = document.getElementById("listingForm");

@@ -1,8 +1,8 @@
 <%--
   Created by IntelliJ IDEA.
-  User: jessicaluo
-  Date: 4/7/24
-  Time: 2:58 PM
+  User: andreakim
+  Date: 4/21/24
+  Time: 6:01 PM
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
@@ -14,23 +14,18 @@
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="styles.css">
-    <title>Login Form</title>
+    <title>Admin or Rep Login Page</title>
 </head>
 <body>
 <div class="center-texts">
-    <form action="checkLoginDetails.jsp" method="POST">
-        Username: <input type="text" name="username"/> <br>
+    <form action="CheckEmployeeLogin.jsp" method="POST">
+        Employee ID: <input type="text" name="username"/> <br>
         Password: <input type="password" name="password"/> <br>
         <br>
         <input type="submit" value="Log In"/>
     </form>
     <br>
-    <a href="createAccount.jsp">Create Account</a>
-    <br>
-    <br>
-    <a href="AdminRepLogin.jsp">Admin or Customer Rep Login Page</a>
+    <a href="login.jsp">Customer Login</a>
 </div>
 </body>
 </html>
-
-

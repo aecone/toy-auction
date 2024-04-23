@@ -7,7 +7,7 @@
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="styles.css">
-    <title>Error</title>
+    <title>Check Login Details</title>
 </head>
 <body>
 <%
@@ -23,9 +23,10 @@
         session.setAttribute("user", userid); // the username will be stored in the session
         out.println("welcome " + userid);
         out.println("<a href='logout.jsp'>Log out</a>");
-        response.sendRedirect("success.jsp");
+        response.sendRedirect("CustomerMain.jsp");
     } else {
-        out.println("Invalid password  <br><a href='login.jsp'>try again</a>");
+        out.println("Invalid password<br> ");
+        out.println("<a href='login.jsp'>Try again</a>");
     }
 %>
 </body>

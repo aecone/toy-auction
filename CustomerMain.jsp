@@ -15,36 +15,39 @@
 <%
     if ((session.getAttribute("user") == null)) {
 %>
-You are not logged in <br>
-<a href="login.jsp">Please Login</a>
+<div class="center-texts">
+    You are not logged in <br>
+    <a href="login.jsp">Please Login</a>
+</div>
 <%
 } else {
 %>
-Welcome, <%=session.getAttribute("user")
-//this will display the username that is stored in the session.
-%>!
-<br> <br>
+<div class="center-texts">
+    Welcome, <%=session.getAttribute("user") %>!<br><br>
 <%
     // Check if the username is not "admin"
     if (!"admin".equals(session.getAttribute("user"))) {
 %>
-<a href="browseListings.jsp">Browse Listings</a>
-<br>
-<a href='createListing.jsp'>Create a Listing</a>
-<br>
-<a href='myListings.jsp'>My Listings</a>
-<br>
+    <a href="browseListings.jsp">Browse Listings</a><br>
+    <a href='createListing.jsp'>Create a Listing</a><br>
+    <a href='myListings.jsp'>My Listings</a><br>
+</div>
 <%
-    } else {
-        // when the username is "admin"
-        out.println("admin tools");
-    }
-%><br>
-
-<a href='logout.jsp'>Log Out</a>
+} else {
+    // when the username is "admin"
+%>
+<div class="center-texts">
+    admin tools<br>
+</div>
 <%
     }
 %>
-
+<div class="center-texts">
+    <a href='logout.jsp'>Log Out</a>
+</div>
+<%
+    }
+%>
 </body>
 </html>
+

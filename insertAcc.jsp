@@ -41,7 +41,7 @@
                 pstmt.setString(2, pwd);
                 pstmt.executeUpdate();
                 session.setAttribute("user", userid); // the username will be stored in the session
-                response.sendRedirect("success.jsp");
+                response.sendRedirect("CustomerMain.jsp");
 
                 pstmt.close();
         }

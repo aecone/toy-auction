@@ -99,7 +99,7 @@
     }
 %>
 <br>
-<a href="success.jsp">Home</a>
+<a href="CustomerMain.jsp">Home</a>
 
 </body>
 </html>
