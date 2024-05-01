@@ -46,7 +46,7 @@
             if (result.next()) {
                 session.setAttribute("employeeid", id);
                 loginSuccess = true;
-                response.sendRedirect("CustomerRepresentativeMain.jsp?rep_id=" + id);
+                response.sendRedirect("CustomerRepMain.jsp?rep_id=" + id);
             }
         }
 

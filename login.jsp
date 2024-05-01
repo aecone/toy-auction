@@ -19,8 +19,8 @@
 <body>
 <div class="center-texts">
     <form action="checkLoginDetails.jsp" method="POST">
-        <p>Username: <input type="text" name="username"/></p>
-        <p>Password: <input type="password" name="password"/></p>
+        <p>Username: <input type="text" name="username" maxlength="30" /></p>
+        <p>Password: <input type="password" name="password"  maxlength="30" /></p>
 
         <input type="submit" value="Log In"/>
     </form>

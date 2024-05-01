@@ -1,3 +1,14 @@
+html, body {
+    height: 100%; /* Ensure the full height is used */
+    width: 100%; /* Ensure the full width is used */
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
+    display: flex;
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
+    flex-direction: column;
+}
+
 body, input, select {
     font-family: Verdana, sans-serif;
     background-color: #DCEDFF;
@@ -5,39 +16,22 @@ body, input, select {
     color: #1c2541;
 }
 
-body, html {
-    height: 100%;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
-
 .center-texts {
     text-align: center;
-    display: block; /* Change to display block to make texts listed down */
+    display: block;
 }
 
 form {
     line-height: 2;
 }
 
-body {
-    margin: 2%;
-}
-
 h1 {
     color: #1c2541;
 }
 
-table {
-    border-collapse: collapse;
-}
-
-table tr:hover {
+table input:hover {
     background-color: #ebf3fa;
-    cursor: pointer; /* Change cursor to pointer on hover */
+    cursor: pointer;
 }
 
 tr {
@@ -45,13 +39,12 @@ tr {
 }
 
 th {
-    /* Disable pointer events on header*/
     pointer-events: none;
 }
 
 td, th {
     text-align: center;
-    padding: 10px;
+    padding: 5px;
 }
 
 a:visited, a:link {
@@ -60,9 +53,13 @@ a:visited, a:link {
 }
 
 a:hover {
-    background-color: #ebf3fa;
-    /*padding: 2px 2px;*/
+    color: #0a2559;
 }
+
+form input {
+    border: 2px solid black;
+}
+
 .row {
     display: flex;
     column-gap: 3%;
@@ -70,9 +67,8 @@ a:hover {
 
 .column {
     flex: 50%;
-
 }
 
-.details{
-    text-align:left;
+.details {
+    text-align: left;
 }

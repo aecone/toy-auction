@@ -23,7 +23,7 @@ CREATE TABLE toy_listing
     increment        double,
     toy_id           INT AUTO_INCREMENT,
     start_datetime   datetime,
-    username         varchar(40) NOT NULL,
+    username         varchar(30) NOT NULL,
     primary key (toy_id),
     foreign key (username) references user (username)
 );
@@ -59,7 +59,7 @@ CREATE TABLE stuffed_animal
 );
 
 CREATE TABLE admin(
-                      id varchar(9),
+                      id varchar(30),
                       password varchar(30),
                       Primary key (id));
 
@@ -67,24 +67,28 @@ INSERT into admin
 VALUES ('admin', '1000');
 
 CREATE TABLE customer_representative(
-                                                  id varchar(9),
-                                                  password varchar(100),
-                                                  Primary Key (id));
+                                        id varchar(30),
+                                        password varchar(30),
+                                        Primary Key (id));
 
-CREATE TABLE admin_creates(
-                              a_id varchar(9),
-                              c_id varchar(9),
-                              FOREIGN KEY(a_id) REFERENCES admin(id),
-                              FOREIGN KEY(c_id) REFERENCES customer_representative(id)
+CREATE TABLE create_admin(
+                             a_id varchar(30),
+                             c_id varchar(30),
+                             FOREIGN KEY(a_id) REFERENCES admin(id),
+                             FOREIGN KEY(c_id) REFERENCES customer_representative(id)
 );
 
 CREATE TABLE bid (
                      b_id varchar(9),
+                     secret_max_price double,
                      time DateTime,
+                     increment double,
                      price double,
-                     username varchar(40) NOT NULL,
+                     c_id varchar(30),
+                     username varchar(30) NOT NULL,
                      toy_id int NOT NULL,
                      Primary Key (b_id),
+                     Foreign key (c_id) references customer_representative(id),
                      Foreign key (username) references user(username),
                      Foreign key (toy_id) references toy_listing(toy_id));
 
@@ -104,7 +108,7 @@ CREATE TABLE alert(
                       category varchar(40),
                       min_price double,
                       age_range char(5),
-                      username varchar(40) NOT NULL,
+                      username varchar(30) NOT NULL,
                       Primary key (alert_id),
                       Foreign key (username) references user(username));
 
@@ -112,7 +116,7 @@ CREATE TABLE report(
                        report_id varchar(9),
                        date datetime,
                        total_earnings double,
-                       admin_id varchar(9) NOT NULL,
+                       admin_id varchar(30) NOT NULL,
                        earnings_per double,
                        best_selling varchar(100),
                        Primary key (report_id),
@@ -121,8 +125,6 @@ CREATE TABLE report(
 CREATE TABLE automatic_bid(
                               ab_id varchar(9),
                               price double,
-                              increment double,
-                              secret_max_price double,
                               time DateTime,
                               b_id varchar(9) NOT NULL,
                               toy_id int NOT NULL,
@@ -132,8 +134,8 @@ CREATE TABLE automatic_bid(
 
 CREATE TABLE question(
                          text varchar(500),
-                         c_id varchar(9),
-                         username varchar(40) NOT NULL,
+                         c_id varchar(30),
+                         username varchar(30) NOT NULL,
                          Primary Key (text),
                          Foreign key (c_id) references customer_representative(id),
                          Foreign key (username)  references user(username));
