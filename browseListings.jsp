@@ -94,9 +94,9 @@
         }
     }
 %>
-<br>
+<p>
 <a href="CustomerMain.jsp">Home</a>
-
+</p>
 </body>
 </html>
 

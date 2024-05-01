@@ -66,7 +66,7 @@ CREATE TABLE admin(
 INSERT into admin
 VALUES ('admin', '1000');
 
-CREATE TABLE customer_representativeadminadmin(
+CREATE TABLE customer_representative(
                                                   id varchar(9),
                                                   password varchar(100),
                                                   Primary Key (id));
