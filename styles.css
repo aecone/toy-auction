@@ -63,3 +63,16 @@ a:hover {
     background-color: #ebf3fa;
     /*padding: 2px 2px;*/
 }
+.row {
+    display: flex;
+    column-gap: 3%;
+}
+
+.column {
+    flex: 50%;
+
+}
+
+.details{
+    text-align:left;
+}

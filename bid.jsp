@@ -22,7 +22,7 @@
     String category = request.getParameter("category");
 
     String url = "listingDetails.jsp?id=" + id + "&category=" + category;
-    out.println('Place a bid: ')
+    out.println("Error in placing bid.");
     out.println("<a href=\"" + url + "\">Back to Listing Details</a> <br>");
 
 %>

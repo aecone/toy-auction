@@ -49,7 +49,8 @@
         else {
             // Display the data in a table
             out.println("<table>");
-            out.println("<tr><th>Category</th><th>Name</th><th>Age Range</th><th>Initial Price</th><th>Increment</th><th>Start Date Time</th><th>Closing Date Time</th></tr>");
+            out.println("<tr><th>Category</th><th>Name</th><th>Age Range</th><th>Initial Price</th><th>Increment</th><th>Start Time</th><th>Closing Time</th></tr>");
+            rs.beforeFirst();
             while (rs.next()) {
                 String category = rs.getString("category");
 

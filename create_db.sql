@@ -80,15 +80,11 @@ CREATE TABLE admin_creates(
 
 CREATE TABLE bid (
                      b_id varchar(9),
-                     secret_max_price double,
                      time DateTime,
-                     increment double,
                      price double,
-                     c_id varchar(9),
                      username varchar(40) NOT NULL,
                      toy_id int NOT NULL,
                      Primary Key (b_id),
-                     Foreign key (c_id) references customer_representative(id),
                      Foreign key (username) references user(username),
                      Foreign key (toy_id) references toy_listing(toy_id));
 
@@ -125,6 +121,8 @@ CREATE TABLE report(
 CREATE TABLE automatic_bid(
                               ab_id varchar(9),
                               price double,
+                              increment double,
+                              secret_max_price double,
                               time DateTime,
                               b_id varchar(9) NOT NULL,
                               toy_id int NOT NULL,

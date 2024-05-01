@@ -11,10 +11,20 @@
 <%@ page import="javax.servlet.http.*,javax.servlet.*" %>
 
 <%@ page import="java.time.LocalDateTime, java.time.format.DateTimeFormatter" %>
+<%@ page import="java.text.DecimalFormat" %>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <html>
 <head>
     <title>Details</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
+    <script>
+        function toggleAutoBidSection() {
+            var autoBidCheckbox = document.getElementById("autoBidCheckbox");
+            var autoBidSection = document.getElementById("autoBidSection");
+
+            autoBidSection.style.display = autoBidCheckbox.checked ? "block" : "none";
+        }
+    </script>
 </head>
 <body>
 <%
@@ -26,79 +36,117 @@
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-
+        String priceQuery = "SELECT price FROM bid WHERE toy_id = ? ORDER BY price DESC LIMIT 1";
+        pstmt = conn.prepareStatement(priceQuery);
+        pstmt.setString(1, id);
+        rs = pstmt.executeQuery();
+        double lastBidPrice = -1;
+        if(rs.next()){
+            lastBidPrice = rs.getDouble("price");
+        }
         // Query to retrieve details for listing
         String query = "SELECT * FROM toy_listing WHERE toy_id = ?";
         pstmt = conn.prepareStatement(query);
         pstmt.setString(1, id);
         rs = pstmt.executeQuery();
+        double increment;
+        int startAge;
+        int endAge;
+       if(rs.next()) {
+           String categoryStr = category.replace("_", " ");
+           increment = rs.getDouble("increment");
+           startAge = rs.getInt("start_age");
+           endAge = rs.getInt("end_age");
+           DecimalFormat df = new DecimalFormat("#.##");
+            double price = lastBidPrice==-1? rs.getDouble("initial_price") : lastBidPrice;
+            String priceStr = df.format(price);
+            double minBidPrice = price + increment;
+            String minBidPriceStr = df.format(minBidPrice);
+           out.println(categoryStr);
+           out.println("<h2>" + rs.getString("name") + "</h2>");%>
+    <div class = "row">
+        <div class = "column">
+            <p> Current Price: $ <%=priceStr %> </p>
+            <%
+                LocalDateTime startTime = rs.getTimestamp("start_datetime").toLocalDateTime();
+                // Define the format with AM/PM and without seconds
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a");
+                // Format the datetime using the formatter
+                String startDT = startTime.format(formatter);
+                LocalDateTime endTime = rs.getTimestamp("closing_datetime").toLocalDateTime();
+                String endDT = endTime.format(formatter);
+            %>
+            <p>Start Time: <%=startDT%></p>
+            <p>Closing Time: <%=endDT%></p>
 
-        out.println("<table>");
-        out.println("<tr><th>Category</th><th>Name</th><th>Age Range</th><th>Initial Price</th><th>Increment</th><th>Start Date Time</th><th>Closing Date Time</th></tr>");
-        if(rs.next()) {
-            String categoryStr = category.replace("_"," ");
-            out.println("<td>" + categoryStr + "</td>");
-            out.println("<td>" + rs.getString("name") + "</td>");
-            out.println("<td>" + rs.getInt("start_age") +" - "+ rs.getInt("end_age")+"</td>");
-            out.println("<td>" + rs.getDouble("initial_price") + "</td>");
-            out.println("<td>" + rs.getDouble("increment") + "</td>");
+           <%//get category details
+           query = "SELECT * FROM " + category + " WHERE toy_id = ?";
+           pstmt = conn.prepareStatement(query);
+           pstmt.setString(1, id);
+           rs = pstmt.executeQuery();
 
-            LocalDateTime startTime = rs.getTimestamp("start_datetime").toLocalDateTime();
-            // Define the format with AM/PM and without seconds
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a");
-            // Format the datetime using the formatter
-            String startDT = startTime.format(formatter);
-            out.println("<td>" + startDT + "</td>");
-            LocalDateTime endTime = rs.getTimestamp("closing_datetime").toLocalDateTime();
-            String endDT = endTime.format(formatter);
-            out.println("<td>" + endDT + "</td>");
-            out.println("</tr>");
-        }
-        out.println("</table>");
-        //get category details
-        query = "SELECT * FROM "+category+" WHERE toy_id = ?";
-        pstmt = conn.prepareStatement(query);
-        pstmt.setString(1, id);
-        rs = pstmt.executeQuery();
+           // Display details from category table
+           if (rs.next()) {
+               out.println("<b>Details </b>");
+               out.println("<ul>");
+               out.println("<li>" + "Age Range: " + startAge + " - " + endAge + "</li>");
+               if (category.equals("action_figure")) {
+                   double height = rs.getDouble("height");
+                   boolean canMove = rs.getBoolean("can_move");
+                   String characterName = rs.getString("character_name");
+                   // Display action figure details
+                   out.println("<li>Height: " + height + "</li>");
+                   out.println("<li>Can Move: " + canMove + "</li>");
+                   out.println("<li>Character Name: " + characterName + "</li>");
+               } else if (category.equals("board_game")) {
+                   int playerCount = rs.getInt("player_count");
+                   String brand = rs.getString("brand");
+                   boolean isCardsGame = rs.getBoolean("is_cards_game");
+                   // Display board game details
+                   out.println("<li>Player Count: " + playerCount + "</li>");
+                   out.println("<li>Brand: " + brand + "</li>");
+                   out.println("<li>Is Cards Game: " + isCardsGame + "</li>");
+               } else if (category.equals("stuffed_animal")) {
+                   String color = rs.getString("color");
+                   String brand = rs.getString("brand");
+                   String animal = rs.getString("animal");
+                   // Display stuffed animal details
 
-        // Display details from category table
-        if (rs.next()) {
-            if (category.equals("action_figure")) {
-                double height = rs.getDouble("height");
-                boolean canMove = rs.getBoolean("can_move");
-                String characterName = rs.getString("character_name");
-                // Display action figure details
-                out.println("<p>Height: " + height + "</p>");
-                out.println("<p>Can Move: " + canMove + "</p>");
-                out.println("<p>Character Name: " + characterName + "</p>");
-            } else if (category.equals("board_game")) {
-                int playerCount = rs.getInt("player_count");
-                String brand = rs.getString("brand");
-                boolean isCardsGame = rs.getBoolean("is_cards_game");
-                // Display board game details
-                out.println("<p>Player Count: " + playerCount + "</p>");
-                out.println("<p>Brand: " + brand + "</p>");
-                out.println("<p>Is Cards Game: " + isCardsGame + "</p>");
-            } else if (category.equals("stuffed_animal")) {
-                String color = rs.getString("color");
-                String brand = rs.getString("brand");
-                String animal = rs.getString("animal");
-                // Display stuffed animal details
-                out.println("<p>Color: " + color + "</p>");
-                out.println("<p>Brand: " + brand + "</p>");
-                out.println("<p>Animal: " + animal + "</p>");
-            }
-        } else {
-            out.println("<p>Listing not found.</p>");
-        }
+                   out.println("<li>Color: " + color + "</li>");
+                   out.println("<li>Brand: " + brand + "</li>");
+                   out.println("<li>Animal: " + animal + "</li>");
+               }
+               out.println("</ul></div>");
+
+           } else {
+               out.println("<p>Listing not found.</p>");
+           }
+               String bidUrl = "bid.jsp?id=" + id + "&category=" + category;
+%>
+
+               <div class="column">
+                   <form id="bidForm" action=<%=bidUrl%> method="POST">
+                       <p>Bid: <input type="number" name="bidAmt" step="<%= increment %>" placeholder="<%= minBidPriceStr %>" min="<%= minBidPriceStr %>"/></p>
+                       <p>Automatic Bid: <input type="checkbox" id="autoBidCheckbox" name="isAutoBid" onchange="toggleAutoBidSection()"/></p>
+                       <div id="autoBidSection" style="display: none;">
+                           <p>Max Bid: <input type="number" name="maxBid"/></p>
+                           <p>Bid Increment: <input type="number" name="autoBidIncrement" step="0.01"/></p>
+                       </div>
+                       <input type="submit" value="Place Bid"/>
+                   </form>
+
+               </div>
+           </div>
+<%
+
+       }
         rs.close();
         pstmt.close();
         conn.close();
     } catch (SQLException e) {
         out.println("<p>Error: " + e.getMessage() + "</p>");
     }
-    String url = "bid.jsp?id=" + id + "&category=" + category;
-    out.println("<a href=\""+url+"\">Place a Bid</a><br>");
+
 %>
 <a href="browseListings.jsp">Back to All Listings</a>
 </body>
