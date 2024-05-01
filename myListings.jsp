@@ -51,7 +51,7 @@
         }
         else {
             rs.beforeFirst(); //reset rs cursor to front
-            out.println("<table>");
+            out.println("<p><table>");
             out.println("<tr><th>Category</th><th>Name</th><th>Initial Price</th><th>Increment</th><th>Secret Min Price</th><th>Start Date Time</th><th>Closing Date Time</th></tr>");
             while (rs.next()) {
                 String category = rs.getString("category");
@@ -78,7 +78,7 @@
                 out.println("<td>" + endDT + "</td>");
                 out.println("</tr>");
             }
-            out.println("</table>");
+            out.println("</table></p>");
         }
         // Close resources
         rs.close();
@@ -99,7 +99,8 @@
     }
 %>
 <br>
+<p>
 <a href="CustomerMain.jsp">Home</a>
-
+</p>
 </body>
 </html>

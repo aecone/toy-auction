@@ -23,26 +23,11 @@
 } else {
 %>
 <div class="center-texts">
-    Welcome, <%=session.getAttribute("user") %>!<br><br>
-<%
-    // Check if the username is not "admin"
-    if (!"admin".equals(session.getAttribute("user"))) {
-%>
-    <a href="browseListings.jsp">Browse Listings</a><br>
-    <a href='createListing.jsp'>Create a Listing</a><br>
-    <a href='myListings.jsp'>My Listings</a><br>
-</div>
-<%
-} else {
-    // when the username is "admin"
-%>
-<div class="center-texts">
-    admin tools<br>
-</div>
-<%
-    }
-%>
-<div class="center-texts">
+    Welcome, <%=session.getAttribute("user") %>!
+
+    <p><a href="browseListings.jsp">Browse Listings</a></p>
+    <p><a href='createListing.jsp'>Create a Listing</a> </p>
+    <p><a href='myListings.jsp'>My Listings</a> </p>
     <a href='logout.jsp'>Log Out</a>
 </div>
 <%

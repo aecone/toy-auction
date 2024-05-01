@@ -11,6 +11,7 @@ body, html {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
 }
 
 .center-texts {
@@ -35,7 +36,7 @@ table {
 }
 
 table tr:hover {
-    background-color: #f6fafa;
+    background-color: #ebf3fa;
     cursor: pointer; /* Change cursor to pointer on hover */
 }
 
@@ -59,6 +60,6 @@ a:visited, a:link {
 }
 
 a:hover {
-    background-color: #f6fafa;
-    padding: 2px 2px;
+    background-color: #ebf3fa;
+    /*padding: 2px 2px;*/
 }

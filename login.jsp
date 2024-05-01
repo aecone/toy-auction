@@ -19,16 +19,15 @@
 <body>
 <div class="center-texts">
     <form action="checkLoginDetails.jsp" method="POST">
-        Username: <input type="text" name="username"/> <br>
-        Password: <input type="password" name="password"/> <br>
-        <br>
+        <p>Username: <input type="text" name="username"/></p>
+        <p>Password: <input type="password" name="password"/></p>
+
         <input type="submit" value="Log In"/>
     </form>
-    <br>
-    <a href="createAccount.jsp">Create Account</a>
-    <br>
-    <br>
-    <a href="AdminRepLogin.jsp">Admin or Customer Rep Login Page</a>
+
+    <p><a href="createAccount.jsp">Create Account</a></p>
+
+    <p><a href="AdminRepLogin.jsp">Admin or Customer Rep Login Page</a></p>
 </div>
 </body>
 </html>
