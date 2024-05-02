@@ -8,20 +8,29 @@ public class Bid {
     private double price;
     private String username;
     private int toyId;
+    private boolean isAutoBid;
 
     // Constructors
     public Bid() {
     }
 
-    public Bid(int bidId, LocalDateTime time, double price, String username, int toyId) {
+    public Bid(int bidId, LocalDateTime time, double price, String username, int toyId, boolean isAutoBid) {
         this.bidId = bidId;
         this.time = time;
         this.price = price;
         this.username = username;
         this.toyId = toyId;
+        this.isAutoBid = isAutoBid;
     }
 
     // Getters and Setters
+
+    public boolean isAutoBid() {
+        return isAutoBid;
+    }
+    public void setAutoBid(boolean autoBid) {
+        isAutoBid = autoBid;
+    }
     public int getBidId() {
         return bidId;
     }

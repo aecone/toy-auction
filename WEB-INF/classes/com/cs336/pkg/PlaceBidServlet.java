@@ -43,7 +43,7 @@ public class PlaceBidServlet extends HttpServlet {
                 Connection conn = db.getConnection();
                 BidDAO bidDAO = new BidDAO(conn);
                 //insert new bid and get its id
-                int bidId = bidDAO.insertBid(bidAmt,request.getSession().getAttribute("user").toString(), toyId);
+                int bidId = bidDAO.insertBid(bidAmt,request.getSession().getAttribute("user").toString(), toyId, isAutoBid);
 
                 //see which autobids are tracking this toylisting
                 AutomaticBidDAO autobidDAO = new AutomaticBidDAO(conn);

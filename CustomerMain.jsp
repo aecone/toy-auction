@@ -28,6 +28,7 @@
     <p><a href="browseListings.jsp">Browse Listings</a></p>
     <p><a href='createListing.jsp'>Create a Listing</a> </p>
     <p><a href='myListings.jsp'>My Listings</a> </p>
+    <p><a href="myBids.jsp">My Bids</a></p>
     <a href='logout.jsp'>Log Out</a>
 </div>
 <%
