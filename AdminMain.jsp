@@ -9,6 +9,8 @@
          pageEncoding="ISO-8859-1" import="com.cs336.pkg.*"%>
 <%@ page import="java.io.*,java.util.*,java.sql.*"%>
 <%@ page import="javax.servlet.http.*,javax.servlet.*" %>
+<%@ page import="java.sql.Timestamp, java.text.SimpleDateFormat" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,12 +22,12 @@
 <%
     ApplicationDB db = new ApplicationDB();
     Connection con = db.getConnection();
-    Statement stmt = con.createStatement();
+    Statement st = con.createStatement();
     String admin_id = (String) session.getAttribute("employeeid");
     if (admin_id == null) {
         response.sendRedirect("login.jsp");
     }
-    ResultSet resultset = stmt.executeQuery("SELECT id, password FROM customer_representative");
+    ResultSet resultset = st.executeQuery("SELECT id, password FROM customer_representative");
 %>
 <h1>Admin Home</h1>
 <div style="display: flex; min-width: 150vh; padding:0 200px;">
@@ -62,7 +64,7 @@
             <form method="post" action="makeRep.jsp">
                 <table style="width: 100%;">
                     <tr>
-                        <td>New Rep ID: <input type="text" name="id" value="" maxlength="30" required/></td>
+                        <td>Rep ID: <input type="text" name="id" value="" maxlength="30" required/></td>
                     </tr>
                     <tr>
                         <td>Rep Password: <input type="text" name="password" value="" maxlength="30" required/></td>
@@ -83,7 +85,7 @@
         </div>
         <div>
             <h3 class="center-texts">Sales Reports</h3>
-            <form action="CreateSalesReport.jsp">
+            <form action="createSalesReport.jsp">
                 <table style="width: 100%;">
                     <tr>
                         <th>Start Date</th>

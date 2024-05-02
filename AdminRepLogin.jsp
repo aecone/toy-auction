@@ -17,6 +17,7 @@
     <title>Admin or Rep Login Page</title>
 </head>
 <body>
+<h1>Employee Login</h1>
 <div class="center-texts">
     <form action="CheckEmployeeLogin.jsp" method="POST">
         Employee ID: <input type="text" name="username"  maxlength="30"/> <br>

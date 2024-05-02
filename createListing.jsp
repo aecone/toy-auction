@@ -84,7 +84,7 @@
     Minimum Sale Price: <input type="number" name="min_price" step="0.01"/>  <br>
     <% LocalDateTime now = LocalDateTime.now().plusHours(1);
         String minDateTime = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));%>
-    Closing Date and Time: <input type="datetime-local" name="endDT" min="<%= minDateTime %>"/>  <br>
+    Closing Date and Time: <input type="datetime-local" name="endDT" /><%--min="<%= minDateTime "%>--%>  <br>
     <input type="submit" value="Submit"/>
 </form>
 <a href="CustomerMain.jsp">Cancel</a>

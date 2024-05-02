@@ -24,6 +24,7 @@ CREATE TABLE toy_listing
     toy_id           INT AUTO_INCREMENT,
     start_datetime   datetime,
     username         varchar(30) NOT NULL,
+    openStatus 		 int DEFAULT 1,
     primary key (toy_id),
     foreign key (username) references user (username)
 );
@@ -68,9 +69,9 @@ INSERT into admin
 VALUES ('admin', '1000');
 
 CREATE TABLE customer_representative(
-                                                  id varchar(30),
-                                                  password varchar(30),
-                                                  Primary Key (id));
+                                        id varchar(30),
+                                        password varchar(30),
+                                        Primary Key (id));
 
 CREATE TABLE admin_creates(
                               a_id varchar(30),
@@ -130,9 +131,10 @@ CREATE TABLE automatic_bid(
                               Foreign key (last_bid_id) references bid(b_id) on delete cascade);
 
 CREATE TABLE question(
-                         text varchar(500),
+                         question varchar(500),
+                         q_id	  varchar(30),
                          c_id varchar(30),
                          username varchar(30) NOT NULL,
-                         Primary Key (text),
+                         Primary Key (q_id),
                          Foreign key (c_id) references customer_representative(id),
                          Foreign key (username)  references user(username));
