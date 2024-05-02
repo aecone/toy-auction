@@ -17,7 +17,6 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
-
 <a href="browseListings.jsp">Back to All Listings</a>
 </body>
 </html>
