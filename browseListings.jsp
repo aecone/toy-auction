@@ -37,6 +37,7 @@
 // Create a connection to the database
     ApplicationDB db = new ApplicationDB();
     Connection conn = db.getConnection();
+    BidDAO bidDAO = new BidDAO(conn);
     try {
 
         // Prepare and execute SQL query to fetch toy listings
@@ -49,19 +50,20 @@
         else {
             // Display the data in a table
             out.println("<table>");
-            out.println("<tr><th>Category</th><th>Name</th><th>Age Range</th><th>Initial Price</th><th>Increment</th><th>Start Time</th><th>Closing Time</th></tr>");
+            out.println("<tr><th>Category</th><th>Name</th><th>Age Range</th><th>Current Price</th><th>Increment</th><th>Start Time</th><th>Closing Time</th></tr>");
             rs.beforeFirst();
             while (rs.next()) {
                 String category = rs.getString("category");
-
                 int id = rs.getInt("toy_id");
+                double curPrice = bidDAO.highestBid(id);
+
                 String url = "listingDetails.jsp?id=" + id + "&category=" + category;
                 out.println("<tr data-href=\"" + url + "\" class =\"listing-tr\">");
                 category = category.replace("_", " ");
                 out.println("<td>" + category + "</td>");
                 out.println("<td>" + rs.getString("name") + "</td>");
                 out.println("<td>" + rs.getInt("start_age") +" - "+ rs.getInt("end_age")+"</td>");
-                out.println("<td>" + rs.getDouble("initial_price") + "</td>");
+                out.println("<td>" + curPrice + "</td>");
                 out.println("<td>" + rs.getDouble("increment") + "</td>");
 
                 LocalDateTime startTime = rs.getTimestamp("start_datetime").toLocalDateTime();

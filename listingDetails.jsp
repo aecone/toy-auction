@@ -32,18 +32,13 @@
     String category = request.getParameter("category");
     ApplicationDB db = new ApplicationDB();
     Connection conn = db.getConnection();
+    BidDAO bidDAO = new BidDAO(conn);
     try {
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String priceQuery = "SELECT price FROM bid WHERE toy_id = ? ORDER BY price DESC LIMIT 1";
-        pstmt = conn.prepareStatement(priceQuery);
-        pstmt.setInt(1, id);
-        rs = pstmt.executeQuery();
-        double lastBidPrice = -1;
-        if(rs.next()){
-            lastBidPrice = rs.getDouble("price");
-        }
+        double lastBidPrice = bidDAO.highestBid(id);
+
         // Query to retrieve details for listing
         String query = "SELECT * FROM toy_listing WHERE toy_id = ?";
         pstmt = conn.prepareStatement(query);

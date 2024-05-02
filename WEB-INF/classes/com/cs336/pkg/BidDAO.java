@@ -2,6 +2,8 @@ package com.cs336.pkg;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BidDAO {
     private Connection conn;
@@ -37,6 +39,7 @@ public class BidDAO {
             if (generatedKeys.next()) {
                 return generatedKeys.getInt(1);
             }
+            generatedKeys.close();
         }
         catch(SQLException e){
             System.out.println(e);
@@ -51,6 +54,34 @@ public class BidDAO {
         Timestamp time = rs.getTimestamp("time");
         LocalDateTime dateTime = time.toLocalDateTime();
         return new Bid(b_id, dateTime,price, username, toyId);
+    }
+
+    public double highestBid(int toyId) throws SQLException {
+        String priceQuery = "SELECT price FROM bid WHERE toy_id = ? ORDER BY price DESC LIMIT 1";
+        try(PreparedStatement pstmt = conn.prepareStatement(priceQuery)) {
+            pstmt.setInt(1, toyId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getDouble("price");
+            }
+            rs.close();
+        }
+        return -1;
+    }
+
+    public List<Bid> getBidsByUser(String username) throws SQLException {
+        String sql = "SELECT * FROM bid WHERE username = ?";
+        List<Bid> bids = new ArrayList<>();
+        try(PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            try(ResultSet rs = pstmt.executeQuery()){
+
+                while(rs.next()){
+                    bids.add(extractBidFromResultSet(rs));
+                }
+            }
+        }
+        return bids;
     }
 
 }
