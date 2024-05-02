@@ -28,6 +28,7 @@ CREATE TABLE toy_listing
     foreign key (username) references user (username)
 );
 
+
 CREATE TABLE action_figure
 (
     toy_id    INT NOT NULL,

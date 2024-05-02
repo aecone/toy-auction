@@ -57,7 +57,7 @@
                 String category = rs.getString("category");
                 int id = rs.getInt("toy_id");
                 String url = "myListingDetails.jsp?id=" + id + "&category=" + category;
-                out.println("<tr data-href=\"" + url + "\">");
+                out.println("<tr data-href=\"" + url + "\" class = \"listing-tr\">");
                 category = category.replace("_", " ");
                 out.println("<td>" + category + "</td>");
                 out.println("<td>" + rs.getString("name") + "</td>");

@@ -92,7 +92,7 @@ public class PlaceBidServlet extends HttpServlet {
             double bidAmt = Double.parseDouble(request.getParameter("bidAmt"));
             System.out.println(request.getParameter("isAutoBid"));
             //@TODO fix parsing of isAutoBid
-            boolean isAutoBid = request.getParameter("isAutoBid").equals("checked");
+            boolean isAutoBid = request.getParameter("isAutoBid")!=null && request.getParameter("isAutoBid").equals("on");
             double maxBid = -1;
             double autoBidIncrement = -1;
             if (isAutoBid) {
@@ -142,8 +142,8 @@ public class PlaceBidServlet extends HttpServlet {
                 }
                 // Insert into autobid table
                 if (isAutoBid) {
-                    insertBidSQL = "INSERT INTO automatic_bid (increment,secret_max_price,last_bid_id,toy_id) VALUES (?, ?,?,?)";
-                    pstmt = conn.prepareStatement(insertBidSQL);
+                    String insertAutoBidSQL = "INSERT INTO automatic_bid (increment,secret_max_price,last_bid_id,toy_id) VALUES (?, ?,?,?)";
+                    pstmt = conn.prepareStatement(insertAutoBidSQL);
                     pstmt.setDouble(1, autoBidIncrement);
                     pstmt.setDouble(2, maxBid);
                     pstmt.setInt(3, bidId);

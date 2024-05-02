@@ -127,7 +127,7 @@
                <div class="column">
                    <form id="bidForm" action="/placeBid" method="POST">
                        <input type="hidden" name="id" value=<%=id%>>
-                       <p>Bid: <input type="number" name="bidAmt" step="<%= increment %>" placeholder="<%= minBidPriceStr %>" min="<%= minBidPriceStr %>"/></p>
+                       <p>Bid: <input type="number" name="bidAmt" step="0.01" placeholder="<%= minBidPriceStr %>" min="<%= minBidPriceStr %>"/></p>
                        <p>Automatic Bid: <input type="checkbox" id="autoBidCheckbox" name="isAutoBid" onchange="toggleAutoBidSection()"/></p>
                        <div id="autoBidSection" style="display: none;">
                            <p>Max Bid: <input type="number" name="maxBid"/></p>

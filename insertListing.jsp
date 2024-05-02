@@ -64,7 +64,7 @@ pstmt.executeUpdate();
         pstmt = conn.prepareStatement(sql);
         pstmt.setString(1, toyId);
         pstmt.setDouble(2, Double.parseDouble(request.getParameter("height")));
-        pstmt.setBoolean(3, Boolean.parseBoolean(request.getParameter("can_move")));
+        pstmt.setBoolean(3, request.getParameter("can_move")!=null &&request.getParameter("can_move").equals("on"));
         pstmt.setString(4, request.getParameter("character"));
         break;
       case "stuffed_animal":
@@ -81,7 +81,7 @@ pstmt.executeUpdate();
         pstmt.setString(1, toyId);
         pstmt.setInt(2, Integer.parseInt(request.getParameter("player_count")));
         pstmt.setString(3, request.getParameter("game_brand"));
-        pstmt.setBoolean(4, Boolean.parseBoolean(request.getParameter("is_cards_game")));
+        pstmt.setBoolean(4, request.getParameter("is_cards_game")!= null && request.getParameter("is_cards_game").equals("on"));
         break;
       default:
         throw new IllegalArgumentException("Invalid category: " + category);
