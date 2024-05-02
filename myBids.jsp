@@ -22,9 +22,9 @@
         // Create a connection to the database
         ApplicationDB db = new ApplicationDB();
         Connection conn = db.getConnection();
-        BidDAO bidDAO = new BidDAO(conn);
-        ToyListingDAO tlDAO = new ToyListingDAO(conn);
-        List<Bid> bids = bidDAO.getBidsByUser(session.getAttribute("user").toString());
+        BidData bidData = new BidData(conn);
+        ToyListingData tlDAO = new ToyListingData(conn);
+        List<Bid> bids = bidData.getBidsByUser(session.getAttribute("user").toString());
         %>
 <table>
 <tr><th>Bid Time</th><th>Name</th><th>Bid Price</th> <th>Is Auto Bid</th></tr>

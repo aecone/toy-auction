@@ -5,10 +5,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BidDAO {
+public class BidData {
     private Connection conn;
 
-    public BidDAO(Connection conn){
+    public BidData(Connection conn){
         this.conn = conn;
     }
 

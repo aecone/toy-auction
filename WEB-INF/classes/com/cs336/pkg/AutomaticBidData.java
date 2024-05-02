@@ -7,10 +7,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AutomaticBidDAO {
+public class AutomaticBidData {
     private Connection conn;
 
-    public AutomaticBidDAO(Connection conn) {
+    public AutomaticBidData(Connection conn) {
         this.conn = conn;
     }
 
@@ -85,8 +85,8 @@ public class AutomaticBidDAO {
                 int ab_id = autoBid.getAbId();
 
                 // Get last bid made by the autobid
-                BidDAO bidDAO = new BidDAO(conn);
-                Bid lastBid = bidDAO.getBidById(lastBidId);
+                BidData bidData = new BidData(conn);
+                Bid lastBid = bidData.getBidById(lastBidId);
                 if(lastBid!=null) {
                     double lastBidAmt = lastBid.getPrice();
                     String user = lastBid.getUsername();
@@ -103,7 +103,7 @@ public class AutomaticBidDAO {
                     } else {
                         // Create new bid for user
                         highestBid = newBid;
-                        int newBidId = bidDAO.insertBid(newBid,user, toyId, true);
+                        int newBidId = bidData.insertBid(newBid,user, toyId, true);
                         updateLastBid(ab_id,newBidId);
                     }
                 }

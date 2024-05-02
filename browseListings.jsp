@@ -39,7 +39,7 @@
 // Create a connection to the database
     ApplicationDB db = new ApplicationDB();
     Connection conn = db.getConnection();
-    BidDAO bidDAO = new BidDAO(conn);
+    BidData bidData = new BidData(conn);
     try {
 
         // Prepare and execute SQL query to fetch toy listings
@@ -57,7 +57,7 @@
             while (rs.next()) {
                 String category = rs.getString("category");
                 int id = rs.getInt("toy_id");
-                double curPrice = bidDAO.highestBid(id);
+                double curPrice = bidData.highestBid(id);
                 //no bids placed on it yet
                 if(curPrice ==-1){
                     curPrice = rs.getDouble("initial_price");

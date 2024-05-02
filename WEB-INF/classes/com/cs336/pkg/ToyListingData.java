@@ -6,10 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 
-public class ToyListingDAO {
+public class ToyListingData {
     private Connection conn;
 
-    public ToyListingDAO(Connection conn) {
+    public ToyListingData(Connection conn) {
         this.conn = conn;
     }
 

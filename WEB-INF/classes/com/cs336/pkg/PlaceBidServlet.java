@@ -1,8 +1,5 @@
 package com.cs336.pkg;
 
-import com.sun.tools.jconsole.JConsoleContext;
-import com.sun.tools.jconsole.JConsolePlugin;
-
 import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -12,9 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.annotation.WebServlet;
-import javax.sql.RowSet;
-import javax.sql.rowset.CachedRowSet;
-import javax.sql.rowset.RowSetProvider;
 
 
 @WebServlet("/placeBid")
@@ -41,12 +35,12 @@ public class PlaceBidServlet extends HttpServlet {
                 //Get the database connection
                 ApplicationDB db = new ApplicationDB();
                 Connection conn = db.getConnection();
-                BidDAO bidDAO = new BidDAO(conn);
+                BidData bidData = new BidData(conn);
                 //insert new bid and get its id
-                int bidId = bidDAO.insertBid(bidAmt,request.getSession().getAttribute("user").toString(), toyId, isAutoBid);
+                int bidId = bidData.insertBid(bidAmt,request.getSession().getAttribute("user").toString(), toyId, isAutoBid);
 
                 //see which autobids are tracking this toylisting
-                AutomaticBidDAO autobidDAO = new AutomaticBidDAO(conn);
+                AutomaticBidData autobidDAO = new AutomaticBidData(conn);
                 List<AutomaticBid> autoBids = autobidDAO.getAutomaticBidsByToyId(toyId);
 
                 double prevHighestBid = bidAmt;

@@ -32,12 +32,12 @@
     String category = request.getParameter("category");
     ApplicationDB db = new ApplicationDB();
     Connection conn = db.getConnection();
-    BidDAO bidDAO = new BidDAO(conn);
+    BidData bidData = new BidData(conn);
     try {
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        double lastBidPrice = bidDAO.highestBid(id);
+        double lastBidPrice = bidData.highestBid(id);
 
         // Query to retrieve details for listing
         String query = "SELECT * FROM toy_listing WHERE toy_id = ?";
