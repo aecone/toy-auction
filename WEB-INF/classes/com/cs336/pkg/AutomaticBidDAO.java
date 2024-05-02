@@ -103,7 +103,7 @@ public class AutomaticBidDAO {
                     } else {
                         // Create new bid for user
                         highestBid = newBid;
-                        int newBidId = bidDAO.insertBid(newBid,user, toyId);
+                        int newBidId = bidDAO.insertBid(newBid,user, toyId, true);
                         updateLastBid(ab_id,newBidId);
                     }
                 }

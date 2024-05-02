@@ -56,7 +56,10 @@
                 String category = rs.getString("category");
                 int id = rs.getInt("toy_id");
                 double curPrice = bidDAO.highestBid(id);
-
+                //no bids placed on it yet
+                if(curPrice ==-1){
+                    curPrice = rs.getDouble("initial_price");
+                }
                 String url = "listingDetails.jsp?id=" + id + "&category=" + category;
                 out.println("<tr data-href=\"" + url + "\" class =\"listing-tr\">");
                 category = category.replace("_", " ");
