@@ -28,7 +28,7 @@
 </head>
 <body>
 <%
-    String id = request.getParameter("id");
+    int id = Integer.parseInt(request.getParameter("id"));
     String category = request.getParameter("category");
     ApplicationDB db = new ApplicationDB();
     Connection conn = db.getConnection();
@@ -38,7 +38,7 @@
         ResultSet rs = null;
         String priceQuery = "SELECT price FROM bid WHERE toy_id = ? ORDER BY price DESC LIMIT 1";
         pstmt = conn.prepareStatement(priceQuery);
-        pstmt.setString(1, id);
+        pstmt.setInt(1, id);
         rs = pstmt.executeQuery();
         double lastBidPrice = -1;
         if(rs.next()){
@@ -47,7 +47,7 @@
         // Query to retrieve details for listing
         String query = "SELECT * FROM toy_listing WHERE toy_id = ?";
         pstmt = conn.prepareStatement(query);
-        pstmt.setString(1, id);
+        pstmt.setInt(1, id);
         rs = pstmt.executeQuery();
         double increment;
         int startAge;
@@ -82,7 +82,7 @@
            <%//get category details
            query = "SELECT * FROM " + category + " WHERE toy_id = ?";
            pstmt = conn.prepareStatement(query);
-           pstmt.setString(1, id);
+           pstmt.setInt(1, id);
            rs = pstmt.executeQuery();
 
            // Display details from category table
@@ -121,11 +121,12 @@
            } else {
                out.println("<p>Listing not found.</p>");
            }
-               String bidUrl = "bid.jsp?id=" + id + "&category=" + category;
+
 %>
 
                <div class="column">
-                   <form id="bidForm" action=<%=bidUrl%> method="POST">
+                   <form id="bidForm" action="/placeBid" method="POST">
+                       <input type="hidden" name="id" value=<%=id%>>
                        <p>Bid: <input type="number" name="bidAmt" step="<%= increment %>" placeholder="<%= minBidPriceStr %>" min="<%= minBidPriceStr %>"/></p>
                        <p>Automatic Bid: <input type="checkbox" id="autoBidCheckbox" name="isAutoBid" onchange="toggleAutoBidSection()"/></p>
                        <div id="autoBidSection" style="display: none;">
