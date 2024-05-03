@@ -23,17 +23,30 @@
             // Add click event listener to each row
             rows.forEach(function(row) {
                 row.addEventListener('click', function() {
-                    // Get the value of the data-href attribute
-                    var href = row.getAttribute('data-href');
-                    // Navigate to the specified URL
+                    let href = row.getAttribute('data-href');
                     window.location.href = href;
                 });
             });
+
+
+            document.querySelector("#search-btn").addEventListener('click', ()=>{
+                let url = new URL(window.location.href);
+                url.searchParams.set("search",  document.querySelector("#search-input").value);
+                window.history.replaceState({}, '', url.toString());
+                location.reload();
+
+            });
         };
+
+
     </script>
 </head>
-<body>
 
+<div class="row search-row">
+    <input  type="text" placeholder=" Search by product name" id= "search-input"/>
+    <input type="submit" value="search" id="search-btn"/>
+
+</div>
 <%
 
 // Create a connection to the database
@@ -41,9 +54,15 @@
     Connection conn = db.getConnection();
     BidData bidData = new BidData(conn);
     ToyListingData tld = new ToyListingData(conn);
+    String search_query = request.getParameter("search");
     try {
-
-        List<ToyListing> toys = tld.getAllListings();
+        List<ToyListing> toys;
+        if (search_query != null){
+            System.out.println("hi from view");
+            toys = tld.getAllListingsWithSearch(search_query);
+        }else{
+            toys = tld.getAllListings();
+        }
 
         if(toys== null || toys.isEmpty()){
             out.println("There are no listings.");

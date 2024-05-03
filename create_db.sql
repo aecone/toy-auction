@@ -80,7 +80,6 @@ CREATE TABLE customer_representative
     PRIMARY KEY (id)
 );
 
-<<<<<<< HEAD
 CREATE TABLE alert(
                       alert_id int auto_increment,
                       name varchar(50),
@@ -91,11 +90,9 @@ CREATE TABLE alert(
                       username varchar(30) NOT NULL,
                       Primary key (alert_id),
                       Foreign key (username) references user(username));
-=======
 INSERT INTO customer_representative
 VALUES      ('sammy',
              '1010');
->>>>>>> refs/remotes/origin/master
 
 CREATE TABLE admin_creates
 (
@@ -131,19 +128,6 @@ CREATE TABLE sale
     PRIMARY KEY (sale_id),
     FOREIGN KEY (toy_id) REFERENCES toy_listing(toy_id),
     FOREIGN KEY (b_id) REFERENCES bid(b_id)
-);
-
-CREATE TABLE alert
-(
-    alert_id  VARCHAR(9),
-    name      VARCHAR(50),
-    max_price DOUBLE,
-    category  VARCHAR(40),
-    min_price DOUBLE,
-    age_range CHAR(5),
-    username  VARCHAR(30) NOT NULL,
-    PRIMARY KEY (alert_id),
-    FOREIGN KEY (username) REFERENCES user(username)
 );
 
 CREATE TABLE report

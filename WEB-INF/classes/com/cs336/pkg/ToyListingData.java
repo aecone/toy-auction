@@ -1,5 +1,6 @@
 package com.cs336.pkg;
 
+import javax.sound.midi.SysexMessage;
 import java.sql.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -30,6 +31,25 @@ public class ToyListingData {
         }
         return list;
     }
+
+    public List<ToyListing> getAllListingsWithSearch(String search_query) throws SQLException {
+        //does not extract category details for listings
+        System.out.println("hi from con");
+        List<ToyListing> list = new ArrayList<ToyListing>();
+        String sql = "select * from toy_listing WHERE name LIKE ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, "%" + search_query + "%");
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    ToyListing tl = extractToyListing(rs);
+                    list.add(tl);
+                }
+            }
+        }
+        System.out.println(list.size());
+        return list;
+    }
+
     public ToyListing getToyListingDetails(int toyId, boolean getDetails) throws SQLException {
         String query = "SELECT * FROM toy_listing WHERE toy_id = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -165,7 +185,7 @@ public class ToyListingData {
                 //highest bid is winner, add this bid to sale table
                 System.out.println("highest bid found for " + toyId+" is " + highestBid);
                 bidId = highestBidObj.getBidId();
-                //@TODO alert listing creator that their listing was bought for _ by _
+                //@TODO alert winner of auction
             }
             return bidId;
         }
