@@ -78,7 +78,9 @@ public class AutomaticBidData {
 
     public double checkAutoBids(List<AutomaticBid> autoBids, double highestBid, int toyId) {
         try {
+            System.out.println("current autobids tracking "+toyId);
             for (AutomaticBid autoBid : autoBids) {
+                System.out.println(autoBid.toString());
                 double increment = autoBid.getIncrement();
                 double secretMaxPrice = autoBid.getSecretMaxPrice();
                 int lastBidId = autoBid.getLastBidId();
@@ -87,7 +89,7 @@ public class AutomaticBidData {
                 // Get last bid made by the autobid
                 BidData bidData = new BidData(conn);
                 Bid lastBid = bidData.getBidById(lastBidId);
-                if(lastBid!=null) {
+                if(lastBid!=null && lastBid.getPrice()!= highestBid) {
                     double lastBidAmt = lastBid.getPrice();
                     String user = lastBid.getUsername();
 
