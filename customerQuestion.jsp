@@ -54,7 +54,7 @@
     <h3 style="text-align: center;" >Contact Us</h3>
     <form method="post" action="checkQuestion.jsp" class="form-container">
       <textarea id="question" name="c_question" rows="10" cols="50">Type in your inquiry here.</textarea>
-      <input type="submit" value="Post"/>
+      <input type="submit" style="padding: 10px; margin-top: 25px;" value="Send"/>
     </form>
   </div>
   <div style="flex: 2; display: flex; flex-direction: column;">

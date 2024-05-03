@@ -73,6 +73,9 @@ CREATE TABLE customer_representative(
                                         password varchar(30),
                                         Primary Key (id));
 
+INSERT into customer_representative
+VALUES ('sammy', '1010');
+
 CREATE TABLE admin_creates(
                               a_id varchar(30),
                               c_id varchar(30),
@@ -80,13 +83,15 @@ CREATE TABLE admin_creates(
                               FOREIGN KEY(c_id) REFERENCES customer_representative(id)
 );
 
+INSERT into admin_creates
+VALUES ('admin', 'sammy');
+
 CREATE TABLE bid (
                      b_id INT AUTO_INCREMENT,
                      time DateTime,
                      price double,
                      username varchar(30) NOT NULL,
                      toy_id int NOT NULL,
-                     is_auto_bid boolean,
                      Primary Key (b_id),
                      Foreign key (username) references user(username),
                      Foreign key (toy_id) references toy_listing(toy_id));
@@ -132,10 +137,25 @@ CREATE TABLE automatic_bid(
                               Foreign key (last_bid_id) references bid(b_id) on delete cascade);
 
 CREATE TABLE question(
-                         question varchar(500),
+                         question_text varchar(500),
                          q_id	  varchar(30),
-                         c_id varchar(30),
-                         username varchar(30) NOT NULL,
+                         username varchar(30),
                          Primary Key (q_id),
-                         Foreign key (c_id) references customer_representative(id),
-                         Foreign key (username)  references user(username));
+                         Foreign key (username)  references user(username)
+                             ON DELETE CASCADE
+                             ON UPDATE CASCADE
+);
+
+CREATE TABLE answer(
+                       q_id varchar(30),
+                       c_id varchar(30),
+                       answer_text VARCHAR(500),
+                       FOREIGN KEY(q_id) REFERENCES question(q_id),
+                       FOREIGN KEY(c_id) REFERENCES customer_representative(id)
+);
+
+INSERT into question
+VALUES ('How do I reset my password?', "2", "testUser");
+
+INSERT into question
+VALUES ('How do I delete my account? I accidentally created my account with the wrong email.', "3", "testUser");
