@@ -43,20 +43,20 @@ public class PlaceBidServlet extends HttpServlet {
                 AutomaticBidData autobidDAO = new AutomaticBidData(conn);
                 List<AutomaticBid> autoBids = autobidDAO.getAutomaticBidsByToyId(toyId);
 
-                double prevHighestBid = bidAmt;
-                double highestBid = autobidDAO.checkAutoBids(autoBids, prevHighestBid, toyId);
+                double prevHighestBid = -1;
+                double highestBid = bidAmt;
 
                 while(highestBid>prevHighestBid){ //an autobidder placed a new bid
                     prevHighestBid = highestBid;
                     //see which autobids are still tracking the toy listing
                     autoBids = autobidDAO.getAutomaticBidsByToyId(toyId);
                     highestBid = autobidDAO.checkAutoBids(autoBids, prevHighestBid, toyId);
+                    System.out.println("new highest bid: "+highestBid + "prev bid: "+prevHighestBid);
                 }
 
                 // Insert current user's bid into autobid table if it's an autobid
                 if (isAutoBid) {
                     autobidDAO.insertAutomaticBid(autoBidIncrement, maxBid, bidId, toyId);
-
                     //run check with just added autobid in case price was raised by other autobids in while loop above
                     if(highestBid > bidAmt){
                         autoBids = autobidDAO.getAutomaticBidsByToyId(toyId);
