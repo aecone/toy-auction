@@ -68,7 +68,7 @@ a:hover {
     color: #0a2559;
 }
 
-form input, form select{
+input, select{
     border: 2px solid #1c254161;
     border-radius: 10px;
     padding: 0.5em 1em;
@@ -97,4 +97,9 @@ form input, form select{
 #listingForm{
     overflow: scroll;
     padding: 4vw;
+}
+
+.search-row{
+    margin: 3em 0;
+    justify-content: center;
 }
