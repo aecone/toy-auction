@@ -77,7 +77,16 @@ public class AutomaticBidData {
     }
 
     public double checkAutoBids(List<AutomaticBid> autoBids, double highestBid, int toyId) {
+        ToyListingData tld = new ToyListingData(conn);
+
         try {
+            double minIncrement = -1;
+            try {
+                ToyListing tl = tld.getToyListingDetails(toyId, false);
+                minIncrement = tl.getIncrement();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
             System.out.println("current autobids tracking "+toyId);
             for (AutomaticBid autoBid : autoBids) {
                 System.out.println(autoBid.toString());
@@ -94,7 +103,7 @@ public class AutomaticBidData {
                     String user = lastBid.getUsername();
 
                     // See if autobid can bid higher
-                    double diff = highestBid - lastBidAmt;
+                    double diff = (highestBid+minIncrement) - lastBidAmt;
                     int incTimes = (int) Math.ceil(diff / increment);
                     double newBid = lastBidAmt + incTimes * increment;
 
