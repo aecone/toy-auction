@@ -142,7 +142,7 @@
            pstmt.setInt(1, id);
            rs = pstmt.executeQuery();
            while (rs.next()) {
-               Bid bid  = bidDAO.extractBidFromResultSet(rs);
+               Bid bid  = bidData.extractBidFromResultSet(rs);
 
     %>
             <div class="row">

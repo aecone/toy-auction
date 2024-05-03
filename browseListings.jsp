@@ -85,8 +85,11 @@
                         LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) < endTime.toEpochSecond(ZoneOffset.UTC)){
                     out.println("<td>auction in progress</td>");
                 }else{
+                    ToyListingData tld = new ToyListingData(conn);
+                    tld.deactivateToyListing(id);
                     out.println("<td>auction done</td>");
                 }
+                out.println("</tr>");
             }
             out.println("</table>");
         }

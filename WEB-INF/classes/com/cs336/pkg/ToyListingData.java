@@ -32,7 +32,9 @@ public class ToyListingData {
         }
         return null;
     }
-
+    public void setConn(Connection conn) {
+        this.conn = conn;
+    }
     public CategoryDetails getCategoryDetails(String category, int toyId) throws SQLException {
         String query = "SELECT * FROM " + category + " WHERE toy_id = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -68,7 +70,7 @@ public class ToyListingData {
             int toyId = Integer.parseInt(generatedKeys.getString(1));
             timer = new Timer();
 
-            timer.schedule(new DetermineWinnerTask(toyId),Timestamp.valueOf(endDT));
+            timer.schedule(new DetermineWinnerTask(toyId, conn),Timestamp.valueOf(endDT));
             return toyId;
         }
 
@@ -131,18 +133,26 @@ public class ToyListingData {
     }
     class DetermineWinnerTask extends TimerTask {
         int toyId;
-        public DetermineWinnerTask(int toyId){
+        private Connection conn;
+        public DetermineWinnerTask(int toyId, Connection conn){
             this.toyId = toyId;
+            this.conn = conn;
         }
         @Override
         public void run() {
             System.out.println("determining winner for " + toyId);
             try {
+                if (conn == null || conn.isClosed()) {
+                    System.out.println("Database connection is null or closed.");
+                    conn = new ApplicationDB().getConnection();
+                    setConn(conn);
+                }
                 deactivateToyListing(toyId);
                 BidData bidData = new BidData(conn);
 
                 Bid highestBidObj = bidData.highestBidObj(toyId);
                 if (highestBidObj == null) {
+                    System.out.println("No bid found for " + toyId);
                     //@TODO alert listing creator that there's no winner
                 }
                 else {
@@ -152,9 +162,11 @@ public class ToyListingData {
                     double minPrice = tl.getSecretMinPrice();
                     if (highestBid < minPrice) {
                         //no bids made on this item or not high enough price
+                        System.out.println("Highest bid found for " + toyId+" is lower than " + minPrice);
                         //@TODO alert listing creator that there's no winner
                     } else {
                         //highest bid is winner, add this bid to sale table
+                        System.out.println("highest bid found for " + toyId+" is " + highestBid);
                         SaleData sd = new SaleData(conn);
                         int bidId = highestBidObj.getBidId();
                         sd.insertSale(toyId, bidId);
@@ -163,7 +175,17 @@ public class ToyListingData {
                     }
                 }
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                System.out.println("Error occurred while determining winner for toyId: " + toyId);
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (conn != null && !conn.isClosed()) {
+                        conn.close();
+                    }
+                } catch (SQLException ex) {
+                    System.out.println("Error occurred while closing database connection.");
+                    ex.printStackTrace();
+                }
             }
         }
     }

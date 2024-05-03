@@ -92,6 +92,7 @@ CREATE TABLE bid (
                      price double,
                      username varchar(30) NOT NULL,
                      toy_id int NOT NULL,
+                        is_auto_bid boolean,
                      Primary Key (b_id),
                      Foreign key (username) references user(username),
                      Foreign key (toy_id) references toy_listing(toy_id));

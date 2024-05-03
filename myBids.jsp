@@ -16,6 +16,21 @@
 <head>
     <link rel="stylesheet" type="text/css" href="styles.css">
     <title>My Bids</title>
+    <script>
+        window.onload = function() {
+            // Get all table rows
+            var rows = document.querySelectorAll('table tr[data-href]');
+            // Add click event listener to each row
+            rows.forEach(function(row) {
+                row.addEventListener('click', function() {
+                    // Get the value of the data-href attribute
+                    var href = row.getAttribute('data-href');
+                    // Navigate to the specified URL
+                    window.location.href = href;
+                });
+            });
+        };
+    </script>
 </head>
 <body>
 <%
@@ -23,7 +38,7 @@
         ApplicationDB db = new ApplicationDB();
         Connection conn = db.getConnection();
         BidData bidData = new BidData(conn);
-        ToyListingData tlDAO = new ToyListingData(conn);
+        ToyListingData tlData = new ToyListingData(conn);
         List<Bid> bids = bidData.getBidsByUser(session.getAttribute("user").toString());
         %>
 <table>
@@ -31,7 +46,7 @@
     <%
         for (Bid b : bids) {
             int id = b.getToyId();
-            ToyListing toyListing = tlDAO.getToyListingDetails(id, true);
+            ToyListing toyListing = tlData.getToyListingDetails(id, true);
             String category = toyListing.getCategory();
             String name = toyListing.getName();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a");
@@ -46,6 +61,7 @@
         }
     %>
 </table>
+<p><a href="CustomerMain.jsp">Home</a></p>
 </body>
 </html>
 
