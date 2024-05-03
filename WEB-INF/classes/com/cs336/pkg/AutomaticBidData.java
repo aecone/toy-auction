@@ -108,7 +108,7 @@ public class AutomaticBidData {
                     double newBid = lastBidAmt + incTimes * increment;
 
                     if (newBid > secretMaxPrice) {
-                        // Delete this autobid because it can't outcompete current bid
+                        // Delete this automatic bid because it can't outcompete current bid
                         deleteAutomaticBid(ab_id);
                         //@TODO create alert for this user saying they were outbid
                     } else {

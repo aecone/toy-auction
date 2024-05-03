@@ -28,7 +28,6 @@ public class PlaceBidServlet extends HttpServlet {
                 maxBid = Double.parseDouble(request.getParameter("maxBid"));
                 autoBidIncrement = Double.parseDouble(request.getParameter("autoBidIncrement"));
             }
-            LocalDateTime bidTime = LocalDateTime.now();
 
             try {
 
@@ -43,7 +42,10 @@ public class PlaceBidServlet extends HttpServlet {
 
                     //insert new bid and get its id
                     int bidId = bidData.insertBid(bidAmt, request.getSession().getAttribute("user").toString(), toyId, isAutoBid);
-
+                    Bid lastHighestBid = bidData.highestBidObj(toyId);
+                    if(lastHighestBid!=null && !lastHighestBid.isAutoBid()) {
+                        //@TODO alert last highest manual bid that they were out bid
+                    }
                     //see which autobids are tracking this toylisting
                     AutomaticBidData autobidDAO = new AutomaticBidData(conn);
                     List<AutomaticBid> autoBids = autobidDAO.getAutomaticBidsByToyId(toyId);
