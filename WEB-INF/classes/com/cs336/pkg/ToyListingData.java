@@ -165,7 +165,7 @@ public class ToyListingData {
                 //highest bid is winner, add this bid to sale table
                 System.out.println("highest bid found for " + toyId+" is " + highestBid);
                 bidId = highestBidObj.getBidId();
-                //@TODO alert listing creator that their listing was bought for _ by _
+                //@TODO alert winner of auction
             }
             return bidId;
         }
