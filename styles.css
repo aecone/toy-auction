@@ -1,20 +1,28 @@
 html, body {
     height: 100%; /* Ensure the full height is used */
     width: 100%; /* Ensure the full width is used */
-    margin: 0; /* Remove default margin */
+    margin: 2%; /* Remove default margin */
     padding: 0; /* Remove default padding */
     display: flex;
     justify-content: center; /* Center content horizontally */
     align-items: center; /* Center content vertically */
     flex-direction: column;
+    overflow: auto;
 }
 
 body, input, select {
     font-family: Verdana, sans-serif;
-    background-color: #DCEDFF;
+    background-color: white;
     line-height: 1.5;
     color: #1c2541;
 }
+
+
+input[type="submit"]{
+    background: #1c2541;
+    color: #DCEDFF;
+}
+
 
 .center-texts {
     text-align: center;
@@ -25,8 +33,8 @@ form {
     line-height: 2;
 }
 
-h1 {
-    color: #1c2541;
+h1, h2, h3 {
+    color: #297ab6;
 }
 
 table input:hover {
@@ -49,7 +57,7 @@ th {
 
 td, th {
     text-align: center;
-    padding: 5px;
+    padding: 8px;
 }
 
 a:visited, a:link {
@@ -61,13 +69,18 @@ a:hover {
     color: #0a2559;
 }
 
-form input {
-    border: 2px solid black;
+form input, form select{
+    border: 2px solid #1c254161;
+    border-radius: 10px;
+    padding: 0.5em 1em;
+    margin: 1em 0 ;
 }
 
 .row {
     display: flex;
     column-gap: 3%;
+    width: 92vw;
+    max-width: 720px;
 }
 
 .column {
@@ -76,4 +89,13 @@ form input {
 
 .details {
     text-align: left;
+}
+
+.back-button{
+    padding-top:40px;
+}
+
+#listingForm{
+    overflow: scroll;
+    padding: 4vw;
 }

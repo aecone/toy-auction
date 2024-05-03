@@ -7,10 +7,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AutomaticBidDAO {
+public class AutomaticBidData {
     private Connection conn;
 
-    public AutomaticBidDAO(Connection conn) {
+    public AutomaticBidData(Connection conn) {
         this.conn = conn;
     }
 
@@ -77,33 +77,44 @@ public class AutomaticBidDAO {
     }
 
     public double checkAutoBids(List<AutomaticBid> autoBids, double highestBid, int toyId) {
+        ToyListingData tld = new ToyListingData(conn);
+
         try {
+            double minIncrement = -1;
+            try {
+                ToyListing tl = tld.getToyListingDetails(toyId, false);
+                minIncrement = tl.getIncrement();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("current autobids tracking "+toyId);
             for (AutomaticBid autoBid : autoBids) {
+                System.out.println(autoBid.toString());
                 double increment = autoBid.getIncrement();
                 double secretMaxPrice = autoBid.getSecretMaxPrice();
                 int lastBidId = autoBid.getLastBidId();
                 int ab_id = autoBid.getAbId();
 
                 // Get last bid made by the autobid
-                BidDAO bidDAO = new BidDAO(conn);
-                Bid lastBid = bidDAO.getBidById(lastBidId);
-                if(lastBid!=null) {
+                BidData bidData = new BidData(conn);
+                Bid lastBid = bidData.getBidById(lastBidId);
+                if(lastBid!=null && lastBid.getPrice()!= highestBid) {
                     double lastBidAmt = lastBid.getPrice();
                     String user = lastBid.getUsername();
 
                     // See if autobid can bid higher
-                    double diff = highestBid - lastBidAmt;
+                    double diff = (highestBid+minIncrement) - lastBidAmt;
                     int incTimes = (int) Math.ceil(diff / increment);
                     double newBid = lastBidAmt + incTimes * increment;
 
                     if (newBid > secretMaxPrice) {
-                        // Delete this autobid because it can't outcompete current bid
+                        // Delete this automatic bid because it can't outcompete current bid
                         deleteAutomaticBid(ab_id);
                         //@TODO create alert for this user saying they were outbid
                     } else {
                         // Create new bid for user
                         highestBid = newBid;
-                        int newBidId = bidDAO.insertBid(newBid,user, toyId, true);
+                        int newBidId = bidData.insertBid(newBid,user, toyId, true);
                         updateLastBid(ab_id,newBidId);
                     }
                 }

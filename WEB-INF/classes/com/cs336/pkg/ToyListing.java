@@ -15,6 +15,7 @@ public class ToyListing {
     private LocalDateTime startDateTime;
     private String username;
     private CategoryDetails categoryDetails;
+    private boolean openStatus;
 
     // Constructors
     public ToyListing() {
@@ -34,10 +35,13 @@ public class ToyListing {
         this.toyId = toyId;
         this.startDateTime = startDateTime;
         this.username = username;
+        openStatus= closingDateTime.isAfter(LocalDateTime.now());
     }
 
     // Getters and Setters (generated automatically or manually)
-
+    public boolean getOpenStatus() {
+        return openStatus;
+    }
     public CategoryDetails getCategoryDetails() {
         return categoryDetails;
     }

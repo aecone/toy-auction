@@ -4,11 +4,14 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class BidDAO {
+public class BidData {
     private Connection conn;
 
-    public BidDAO(Connection conn){
+
+    public BidData(Connection conn){
         this.conn = conn;
     }
 
@@ -41,13 +44,14 @@ public class BidDAO {
                 return generatedKeys.getInt(1);
             }
             generatedKeys.close();
+
         }
         catch(SQLException e){
             System.out.println(e);
         }
         return -1;
     }
-    private Bid extractBidFromResultSet(ResultSet rs) throws SQLException {
+    public Bid extractBidFromResultSet(ResultSet rs) throws SQLException {
         int b_id = rs.getInt("b_id");
         double price = rs.getDouble("price");
         String username = rs.getString("username");
@@ -71,6 +75,18 @@ public class BidDAO {
         return -1;
     }
 
+    public Bid highestBidObj(int toyId) throws SQLException{
+        String priceQuery = "SELECT * FROM bid WHERE toy_id = ? ORDER BY price DESC LIMIT 1";
+        try(PreparedStatement pstmt = conn.prepareStatement(priceQuery)) {
+            pstmt.setInt(1, toyId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs!=null && rs.next()) {
+                return extractBidFromResultSet(rs);
+            }
+        }
+        return null;
+    }
+
     public List<Bid> getBidsByUser(String username) throws SQLException {
         String sql = "SELECT * FROM bid WHERE username = ?";
         List<Bid> bids = new ArrayList<>();
@@ -85,5 +101,7 @@ public class BidDAO {
         }
         return bids;
     }
+
+
 
 }

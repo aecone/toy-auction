@@ -17,4 +17,8 @@ public class CategoryDetails {
     Map<String, Object> getDetails(){
         return details;
     }
+
+    public Object getDetail(String key){
+        return details.get(key);
+    }
 }

@@ -10,6 +10,8 @@
          pageEncoding="ISO-8859-1" import="com.cs336.pkg.*"%>
 <%@ page import="javax.servlet.http.*,javax.servlet.*" %>
 <%@ page import="java.time.LocalDateTime, java.time.format.DateTimeFormatter" %>
+<%@ page import="java.time.OffsetTime" %>
+<%@ page import="java.time.ZoneOffset" %>
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="styles.css">
@@ -37,54 +39,62 @@
 // Create a connection to the database
     ApplicationDB db = new ApplicationDB();
     Connection conn = db.getConnection();
-    BidDAO bidDAO = new BidDAO(conn);
+    BidData bidData = new BidData(conn);
+    ToyListingData tld = new ToyListingData(conn);
     try {
 
-        // Prepare and execute SQL query to fetch toy listings
-        String query = "SELECT * FROM toy_listing";
-        PreparedStatement pstmt = conn.prepareStatement(query);
-        ResultSet rs = pstmt.executeQuery();
-        if(!rs.next()){
+        List<ToyListing> toys = tld.getAllListings();
+
+        if(toys== null || toys.isEmpty()){
             out.println("There are no listings.");
         }
         else {
             // Display the data in a table
             out.println("<table>");
-            out.println("<tr><th>Category</th><th>Name</th><th>Age Range</th><th>Current Price</th><th>Increment</th><th>Start Time</th><th>Closing Time</th></tr>");
-            rs.beforeFirst();
-            while (rs.next()) {
-                String category = rs.getString("category");
-                int id = rs.getInt("toy_id");
-                double curPrice = bidDAO.highestBid(id);
+            out.println("<tr><th>Category</th><th>Name</th><th>Age Range</th><th>Current Price</th><th>Increment</th><th>Start Time</th><th>Closing Time</th><th>status</th></tr>");
+            for(ToyListing toy : toys) {
+                String category = toy.getCategory();
+                int id = toy.getToyId();
+                double curPrice = bidData.highestBid(id);
                 //no bids placed on it yet
                 if(curPrice ==-1){
-                    curPrice = rs.getDouble("initial_price");
+                    curPrice = toy.getInitialPrice();
                 }
-                String url = "listingDetails.jsp?id=" + id + "&category=" + category;
+                String url = "listingDetails.jsp?id=" + id;
                 out.println("<tr data-href=\"" + url + "\" class =\"listing-tr\">");
                 category = category.replace("_", " ");
                 out.println("<td>" + category + "</td>");
-                out.println("<td>" + rs.getString("name") + "</td>");
-                out.println("<td>" + rs.getInt("start_age") +" - "+ rs.getInt("end_age")+"</td>");
+                out.println("<td>" + toy.getName() + "</td>");
+                out.println("<td>" + toy.getStartAge() +" - "+ toy.getEndAge()+"</td>");
                 out.println("<td>" + curPrice + "</td>");
-                out.println("<td>" + rs.getDouble("increment") + "</td>");
+                out.println("<td>" + toy.getIncrement() + "</td>");
 
-                LocalDateTime startTime = rs.getTimestamp("start_datetime").toLocalDateTime();
+                LocalDateTime startTime = toy.getStartDateTime();
                 // Define the format with AM/PM and without seconds
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a");
                 // Format the datetime using the formatter
                 String startDT = startTime.format(formatter);
                 out.println("<td>" + startDT + "</td>");
-                LocalDateTime endTime = rs.getTimestamp("closing_datetime").toLocalDateTime();
+                LocalDateTime endTime = toy.getClosingDateTime();
                 String endDT = endTime.format(formatter);
                 out.println("<td>" + endDT + "</td>");
+
+                if (LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) > startTime.toEpochSecond(ZoneOffset.UTC) &&
+                        LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) < endTime.toEpochSecond(ZoneOffset.UTC)){
+                    out.println("<td>auction in progress</td>");
+                }else if (LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) < startTime.toEpochSecond(ZoneOffset.UTC)){
+                    out.println("<td>auction starting soon</td>");
+                }
+                else{
+                    if(toy.getOpenStatus())
+                        tld.deactivateToyListing(id);
+                    out.println("<td>auction done</td>");
+                }
                 out.println("</tr>");
             }
             out.println("</table>");
         }
         // Close resources
-        rs.close();
-        pstmt.close();
         conn.close();
     } catch (Exception e) {
         e.printStackTrace();
