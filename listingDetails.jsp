@@ -30,7 +30,6 @@
 <body>
 <%
     int id = Integer.parseInt(request.getParameter("id"));
-    String category = request.getParameter("category");
     ApplicationDB db = new ApplicationDB();
     Connection conn = db.getConnection();
     BidData bidData = new BidData(conn);
@@ -43,6 +42,7 @@
 
         // retrieve details for listing
         ToyListing tl = tld.getToyListingDetails(id, true);
+        String category = tl.getCategory();
         String query;
         double increment;
         int startAge;
@@ -126,15 +126,15 @@
         %>
         <%if(tl.getOpenStatus()){%>
         <div class="column">
-            <form id="bidForm" action="/placeBid" method="POST">
+            <form id="bidForm" action="/placeBid" method="POST" onsubmit="return validateBid()">
                 <input type="hidden" name="id" value=<%=id%>>
                 <p>Bid: <input type="number" name="bidAmt" step="0.01" placeholder="<%= minBidPriceStr %>"
                                min="<%= minBidPriceStr %>"/></p>
                 <p>Automatic Bid: <input type="checkbox" id="autoBidCheckbox" name="isAutoBid"
                                          onchange="toggleAutoBidSection()"/></p>
                 <div id="autoBidSection" style="display: none;">
-                    <p>Max Bid: <input type="number" name="maxBid"/></p>
-                    <p>Bid Increment: <input type="number" name="autoBidIncrement" step="0.01"/></p>
+                    <p>Max Bid: <input type="number" name="maxBid" required/></p>
+                    <p>Bid Increment: <input type="number" name="autoBidIncrement" step="0.01" required/></p>
                 </div>
                 <input type="submit" value="Place Bid"/>
             </form>
@@ -176,6 +176,20 @@
 %>
 
     <a href="browseListings.jsp">Back to All Listings</a>
+    <script>
+        function validateBid() {
+            var bidAmt = parseFloat(document.getElementById('bidAmt').value);
+            var maxBid = parseFloat(document.getElementById('maxBid').value);
+            console.log("Bid Amount:", bidAmt);
+            console.log("Max Bid:", maxBid);
+            if (maxBid <= bidAmt) {
+                alert('Max bid must be higher than the bid amount.');
+                return false; // Prevent form submission
+            }
+
+            return true; // Allow form submission
+        }
+    </script>
 </body>
 </html>
 

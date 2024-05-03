@@ -18,27 +18,14 @@
 <body>
 <h1>Create Customer Account</h1>
 <div class="center-texts">
-<form action="insertAcc.jsp" id = "accInfo" method="POST" onsubmit="return validateForm()">
-    Username: <input type="text" name="username"/>  <br>
-    Password: <input type="password" name="password"/>  <br>
+<form action="insertAcc.jsp" id = "accInfo" method="POST" >
+    Username: <input type="text" name="username" required/>  <br>
+    Password: <input type="password" name="password" required/>  <br>
     <br>
     <input type="submit" value="Create Account"/>
 </form> <br>
 <a href="login.jsp">Cancel</a>
-<script>
-    function validateForm() {
-        var form = document.getElementById("accInfo");
-        var inputs = form.getElementsByTagName("input");
-        for (var i = 0; i < inputs.length; i++) {
-            if (inputs[i].value.trim() === "") {
-                alert("Please fill in all fields: "+inputs[i].name+" is missing.");
-                return false; // Prevent form submission
-            }
-        }
 
-        return true; // Allow form submission
-    }
-</script>
 </div>
 </body>
 

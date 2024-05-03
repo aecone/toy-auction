@@ -27,7 +27,7 @@ CREATE TABLE toy_listing
     toy_id           INT auto_increment,
     start_datetime   DATETIME,
     username         VARCHAR(30) NOT NULL,
-    openstatus       INT DEFAULT 1,
+    openStatus       INT DEFAULT 1,
     PRIMARY KEY (toy_id),
     FOREIGN KEY (username) REFERENCES user (username)
 );
@@ -80,9 +80,22 @@ CREATE TABLE customer_representative
     PRIMARY KEY (id)
 );
 
+<<<<<<< HEAD
+CREATE TABLE alert(
+                      alert_id int auto_increment,
+                      name varchar(50),
+                      max_price double,
+                      category varchar(40),
+                      min_price double,
+                      age_range char(5),
+                      username varchar(30) NOT NULL,
+                      Primary key (alert_id),
+                      Foreign key (username) references user(username));
+=======
 INSERT INTO customer_representative
 VALUES      ('sammy',
              '1010');
+>>>>>>> refs/remotes/origin/master
 
 CREATE TABLE admin_creates
 (
@@ -174,6 +187,14 @@ CREATE TABLE answer
     answer_text VARCHAR(500),
     FOREIGN KEY(q_id) REFERENCES question(q_id),
     FOREIGN KEY(c_id) REFERENCES customer_representative(id)
+);
+
+CREATE TABLE general_alert(
+    username VARCHAR(30),
+    ga_id int auto_increment,
+    text varchar(100),
+    primary key (username,ga_id),
+    foreign key (username) references user(username) on delete cascade
 );
 
 -- 
