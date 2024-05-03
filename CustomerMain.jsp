@@ -23,7 +23,7 @@
 } else {
 %>
 <div class="center-texts">
-    Welcome, <%=session.getAttribute("user") %>!
+    <h1> Welcome, <%=session.getAttribute("user") %>!</h1>
 
     <p><a href="browseListings.jsp">Browse Listings</a></p>
     <p><a href='createListing.jsp'>Create a Listing</a> </p>
