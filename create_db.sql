@@ -189,6 +189,14 @@ CREATE TABLE answer
     FOREIGN KEY(c_id) REFERENCES customer_representative(id)
 );
 
+CREATE TABLE general_alert(
+    username VARCHAR(30),
+    ga_id int auto_increment,
+    text varchar(100),
+    primary key (ga_id),
+    foreign key (username) references user(username) on delete cascade
+);
+
 -- 
 -- MOCKS
 -- 
