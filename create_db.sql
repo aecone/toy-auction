@@ -97,7 +97,7 @@ CREATE TABLE bid (
                      Foreign key (toy_id) references toy_listing(toy_id));
 
 CREATE TABLE sale(
-                     sale_id varchar(9),
+                     sale_id int auto_increment,
                      date datetime,
                      toy_id int NOT NULL,
                      b_id int NOT NULL,
