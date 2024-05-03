@@ -4,6 +4,8 @@ import java.sql.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -14,7 +16,20 @@ public class ToyListingData {
     public ToyListingData(Connection conn) {
         this.conn = conn;
     }
-
+    public List<ToyListing> getAllListings() throws SQLException {
+        //does not extract category details for listings
+        List<ToyListing> list = new ArrayList<ToyListing>();
+        String sql = "select * from toy_listing";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    ToyListing tl = extractToyListing(rs);
+                    list.add(tl);
+                }
+            }
+        }
+        return list;
+    }
     public ToyListing getToyListingDetails(int toyId, boolean getDetails) throws SQLException {
         String query = "SELECT * FROM toy_listing WHERE toy_id = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -138,6 +153,22 @@ public class ToyListingData {
             this.toyId = toyId;
             this.conn = conn;
         }
+
+        public int winningBid(Bid highestBidObj, double minPrice){
+            double highestBid = highestBidObj.getPrice();
+            int bidId = -1;
+            if (highestBid < minPrice) {
+                //no bids made on this item or not high enough price
+                System.out.println("Highest bid found for " + toyId+" is lower than " + minPrice);
+                //@TODO alert listing creator that there's no winner
+            } else {
+                //highest bid is winner, add this bid to sale table
+                System.out.println("highest bid found for " + toyId+" is " + highestBid);
+                bidId = highestBidObj.getBidId();
+                //@TODO alert listing creator that their listing was bought for _ by _
+            }
+            return bidId;
+        }
         @Override
         public void run() {
             System.out.println("determining winner for " + toyId);
@@ -156,22 +187,12 @@ public class ToyListingData {
                     //@TODO alert listing creator that there's no winner
                 }
                 else {
-                    double highestBid = highestBidObj.getPrice();
-
                     ToyListing tl = getToyListingDetails(toyId, false);
                     double minPrice = tl.getSecretMinPrice();
-                    if (highestBid < minPrice) {
-                        //no bids made on this item or not high enough price
-                        System.out.println("Highest bid found for " + toyId+" is lower than " + minPrice);
-                        //@TODO alert listing creator that there's no winner
-                    } else {
-                        //highest bid is winner, add this bid to sale table
-                        System.out.println("highest bid found for " + toyId+" is " + highestBid);
+                    int bidId = winningBid(highestBidObj, minPrice);
+                    if(bidId == -1) {
                         SaleData sd = new SaleData(conn);
-                        int bidId = highestBidObj.getBidId();
                         sd.insertSale(toyId, bidId);
-                        //@TODO alert listing creator that their listing was bought for _ by _
-
                     }
                 }
             } catch (SQLException e) {
