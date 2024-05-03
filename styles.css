@@ -11,7 +11,7 @@ html, body {
 
 body, input, select {
     font-family: Verdana, sans-serif;
-    background-color: #DCEDFF;
+    background-color: white;
     line-height: 1.5;
     color: #1c2541;
 }
@@ -32,8 +32,8 @@ form {
     line-height: 2;
 }
 
-h1 {
-    color: #1c2541;
+h1, h2, h3 {
+    color: #297ab6;
 }
 
 table input:hover {
@@ -56,7 +56,7 @@ th {
 
 td, th {
     text-align: center;
-    padding: 5px;
+    padding: 8px;
 }
 
 a:visited, a:link {
@@ -89,3 +89,8 @@ form input, form select{
 .details {
     text-align: left;
 }
+
+.back-button{
+    padding-top:40px;
+}
+

@@ -29,6 +29,7 @@
     <p><a href='createListing.jsp'>Create a Listing</a> </p>
     <p><a href='myListings.jsp'>My Listings</a> </p>
     <p><a href="myBids.jsp">My Bids</a></p>
+    <p><a href="customerQuestion.jsp">My Questions</a></p>
     <a href='logout.jsp'>Log Out</a>
 </div>
 <%

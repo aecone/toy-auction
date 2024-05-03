@@ -31,8 +31,8 @@
 %>
 <h1>Admin Home</h1>
 <div style="display: flex; min-width: 150vh; padding:0 200px;">
-    <div style="flex: 2; padding-right: 50px;"> <!-- Takes half the width of the parent container -->
-        <h3 style="text-align: center;">Current Customer Reps</h3>
+    <div style="flex: 2; padding-right: 50px;">
+        <h3 style="text-align: center; ">Current Customer Reps</h3>
         <table style="width: 90%; border-collapse: collapse;">
             <tr>
                 <th>Rep ID</th>
@@ -58,9 +58,9 @@
             %>
         </table>
     </div>
-    <div style="flex: 1; display: flex; flex-direction: column;"> <!-- Also takes half the width of the parent container -->
+    <div style="flex: 1; display: flex; flex-direction: column;">
         <div>
-            <h3 style="text-align: center;">Add Customer Rep</h3>
+            <h3 style="text-align: center; margin-bottom:0px;">Add Customer Rep</h3>
             <form method="post" action="makeRep.jsp">
                 <table style="width: 100%;">
                     <tr>
@@ -84,7 +84,7 @@
             </form>
         </div>
         <div>
-            <h3 class="center-texts">Sales Reports</h3>
+            <h3 class="center-texts" style="margin-bottom:0px;">Sales Reports</h3>
             <form action="createSalesReport.jsp">
                 <table style="width: 100%;">
                     <tr>
@@ -108,6 +108,6 @@
 </html>
 
 
-<a style="margin-top: 30px;" href="logout.jsp">Logout</a>
+<a class="back-button" href="logout.jsp">Logout</a>
 </body>
 </html>
