@@ -101,7 +101,7 @@ CREATE TABLE sale(
                      Foreign key (b_id) references bid(b_id));
 
 CREATE TABLE alert(
-                      alert_id varchar(9),
+                      alert_id int auto_increment,
                       name varchar(50),
                       max_price double,
                       category varchar(40),
