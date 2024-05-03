@@ -16,6 +16,7 @@
     <title>Create Account</title>
 </head>
 <body>
+<h1>Create Customer Account</h1>
 <div class="center-texts">
 <form action="insertAcc.jsp" id = "accInfo" method="POST" onsubmit="return validateForm()">
     Username: <input type="text" name="username"/>  <br>

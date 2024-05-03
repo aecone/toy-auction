@@ -28,12 +28,13 @@ public class BidDAO {
         return null;
     }
 
-    public int insertBid(double price, String username, int toyId) throws SQLException {
-        String sql = "INSERT INTO bid (time, price, username, toy_id) VALUES (NOW(), ?, ?, ?)";
+    public int insertBid(double price, String username, int toyId, boolean isAutoBid) throws SQLException {
+        String sql = "INSERT INTO bid (time, price, username, toy_id, is_auto_bid) VALUES (NOW(), ?, ?, ?,?)";
         try (PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setDouble(1, price);
             pstmt.setString(2, username);
             pstmt.setInt(3, toyId);
+            pstmt.setBoolean(4, isAutoBid);
             pstmt.executeUpdate();
             ResultSet generatedKeys = pstmt.getGeneratedKeys();
             if (generatedKeys.next()) {
@@ -53,7 +54,8 @@ public class BidDAO {
         int toyId = rs.getInt("toy_id");
         Timestamp time = rs.getTimestamp("time");
         LocalDateTime dateTime = time.toLocalDateTime();
-        return new Bid(b_id, dateTime,price, username, toyId);
+        boolean isAutoBid = rs.getBoolean("is_auto_bid");
+        return new Bid(b_id, dateTime,price, username, toyId, isAutoBid);
     }
 
     public double highestBid(int toyId) throws SQLException {

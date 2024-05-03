@@ -17,6 +17,7 @@
     <title>Login Form</title>
 </head>
 <body>
+<h1>Customer Login</h1>
 <div class="center-texts">
     <form action="checkLoginDetails.jsp" method="POST">
         <p>Username: <input type="text" name="username" maxlength="30" /></p>

@@ -9,6 +9,7 @@
          pageEncoding="ISO-8859-1" import="com.cs336.pkg.*"%>
 <%@ page import="java.io.*,java.util.*,java.sql.*"%>
 <%@ page import="javax.servlet.http.*,javax.servlet.*" %>
+<%@ page import="java.time.format.DateTimeFormatter" %>
 
 <!DOCTYPE html>
 <html>
@@ -32,11 +33,16 @@
             int id = b.getToyId();
             ToyListing toyListing = tlDAO.getToyListingDetails(id, true);
             String category = toyListing.getCategory();
+            String name = toyListing.getName();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a");
+            String bidTime = b.getTime().format(formatter);
             String url = "listingDetails.jsp?id=" + id + "&category=" + category;
             out.println("<tr data-href=\"" + url + "\" class = \"listing-tr\">");
-            out.println("<td>"+b.getTime()+"</td>");
+            out.println("<td>"+bidTime+"</td>");
+            out.println("<td>"+name+"</td>");
             out.println("<td>"+b.getPrice()+"</td>");
-            out.println("<td>");
+            out.println("<td>"+b.isAutoBid()+ "</td>");
+            out.println("</tr>");
         }
     %>
 </table>
