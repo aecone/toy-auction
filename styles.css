@@ -1,12 +1,13 @@
 html, body {
     height: 100%; /* Ensure the full height is used */
     width: 100%; /* Ensure the full width is used */
-    margin: 0; /* Remove default margin */
+    margin: 2%; /* Remove default margin */
     padding: 0; /* Remove default padding */
     display: flex;
     justify-content: center; /* Center content horizontally */
     align-items: center; /* Center content vertically */
     flex-direction: column;
+    overflow: auto;
 }
 
 body, input, select {

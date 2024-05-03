@@ -27,7 +27,7 @@ CREATE TABLE toy_listing
     toy_id           INT auto_increment,
     start_datetime   DATETIME,
     username         VARCHAR(30) NOT NULL,
-    openstatus       INT DEFAULT 1,
+    openStatus       INT DEFAULT 1,
     PRIMARY KEY (toy_id),
     FOREIGN KEY (username) REFERENCES user (username)
 );

@@ -60,7 +60,7 @@
                 if(curPrice ==-1){
                     curPrice = toy.getInitialPrice();
                 }
-                String url = "listingDetails.jsp?id=" + id + "&category=" + category;
+                String url = "listingDetails.jsp?id=" + id;
                 out.println("<tr data-href=\"" + url + "\" class =\"listing-tr\">");
                 category = category.replace("_", " ");
                 out.println("<td>" + category + "</td>");
@@ -82,7 +82,10 @@
                 if (LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) > startTime.toEpochSecond(ZoneOffset.UTC) &&
                         LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) < endTime.toEpochSecond(ZoneOffset.UTC)){
                     out.println("<td>auction in progress</td>");
-                }else{
+                }else if (LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) < startTime.toEpochSecond(ZoneOffset.UTC)){
+                    out.println("<td>auction starting soon</td>");
+                }
+                else{
                     if(toy.getOpenStatus())
                         tld.deactivateToyListing(id);
                     out.println("<td>auction done</td>");
