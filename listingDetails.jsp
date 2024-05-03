@@ -133,7 +133,25 @@
 
                </div>
            </div>
+        <div class="row">
+            <h3>Bidding history</h3>
+        </div>
+        <%
+           query = "SELECT * FROM  bid WHERE toy_id = ?";
+           pstmt = conn.prepareStatement(query);
+           pstmt.setInt(1, id);
+           rs = pstmt.executeQuery();
+           while (rs.next()) {
+               Bid bid  = bidDAO.extractBidFromResultSet(rs);
+
+    %>
+            <div class="row">
+                <p class="column">id: <%= bid.getBidId() %></p>
+                <p class="column">price: $<%= bid.getPrice() %></p>
+                <p class="column">bidder: <%= bid.getUsername() %></p>
+            </div>
 <%
+}
 
        }
         rs.close();
@@ -144,6 +162,7 @@
     }
 
 %>
+
 <a href="browseListings.jsp">Back to All Listings</a>
 </body>
 </html>

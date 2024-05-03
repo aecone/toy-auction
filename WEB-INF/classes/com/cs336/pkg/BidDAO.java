@@ -46,7 +46,7 @@ public class BidDAO {
         }
         return -1;
     }
-    private Bid extractBidFromResultSet(ResultSet rs) throws SQLException {
+    public Bid extractBidFromResultSet(ResultSet rs) throws SQLException {
         int b_id = rs.getInt("b_id");
         double price = rs.getDouble("price");
         String username = rs.getString("username");

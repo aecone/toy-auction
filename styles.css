@@ -16,6 +16,13 @@ body, input, select {
     color: #1c2541;
 }
 
+
+input[type="submit"]{
+    background: #1c2541;
+    color: #DCEDFF;
+}
+
+
 .center-texts {
     text-align: center;
     display: block;
@@ -61,13 +68,18 @@ a:hover {
     color: #0a2559;
 }
 
-form input {
-    border: 2px solid black;
+form input, form select{
+    border: 2px solid #1c254161;
+    border-radius: 10px;
+    padding: 0.5em 1em;
+    margin: 1em 0 ;
 }
 
 .row {
     display: flex;
     column-gap: 3%;
+    width: 92vw;
+    max-width: 720px;
 }
 
 .column {

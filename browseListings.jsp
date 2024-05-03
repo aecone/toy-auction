@@ -10,6 +10,8 @@
          pageEncoding="ISO-8859-1" import="com.cs336.pkg.*"%>
 <%@ page import="javax.servlet.http.*,javax.servlet.*" %>
 <%@ page import="java.time.LocalDateTime, java.time.format.DateTimeFormatter" %>
+<%@ page import="java.time.OffsetTime" %>
+<%@ page import="java.time.ZoneOffset" %>
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="styles.css">
@@ -50,7 +52,7 @@
         else {
             // Display the data in a table
             out.println("<table>");
-            out.println("<tr><th>Category</th><th>Name</th><th>Age Range</th><th>Current Price</th><th>Increment</th><th>Start Time</th><th>Closing Time</th></tr>");
+            out.println("<tr><th>Category</th><th>Name</th><th>Age Range</th><th>Current Price</th><th>Increment</th><th>Start Time</th><th>Closing Time</th><th>status</th></tr>");
             rs.beforeFirst();
             while (rs.next()) {
                 String category = rs.getString("category");
@@ -75,7 +77,13 @@
                 LocalDateTime endTime = rs.getTimestamp("closing_datetime").toLocalDateTime();
                 String endDT = endTime.format(formatter);
                 out.println("<td>" + endDT + "</td>");
-                out.println("</tr>");
+
+                if (LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) > startTime.toEpochSecond(ZoneOffset.UTC) &&
+                        LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) < endTime.toEpochSecond(ZoneOffset.UTC)){
+                    out.println("<td>auction in progress</td>");
+                }else{
+                    out.println("<td>auction done</td>");
+                }
             }
             out.println("</table>");
         }
