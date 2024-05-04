@@ -9,6 +9,7 @@
          pageEncoding="ISO-8859-1" import="com.cs336.pkg.*"%>
 <%@ page import="java.io.*,java.util.*,java.sql.*"%>
 <%@ page import="javax.servlet.http.*,javax.servlet.*" %>
+
 <html>
 <head>
     <title>Customer Rep Main</title>
@@ -17,7 +18,6 @@
         table {
             width: 100%;
             border-collapse: collapse;
-
         }
         tr:nth-child(even) {
             background-color: #fffefe;
@@ -26,26 +26,25 @@
             background-color: #efefef;
         }
         tr:hover {
-            background-color: #DCEDFF; /* Optional: for hover effect */
+            background-color: #DCEDFF;
         }
         td {
             padding: 10px;
             border: 2px solid;
             text-align: left;
-            max-width: 500px; /* Correct the CSS error */
+            max-width: 500px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-
         }
         .clickable-row {
             cursor: pointer;
         }
-        form{
+        form {
             border: 2px black solid;
+            margin: 20px 0;
         }
     </style>
-
 </head>
 <body>
 <%
@@ -56,14 +55,14 @@
         response.sendRedirect("login.jsp");
     }
 %>
-<h1>Hello <%= c_id %> </h1>
+<h1>Hello <%= c_id %></h1>
 
 <h2>Customer Questions</h2>
 <%
     Statement st = con.createStatement();
     ResultSet resultset = st.executeQuery("SELECT q_id, question_text FROM question");
 %>
-<form action="RepQuestionResponse.jsp" style="width:70%;" method="post">
+<form action="RepQuestionResponse.jsp" method="post">
     <table>
         <%
             if (!resultset.next()) {
@@ -76,33 +75,53 @@
             resultset.beforeFirst();
             while (resultset.next()) {
         %>
-        <tr class="clickable-row" data-q_id="<%= resultset.getString(1) %>">
+        <tr class="clickable-row" onclick="submitForm('<%= resultset.getString(1) %>', 'questionForm')">
             <td><%= resultset.getString(2) %></td>
         </tr>
         <%
-                } // end while
-            } // end if
+                }
+            }
         %>
     </table>
-    <input type="hidden" name="q_id" id="hiddenInput">
+    <input type="hidden" name="q_id" id="questionInput">
 </form>
 
-
+<h2>User Account Access</h2>
+<%
+    ResultSet accountsQuery = st.executeQuery("SELECT username FROM user");
+%>
+<form action="EditUserAccount.jsp" method="post">
+    <table>
+        <%
+            if (!accountsQuery.next()) {
+        %>
+        <tr>
+            <td>None</td>
+        </tr>
+        <%
+        } else {
+            accountsQuery.beforeFirst();
+            while (accountsQuery.next()) {
+        %>
+        <tr class="clickable-row" onclick="submitForm('<%= accountsQuery.getString(1) %>', 'userForm')">
+            <td><%= accountsQuery.getString(1) %></td>
+        </tr>
+        <%
+                }
+            }
+        %>
+    </table>
+    <input type="hidden" name="username" id="userInput">
+</form>
 
 <a class="back-button" href="logout.jsp">Logout</a>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const rows = document.querySelectorAll('.clickable-row');
-        rows.forEach(row => {
-            row.addEventListener('click', function() {
-                const q_id = this.getAttribute('data-q_id');
-                const hiddenInput = document.getElementById('hiddenInput');
-                hiddenInput.value = q_id;
-                this.closest('form').submit();
-            });
-        });
-    });
+    function submitForm(value, formId) {
+        const hiddenInput = document.getElementById(formId === 'questionForm' ? 'questionInput' : 'userInput');
+        hiddenInput.value = value;
+        hiddenInput.form.submit();
+    }
 </script>
-
 </body>
 </html>
+
