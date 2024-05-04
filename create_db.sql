@@ -29,7 +29,8 @@ CREATE TABLE toy_listing
     username         VARCHAR(30) NOT NULL,
     openStatus       INT DEFAULT 1,
     PRIMARY KEY (toy_id),
-    FOREIGN KEY (username) REFERENCES user (username)
+    FOREIGN KEY (username) REFERENCES user (username) ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
 
 CREATE TABLE action_figure
@@ -89,7 +90,9 @@ CREATE TABLE alert(
                       age_range char(5),
                       username varchar(30) NOT NULL,
                       Primary key (alert_id),
-                      Foreign key (username) references user(username));
+                      Foreign key (username) references user(username) ON DELETE CASCADE
+                          ON UPDATE CASCADE);
+
 INSERT INTO customer_representative
 VALUES      ('sammy',
              '1010');
@@ -116,7 +119,8 @@ CREATE TABLE bid
     is_auto_bid BOOLEAN,
     bid_status varchar(10) default 'active',
     PRIMARY KEY (b_id),
-    FOREIGN KEY (username) REFERENCES user(username),
+    FOREIGN KEY (username) REFERENCES user(username)ON DELETE CASCADE
+        ON UPDATE CASCADE,
     FOREIGN KEY (toy_id) REFERENCES toy_listing(toy_id)
 );
 
@@ -397,6 +401,7 @@ VALUES      ('4',
             ('2',
              'sammy',
              'We have not set up one, but you can contact us directly if you have any questions.');
+
 -- Insert an auto bid into the bid table
 INSERT INTO bid (time, price, username, toy_id, is_auto_bid)
 VALUES (NOW(), 20, 'testUser', 2, 1);
