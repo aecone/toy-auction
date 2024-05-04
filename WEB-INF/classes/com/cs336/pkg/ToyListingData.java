@@ -34,7 +34,6 @@ public class ToyListingData {
 
     public List<ToyListing> getAllListingsWithSearch(String search_query) throws SQLException {
         //does not extract category details for listings
-        System.out.println("hi from con");
         List<ToyListing> list = new ArrayList<ToyListing>();
         String sql = "select * from toy_listing WHERE name LIKE ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -46,7 +45,6 @@ public class ToyListingData {
                 }
             }
         }
-        System.out.println(list.size());
         return list;
     }
 

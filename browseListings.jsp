@@ -31,7 +31,13 @@
 
             document.querySelector("#search-btn").addEventListener('click', ()=>{
                 let url = new URL(window.location.href);
-                url.searchParams.set("search",  document.querySelector("#search-input").value);
+                let searchInput = document.querySelector("#search-input").value;
+                if (searchInput){
+                    url.searchParams.set("search",  searchInput);
+                }else{
+                    url.searchParams.delete("search");
+
+                }
                 window.history.replaceState({}, '', url.toString());
                 location.reload();
 
@@ -41,33 +47,49 @@
                 let priceMin = document.querySelector("#price-min").valueAsNumber;
                 if (!isNaN(priceMin)) {
                     url.searchParams.set("priceMin", priceMin);
+                }else{
+                    url.searchParams.delete("priceMin");
                 }
 
                 let priceMax = document.querySelector("#price-max").valueAsNumber;
                 if (!isNaN(priceMax)) {
                     url.searchParams.set("priceMax", priceMax);
+                }else{
+                    url.searchParams.delete("priceMax");
                 }
 
                 let ageMin = document.querySelector("#age-min").valueAsNumber;
                 if (!isNaN(ageMin)) {
                     url.searchParams.set("ageMin", ageMin);
+                }else{
+                    url.searchParams.delete("ageMin");
                 }
 
                 let ageMax = document.querySelector("#age-max").valueAsNumber;
                 if (!isNaN(ageMax)) {
                     url.searchParams.set("ageMax", ageMax);
+                }else{
+                    url.searchParams.delete("ageMax");
                 }
                 let category = document.querySelector("#category-select").value;
                 if (category){
                     url.searchParams.set("category",  category);
+                }else{
+                    url.searchParams.delete("category");
                 }
 
                 window.history.replaceState({}, '', url.toString());
                 location.reload();
 
             });
+
+            let div = document.querySelector(".filter-controls");
+            if ([...new URL(window.location.href).searchParams.keys()].some(el => el === "priceMin" || el === "priceMax" || el === "ageMin" || el === "ageMax" || el === "category")){
+                div.style.display = "block"
+            }else{
+                div.style.display = "none"
+            }
             document.querySelector("#filter-toggle").addEventListener('click', ()=>{
-                let div = document.querySelector(".filter-controls");
                 div.style.display = div.style.display == "none" ? "block" : "none";
             });
         };
@@ -133,12 +155,72 @@
     BidData bidData = new BidData(conn);
     ToyListingData tld = new ToyListingData(conn);
     String search_query = request.getParameter("search");
+    String age_min = request.getParameter("ageMin");
+    String age_max = request.getParameter("ageMax");
+
+    String price_min = request.getParameter("priceMin");
+    String price_max = request.getParameter("priceMax");
+
+    String categoryParam = request.getParameter("category");
+
+    List<String> params = new ArrayList<>();
+    List<Boolean> types = new ArrayList<>();
+
     try {
-        List<ToyListing> toys;
-        if (search_query != null){
-            toys = tld.getAllListingsWithSearch(search_query);
-        }else{
-            toys = tld.getAllListings();
+        List<ToyListing> toys = new ArrayList<ToyListing>();
+        String sql = "select * from toy_listing as tl WHERE 1 = 1";
+        if(search_query != null){
+            sql += " AND name LIKE ?";
+            params.add( "%" + search_query + "%");
+            types.add(true);
+        }
+
+        if(age_min != null){
+            sql += " AND ? <= start_age ";
+            params.add(age_min);
+            types.add(false);
+
+        }
+        if(age_max != null){
+            sql += " AND ? >= end_age ";
+            params.add(age_max);
+            types.add(false);
+        }
+
+        if(price_min != null){
+            sql += " AND (SELECT price FROM bid WHERE toy_id = tl.toy_id ORDER BY price DESC LIMIT 1 ) > ?";
+            params.add(price_min);
+            types.add(false);
+
+        }
+        if(price_max != null){
+            sql += " AND (SELECT price FROM bid WHERE toy_id = tl.toy_id ORDER BY price DESC LIMIT 1 ) < ?";
+            params.add(price_max);
+            types.add(false);
+
+        }
+        if(categoryParam != null){
+            sql += " AND category = ?";
+            params.add(categoryParam);
+            types.add(true);
+
+        }
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            for (int i = 0; i < params.size(); i++) {
+                if (types.get(i)){
+                    ps.setString(i+1, params.get(i));
+                }else{
+                    ps.setInt(i+1, Integer.parseInt(params.get(i)));
+                }
+            }
+            System.out.println(ps);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    ToyListing tl = ToyListingData.extractToyListing(rs);
+                    toys.add(tl);
+                }
+            }
         }
 
         if(toys== null || toys.isEmpty()){
