@@ -57,7 +57,7 @@
             String priceStr = df.format(price);
             double minBidPrice = price + increment;
             String minBidPriceStr = df.format(minBidPrice);
-
+            String seller = tl.getUsername();
             out.println(categoryStr);
             out.println("<h2>" + tl.getName() + "</h2>");
         %>
@@ -78,6 +78,8 @@
         </p>
         <p>Closing Time: <%=endDT%>
         </p>
+        <%String userListingURL = "userListings.jsp?id=" + seller;%>
+        <p>Seller: <a href=<%=userListingURL%>><%=seller%></a></p>
 
         <%
             //get category details
@@ -152,14 +154,16 @@
            rs = pstmt.executeQuery();
            while (rs.next()) {
                Bid bid  = bidData.extractBidFromResultSet(rs);
+               String buyerId = bid.getUsername();
+               String buyerBidsURL = "myBids.jsp?id=" + buyerId;
 
     %>
     <div class="row">
         <p class="column">id: <%= bid.getBidId() %>
         </p>
-        <p class="column">price: $<%= bid.getPrice() %>
+        <p class="column">price: $<%= bid.formattedPrice() %>
         </p>
-        <p class="column">bidder: <%= bid.getUsername() %>
+        <p class="column">bidder: <a href=<%=buyerBidsURL%>><%= bid.getUsername() %></a>
         </p>
     </div>
         <%

@@ -1,5 +1,6 @@
 package com.cs336.pkg;
 
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 
 public class Bid {
@@ -49,6 +50,11 @@ public class Bid {
 
     public double getPrice() {
         return price;
+    }
+
+    public String formattedPrice(){
+        DecimalFormat df = new DecimalFormat("#.##");
+        return df.format(price);
     }
 
     public void setPrice(double price) {
