@@ -2,7 +2,6 @@ package com.cs336.pkg;
 
 import java.io.IOException;
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -48,7 +47,7 @@ public class PlaceBidServlet extends HttpServlet {
                     }
                     //see which autobids are tracking this toylisting
                     AutomaticBidData autobidDAO = new AutomaticBidData(conn);
-                    List<AutomaticBid> autoBids = autobidDAO.getAutomaticBidsByToyId(toyId);
+                    List<AutomaticBid> autoBids;
 
                     double prevHighestBid = -1;
                     double highestBid = bidAmt;
@@ -56,7 +55,7 @@ public class PlaceBidServlet extends HttpServlet {
                     while (highestBid > prevHighestBid) { //an autobidder placed a new bid
                         prevHighestBid = highestBid;
                         //see which autobids are still tracking the toy listing
-                        autoBids = autobidDAO.getAutomaticBidsByToyId(toyId);
+                        autoBids = autobidDAO.getActiveAutomaticBidsByToyId(toyId);
                         highestBid = autobidDAO.checkAutoBids(autoBids, prevHighestBid, toyId);
                         System.out.println("new highest bid: " + highestBid + "prev bid: " + prevHighestBid);
                     }
@@ -66,12 +65,12 @@ public class PlaceBidServlet extends HttpServlet {
                         autobidDAO.insertAutomaticBid(autoBidIncrement, maxBid, bidId, toyId);
                         //run check with just added autobid in case price was raised by other autobids in while loop above
                         if (highestBid > bidAmt) {
-                            autoBids = autobidDAO.getAutomaticBidsByToyId(toyId);
+                            autoBids = autobidDAO.getActiveAutomaticBidsByToyId(toyId);
                             prevHighestBid = highestBid;
                             highestBid = autobidDAO.checkAutoBids(autoBids, prevHighestBid, toyId);
                             while (highestBid > prevHighestBid) {
                                 prevHighestBid = highestBid;
-                                autoBids = autobidDAO.getAutomaticBidsByToyId(toyId);
+                                autoBids = autobidDAO.getActiveAutomaticBidsByToyId(toyId);
                                 highestBid = autobidDAO.checkAutoBids(autoBids, prevHighestBid, toyId);
                             }
                         }
