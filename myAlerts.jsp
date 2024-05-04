@@ -146,3 +146,8 @@
                 if (conn != null) conn.close();
             }
         %>
+        <br>
+        <p>
+        <a href="CustomerMain.jsp">Home</a>
+        </p>
+</body>

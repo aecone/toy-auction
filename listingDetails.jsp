@@ -9,7 +9,6 @@
          pageEncoding="ISO-8859-1" import="com.cs336.pkg.*" %>
 <%@ page import="java.io.*,java.util.*,java.sql.*" %>
 <%@ page import="javax.servlet.http.*,javax.servlet.*" %>
-
 <%@ page import="java.time.LocalDateTime, java.time.format.DateTimeFormatter" %>
 <%@ page import="java.text.DecimalFormat" %>
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -25,7 +24,6 @@
             autoBidSection.style.display = autoBidCheckbox.checked ? "block" : "none";
         }
     </script>
-
 </head>
 <body>
 <%
@@ -171,7 +169,6 @@
                Bid bid  = bidData.extractBidFromResultSet(rs);
                String buyerId = bid.getUsername();
                String buyerBidsURL = "myBids.jsp?id=" + buyerId;
-
     %>
     <div class="row">
         <p class="column">id: <%= bid.getBidId() %>
@@ -183,7 +180,6 @@
     </div>
         <%
 }
-
        }
         rs.close();
         pstmt.close();
@@ -191,9 +187,7 @@
     } catch (SQLException e) {
         out.println("<p>Error: " + e.getMessage() + "</p>");
     }
-
 %>
-
     <a href="browseListings.jsp">Back to All Listings</a>
 <%--    <script>--%>
 <%--        function validateBid() {--%>
@@ -211,4 +205,3 @@
 <%--    </script>--%>
 </body>
 </html>
-
