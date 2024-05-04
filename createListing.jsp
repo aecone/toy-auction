@@ -39,6 +39,7 @@
             document.getElementById("additionalFields").style.display = "block";
         }
     </script>
+
 </head>
 <body>
 <form action="insertListing.jsp" id="listingForm" method="POST" onsubmit="return validateForm()">
