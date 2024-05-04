@@ -51,19 +51,19 @@
 <%
     ApplicationDB db = new ApplicationDB();
     Connection con = db.getConnection();
-    String rep_id = (String) session.getAttribute("employeeid");
-    if (rep_id == null) {
+    String c_id = (String) session.getAttribute("employeeid");
+    if (c_id == null) {
         response.sendRedirect("login.jsp");
     }
 %>
-<h1>Hello <%= rep_id %> </h1>
+<h1>Hello <%= c_id %> </h1>
 
-<h2>Questions To Address</h2>
+<h2>Customer Questions</h2>
 <%
     Statement st = con.createStatement();
     ResultSet resultset = st.executeQuery("SELECT q_id, question_text FROM question");
 %>
-<form action="answerQuestion.jsp" style="width:70%;" method="post">
+<form action="RepQuestionResponse.jsp" style="width:70%;" method="post">
     <table>
         <%
             if (!resultset.next()) {

@@ -36,7 +36,6 @@
         ps.setString(1, id);
         ps.executeUpdate();
 
-        // Setting attributes for the redirect
         session.setAttribute("CreateRet", "Rep Successfully created!");
         session.setAttribute("CreateRetCode", "0");
         response.sendRedirect("AdminMain.jsp");

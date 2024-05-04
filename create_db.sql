@@ -169,23 +169,24 @@ CREATE TABLE answer
     q_id        VARCHAR(30),
     c_id        VARCHAR(30),
     answer_text VARCHAR(500),
+    PRIMARY KEY (q_id),
     FOREIGN KEY(q_id) REFERENCES question(q_id),
     FOREIGN KEY(c_id) REFERENCES customer_representative(id)
 );
 
 CREATE TABLE general_alert(
-    username VARCHAR(30),
-    ga_id int auto_increment,
-    text varchar(100),
-    primary key (ga_id),
-    foreign key (username) references user(username) on delete cascade
+                              username VARCHAR(30),
+                              ga_id int auto_increment,
+                              text varchar(100),
+                              primary key (ga_id),
+                              foreign key (username) references user(username) on delete cascade
 );
 
--- 
+--
 -- MOCKS
--- 
+--
 INSERT INTO question
-VALUES      ('How do I reset my password?',
+VALUES      ('Is there a general FAQ?',
              "2",
              "testuser");
 
@@ -321,19 +322,19 @@ VALUES      ('2024-05-10 12:05:00',
 -- Mock data for alert table
 INSERT INTO alert
 (
- name,
- max_price,
- category,
- min_price,
- age_range,
- username)
+    name,
+    max_price,
+    category,
+    min_price,
+    age_range,
+    username)
 VALUES      (
-             'Spiderman action_figure Alert',
-             30.00,
-             'action_figure',
-             10.00,
-             '5-10',
-             'john_doe'),
+                'Spiderman action_figure Alert',
+                30.00,
+                'action_figure',
+                10.00,
+                '5-10',
+                'john_doe'),
             ('Monopoly Alert',
              20.00,
              'board_game',
@@ -399,4 +400,7 @@ VALUES      ('4',
              'The recommended age range for this toy is 5-10 years old.'),
             ('5',
              'sammy',
-             'Yes, this board_game is suitable for adults.');  
+             'Yes, this board_game is suitable for adults.'),
+            ('2',
+             'sammy',
+             'We have not set up one, but you can contact us directly if you have any questions.');

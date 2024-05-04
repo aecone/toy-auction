@@ -46,12 +46,11 @@
             if (result.next()) {
                 session.setAttribute("employeeid", id);
                 loginSuccess = true;
-                response.sendRedirect("CustomerRepMain.jsp?rep_id=" + id);
+                response.sendRedirect("CustomerRepMain.jsp?c_id=" + id);
             }
         }
 
         if (!loginSuccess) {
-            // If login wasn't successful for either admin or customer rep
             out.println("Incorrect username or password. <a href='AdminRepLogin.jsp'>Try again</a>");
         }
 
