@@ -1,9 +1,9 @@
 <%--
   Created by IntelliJ IDEA.
   User: jessicaluo
-  Date: 4/8/24
-  Time: 12:47 PM
-  all of current user's listings
+  Date: 5/4/24
+  Time: 3:54 PM
+  To change this template use File | Settings | File Templates.
 --%>
 <%@ page import="java.io.*,java.util.*,java.sql.*"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
@@ -34,7 +34,7 @@
 
 <%
     // Get current user's username
-    String username = (String) session.getAttribute("user");
+    String username = request.getParameter("id");
 
 // Create a connection to the database
     ApplicationDB db = new ApplicationDB();
@@ -52,18 +52,19 @@
         else {
             rs.beforeFirst(); //reset rs cursor to front
             out.println("<p><table>");
-            out.println("<tr><th>Category</th><th>Name</th><th>Initial Price</th><th>Increment</th>" +
-                    "<th>Secret Min Price</th><th>Start Date Time</th><th>Closing Date Time</th></tr>");
+            out.println("<tr><th>Category</th><th>Name</th><th>Initial Price</th><th>Increment</th><th>Secret Min Price</th><th>Start Date Time</th><th>Closing Date Time</th></tr>");
             while (rs.next()) {
                 String category = rs.getString("category");
                 int id = rs.getInt("toy_id");
-                String url = "myListingDetails.jsp?id=" + id + "&category=" + category;
+                String url = "listingDetails.jsp?id=" + id;
                 out.println("<tr data-href=\"" + url + "\" class = \"listing-tr\">");
                 category = category.replace("_", " ");
                 out.println("<td>" + category + "</td>");
                 out.println("<td>" + rs.getString("name") + "</td>");
                 out.println("<td>" + rs.getDouble("initial_price") + "</td>");
                 out.println("<td>" + rs.getDouble("increment") + "</td>");
+//            out.println("<td>" + rs.getInt("start_age") + "</td>");
+//            out.println("<td>" + rs.getInt("end_age") + "</td>");
                 out.println("<td>" + rs.getDouble("secret_min_price") + "</td>");
 
                 LocalDateTime startTime = rs.getTimestamp("start_datetime").toLocalDateTime();
@@ -99,7 +100,7 @@
 %>
 <br>
 <p>
-<a href="CustomerMain.jsp">Home</a>
+    <a href="CustomerMain.jsp">Home</a>
 </p>
 </body>
 </html>

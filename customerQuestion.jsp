@@ -34,24 +34,14 @@
       width: 50%;
     }
 
-    hr {
-      display: block;
-      height: 1px;
-      border: 0;
-      border-top: 2px solid #1c2541;
-      margin: 30px auto; /* Center horizontally */
-      padding-bottom: 10px;
-      width: 80%;
-    }
 
     td a:hover {
-      color: #0a2559; /* Change to your desired color */
+      color: #0a2559;
     }
   </style>
 </head>
 <body>
 <%
-  // Get the database connection
   ApplicationDB db = new ApplicationDB();
   Connection con = db.getConnection();
   String username = (String) session.getAttribute("user");
@@ -59,7 +49,6 @@
     response.sendRedirect("CustomerMain.jsp");
   }
 
-  // Initialize variable to store search keyword from the form
   String keyword = request.getParameter("search");
   PreparedStatement ps = null;
   ResultSet resultset = null;
@@ -67,7 +56,6 @@
   // Determine if the revert search was triggered
   boolean revertSearch = "true".equals(request.getParameter("revertSearch"));
 
-  // Build SQL query based on whether a search keyword was provided
   if (keyword != null && !keyword.isBlank() && !revertSearch) {
     String sql = "SELECT q_id, question_text FROM question WHERE question_text LIKE ? AND username = ?";
     ps = con.prepareStatement(sql);
@@ -84,7 +72,7 @@
 <div style="display: flex; min-width: 150vh; padding:0 200px;">
   <div style="flex: 1; padding-right: 50px;  align-items: center; flex-direction: column;">
     <h3 style="text-align: center;" >Contact Us</h3>
-    <form method="post" action="<%=request.getRequestURI()%>" class="form-container">
+    <form method="post" action="checkQuestion.jsp" class="form-container">
       <textarea id="question" name="c_question" rows="10" cols="50" placeholder="Type in your inquiry here."></textarea>
       <input type="submit" style="padding: 10px; margin-top: 25px;" value="Send"/>
     </form>
@@ -93,8 +81,8 @@
     <h3 style="text-align: center;">Your Past Questions</h3>
     <form method="post" action="<%=request.getRequestURI()%>">
       <input type="text" style="width: 350px; " name="search" class="form-control" placeholder="Search Question">
-      <button type="submit" style="padding: 10px;" name="save" >Search</button>
-      <button type="submit" style="padding: 10px;" name="revertSearch" value="true">Revert Search</button>
+      <button type="submit" style="" name="save" >Search</button>
+      <button type="submit" style="" name="revertSearch" value="true">Revert Search</button>
     </form>
     <hr/>
     <table style="margin: 0px auto; width: 90%; border-collapse: collapse;">

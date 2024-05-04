@@ -1,13 +1,14 @@
 html, body {
     height: 100%; /* Ensure the full height is used */
     width: 100%; /* Ensure the full width is used */
-    margin: 2%; /* Remove default margin */
-    padding: 0; /* Remove default padding */
+    margin: 0; /* Remove default margin */
+    padding: 2%; /* Remove default padding */
     display: flex;
     justify-content: center; /* Center content horizontally */
     align-items: center; /* Center content vertically */
     flex-direction: column;
-    overflow: auto;
+    overflow-x: clip;
+    overflow-y: scroll;
 }
 
 body, input, select {
@@ -53,17 +54,23 @@ button{
     background: #1c2541;
     color: white;
     border-radius: 10px;
-    border:none;
     width: 20%;
+    padding: 10px;
+    border: 2px solid #1c2541;
+
 }
+
 
 button:hover {
     background-color: white;
     color: #1c2541;
-    border: 2px solid #1c2541;
     cursor: pointer;
 }
 
+textarea{
+    border-radius: 10px;
+    border: 2px solid #1c2541;
+}
 tr {
     border-bottom: 1px solid rgba(28, 37, 65, 0.14);
 }
@@ -119,6 +126,17 @@ input, select{
 #listingForm{
     overflow: scroll;
     padding: 4vw;
+}
+
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 2px solid #1c2541;
+    margin: 30px auto; /* Center horizontally */
+    padding-bottom: 10px;
+    width: 80%;
 }
 
 .search-row{

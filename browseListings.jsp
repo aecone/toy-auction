@@ -12,6 +12,7 @@
 <%@ page import="java.time.LocalDateTime, java.time.format.DateTimeFormatter" %>
 <%@ page import="java.time.OffsetTime" %>
 <%@ page import="java.time.ZoneOffset" %>
+<%@ page import="java.text.DecimalFormat" %>
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="styles.css">
@@ -149,7 +150,7 @@
 
 <%
 
-// Create a connection to the database
+    // Create a connection to the database
     ApplicationDB db = new ApplicationDB();
     Connection conn = db.getConnection();
     BidData bidData = new BidData(conn);
@@ -163,7 +164,9 @@
 
     String categoryParam = request.getParameter("category");
 
+    String userParam = request.getParameter("id");
     List<String> params = new ArrayList<>();
+    // true if it's a string, false if int. dumb data modeling, but who cares
     List<Boolean> types = new ArrayList<>();
 
     try {
@@ -205,6 +208,13 @@
             types.add(true);
 
         }
+        if(userParam!= null){
+            sql += " AND user = ?";
+            params.add(userParam);
+            types.add(true);
+
+
+        }
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             for (int i = 0; i < params.size(); i++) {
@@ -220,6 +230,7 @@
                     ToyListing tl = ToyListingData.extractToyListing(rs);
                     toys.add(tl);
                 }
+
             }
         }
 
@@ -234,6 +245,7 @@
                 String category = toy.getCategory();
                 int id = toy.getToyId();
                 double curPrice = bidData.highestBid(id);
+                DecimalFormat df = new DecimalFormat("#.##");
                 //no bids placed on it yet
                 if(curPrice ==-1){
                     curPrice = toy.getInitialPrice();
@@ -244,7 +256,7 @@
                 out.println("<td>" + category + "</td>");
                 out.println("<td>" + toy.getName() + "</td>");
                 out.println("<td>" + toy.getStartAge() +" - "+ toy.getEndAge()+"</td>");
-                out.println("<td>" + curPrice + "</td>");
+                out.println("<td>" + df.format(curPrice) + "</td>");
                 out.println("<td>" + toy.getIncrement() + "</td>");
 
                 LocalDateTime startTime = toy.getStartDateTime();
@@ -289,7 +301,7 @@
     }
 %>
 <p>
-<a href="CustomerMain.jsp">Home</a>
+    <a href="CustomerMain.jsp">Home</a>
 </p>
 </body>
 </html>

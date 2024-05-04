@@ -41,18 +41,15 @@
 
     ps.executeUpdate();
 
-    // Redirect after successful post
     session.setAttribute("askQuestionRet", "Question posted!");
     response.sendRedirect("customerQuestion.jsp");
 
   } catch (SQLException e) {
     String code = e.getSQLState();
-    // Redirect based on specific error
     session.setAttribute("msg", code.equals("23000") ? "Duplicate question detected!" : "Database error occurred.");
     response.sendRedirect("customerQuestion.jsp");
 
   } catch (Exception e) {
-    // Handle generic exception
     session.setAttribute("msg", "An unknown error occurred.");
     response.sendRedirect("AskQuestion.jsp");
   }

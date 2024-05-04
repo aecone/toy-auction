@@ -79,9 +79,9 @@
     </div>
 
     Age Range: <input type="number" name="start_age"/> - <input type='number' name="end_age"/> <br>
-    Price: <input type="number" name="price" step="0.01" /> <br>
+    Initial Price: <input type="number" name="price" step="0.01" /> <br>
 
-    Increment: <input type="number" name="increment" step="0.01"/>  <br>
+    Minimum Bid Increment: <input type="number" name="increment" step="0.01"/>  <br>
     Minimum Sale Price: <input type="number" name="min_price" step="0.01"/>  <br>
     <% LocalDateTime now = LocalDateTime.now().plusHours(1);
         String minDateTime = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));%>

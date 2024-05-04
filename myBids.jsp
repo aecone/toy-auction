@@ -34,19 +34,29 @@
 </head>
 <body>
 <%
+        String username = request.getParameter("id");
+        boolean isSessionUser = false;
+        if(username == null) {
+            isSessionUser = true;
+            username = session.getAttribute("user").toString();
+        }
         // Create a connection to the database
         ApplicationDB db = new ApplicationDB();
         Connection conn = db.getConnection();
         BidData bidData = new BidData(conn);
         ToyListingData tlData = new ToyListingData(conn);
-        List<Bid> bids = bidData.getBidsByUser(session.getAttribute("user").toString());
+        List<Bid> bids = bidData.getBidsByUser(username);
         if(bids==null || bids.isEmpty()){
             out.println("You have no bids.");
         }
         else {
         %>
 <table>
-<tr><th>Bid Time</th><th>Name</th><th>Bid Price</th> <th>Is Auto Bid</th></tr>
+<tr><th>Bid Time</th><th>Name</th><th>Bid Price</th>
+    <%if(isSessionUser){%>
+    <th>Is Auto Bid</th>
+        <%}
+    %></tr>
     <%
             for (Bid b : bids) {
                 int id = b.getToyId();
@@ -59,8 +69,9 @@
                 out.println("<tr data-href=\"" + url + "\" class = \"listing-tr\">");
                 out.println("<td>" + bidTime + "</td>");
                 out.println("<td>" + name + "</td>");
-                out.println("<td>" + b.getPrice() + "</td>");
-                out.println("<td>" + b.isAutoBid() + "</td>");
+                out.println("<td>$ " + b.formattedPrice() + "</td>");
+                if(isSessionUser)
+                    out.println("<td>" + b.isAutoBid() + "</td>");
                 out.println("</tr>");
             }
         }
