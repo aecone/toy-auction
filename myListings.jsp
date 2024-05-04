@@ -52,7 +52,8 @@
         else {
             rs.beforeFirst(); //reset rs cursor to front
             out.println("<p><table>");
-            out.println("<tr><th>Category</th><th>Name</th><th>Initial Price</th><th>Increment</th><th>Secret Min Price</th><th>Start Date Time</th><th>Closing Date Time</th></tr>");
+            out.println("<tr><th>Category</th><th>Name</th><th>Initial Price</th><th>Increment</th>" +
+                    "<th>Secret Min Price</th><th>Start Date Time</th><th>Closing Date Time</th></tr>");
             while (rs.next()) {
                 String category = rs.getString("category");
                 int id = rs.getInt("toy_id");
@@ -63,8 +64,6 @@
                 out.println("<td>" + rs.getString("name") + "</td>");
                 out.println("<td>" + rs.getDouble("initial_price") + "</td>");
                 out.println("<td>" + rs.getDouble("increment") + "</td>");
-//            out.println("<td>" + rs.getInt("start_age") + "</td>");
-//            out.println("<td>" + rs.getInt("end_age") + "</td>");
                 out.println("<td>" + rs.getDouble("secret_min_price") + "</td>");
 
                 LocalDateTime startTime = rs.getTimestamp("start_datetime").toLocalDateTime();

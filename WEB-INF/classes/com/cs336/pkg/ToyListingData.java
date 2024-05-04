@@ -31,14 +31,32 @@ public class ToyListingData {
         }
         return list;
     }
+    public List<ToyListing> getAllListingsFromUser(String user) throws SQLException {
+        List<ToyListing> list = new ArrayList<ToyListing>();
+        String sql = "select * from toy_listing where username = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, user);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    ToyListing tl = extractToyListing(rs);
+                    list.add(tl);
+                }
+            }
+        }
+        return list;
+    }
 
-    public List<ToyListing> getAllListingsWithSearch(String search_query) throws SQLException {
+    public List<ToyListing> getAllListingsWithSearch(String search_query, String user) throws SQLException {
         //does not extract category details for listings
         System.out.println("hi from con");
         List<ToyListing> list = new ArrayList<ToyListing>();
         String sql = "select * from toy_listing WHERE name LIKE ?";
+        if(user!=null)
+            sql+=" and username = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, "%" + search_query + "%");
+            if(user!=null)
+                ps.setString(2, user);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     ToyListing tl = extractToyListing(rs);

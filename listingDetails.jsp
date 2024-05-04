@@ -78,7 +78,7 @@
         </p>
         <p>Closing Time: <%=endDT%>
         </p>
-        <%String userListingURL = "userListings.jsp?id=" + seller;%>
+        <%String userListingURL = "browseListings.jsp?id=" + seller;%>
         <p>Seller: <a href=<%=userListingURL%>><%=seller%></a></p>
 
         <%

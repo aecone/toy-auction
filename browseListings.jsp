@@ -12,6 +12,7 @@
 <%@ page import="java.time.LocalDateTime, java.time.format.DateTimeFormatter" %>
 <%@ page import="java.time.OffsetTime" %>
 <%@ page import="java.time.ZoneOffset" %>
+<%@ page import="java.text.DecimalFormat" %>
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="styles.css">
@@ -133,12 +134,22 @@
     BidData bidData = new BidData(conn);
     ToyListingData tld = new ToyListingData(conn);
     String search_query = request.getParameter("search");
+    String user = request.getParameter("id");
     try {
         List<ToyListing> toys;
-        if (search_query != null){
-            toys = tld.getAllListingsWithSearch(search_query);
-        }else{
-            toys = tld.getAllListings();
+        if(user!= null){
+            if (search_query != null) {
+                toys = tld.getAllListingsWithSearch(search_query, user);
+            } else {
+                toys = tld.getAllListingsFromUser(user);
+            }
+        }
+        else {
+            if (search_query != null) {
+                toys = tld.getAllListingsWithSearch(search_query, null);
+            } else {
+                toys = tld.getAllListings();
+            }
         }
 
         if(toys== null || toys.isEmpty()){
@@ -152,6 +163,7 @@
                 String category = toy.getCategory();
                 int id = toy.getToyId();
                 double curPrice = bidData.highestBid(id);
+                DecimalFormat df = new DecimalFormat("#.##");
                 //no bids placed on it yet
                 if(curPrice ==-1){
                     curPrice = toy.getInitialPrice();
@@ -162,7 +174,7 @@
                 out.println("<td>" + category + "</td>");
                 out.println("<td>" + toy.getName() + "</td>");
                 out.println("<td>" + toy.getStartAge() +" - "+ toy.getEndAge()+"</td>");
-                out.println("<td>" + curPrice + "</td>");
+                out.println("<td>" + df.format(curPrice) + "</td>");
                 out.println("<td>" + toy.getIncrement() + "</td>");
 
                 LocalDateTime startTime = toy.getStartDateTime();
