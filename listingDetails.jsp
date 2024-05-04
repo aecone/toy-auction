@@ -25,7 +25,7 @@
         }
     </script>
 </head>
-<body>
+<body style="justify-content: space-around">
 <%
     int id = Integer.parseInt(request.getParameter("id"));
     ApplicationDB db = new ApplicationDB();
