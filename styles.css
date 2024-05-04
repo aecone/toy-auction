@@ -101,6 +101,12 @@ input, select{
 }
 
 .search-row{
-    margin: 3em 0;
+    margin: 2em 0;
     justify-content: center;
+}
+.filter-input{
+    width: 80px;
+}
+.filter-row{
+    width: 438px;
 }

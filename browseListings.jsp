@@ -47,6 +47,39 @@
     <input type="submit" value="search" id="search-btn"/>
 
 </div>
+
+<div class="row filter-row">
+    <p>price range</p>
+    <div class="column">
+        <div class="row">
+            <input class="filter-input"  type="number" value="min price" />
+            <input class="filter-input" type="number" value="max price" />
+        </div>
+    </div>
+</div>
+
+<div class="row filter-row">
+    <p>age</p>
+    <div class="column">
+        <div class="row">
+            <input class="filter-input" type="number" value="min price" />
+            <input class="filter-input" type="number" value="max price" />
+        </div>
+    </div>
+</div>
+
+<div class="row filter-row">
+    <p>Category</p>
+     <select name="category" onchange="showAdditionalFields()">
+        <option value="" disabled selected hidden>select a toy category</option>
+        <option value="action_figure">action figure</option>
+        <option value="stuffed_animal">stuffed animal</option>
+        <option value="board_game">board game</option>
+
+    </select>
+    <input type="submit" value="apply filters" id="filter-btn"/>
+
+</div>
 <%
 
 // Create a connection to the database
