@@ -13,19 +13,6 @@
 </head>
 <body>
     <h1>Alerts</h1>
-
-   // <%
-        // Function to insert a new alert into the general_alert table
-        void insertAlert(Connection conn, String username, String message) throws SQLException {
-            String insertQuery = "INSERT INTO general_alert (username, text) VALUES (?, ?)";
-            PreparedStatement insertStmt = conn.prepareStatement(insertQuery);
-            insertStmt.setString(1, username);
-            insertStmt.setString(2, message);
-            insertStmt.executeUpdate();
-            insertStmt.close();
-        }
-    %>//
-
     <h2>Bids that closed when you entered them:</h2>
     <ul>
         <%-- Display bids that closed when the user entered them --%>
@@ -48,9 +35,18 @@
                 while (rs.next()) {
                     // Display bid information
                     out.println("<li>Bid ID: " + rs.getInt("b_id") + ", Price: " + rs.getDouble("price") + "</li>");
-                    // Add general_alert into general_alert table
-                    // insertAlert(conn, username, "Bid ID " + rs.getInt
-                    ("b_id") + " closed when you entered it.");
+
+                    // Insert into alert table
+                    String alertMessage = "Bid ID " + rs.getInt("b_id") + " closed when you entered it.";
+                    String sql = "INSERT INTO alert (name, max_price, category, min_price, age_range, username) VALUES (?, ?, ?, ?, ?, ?)";
+                    pstmt = conn.prepareStatement(sql);
+                    pstmt.setString(1, alertMessage);
+                    pstmt.setDouble(2, 0.0);
+                    pstmt.setString(3, "");
+                    pstmt.setDouble(4, 0.0);
+                    pstmt.setString(5, "");
+                    pstmt.setString(6, username);
+                    pstmt.executeUpdate();
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -67,14 +63,11 @@
     <ul>
         <%-- Display bids when someone else bid higher than the user --%>
         <%
-            // Get current user's username
-            String username = (String) session.getAttribute("user");
+            username = (String) session.getAttribute("user");
 
-            // Create a new connection to the database
-            ApplicationDB db = new ApplicationDB();
-            Connection conn = db.getConnection();
-            PreparedStatement pstmt = null;
-            ResultSet rs = null;
+            db = new ApplicationDB();
+            conn = db.getConnection();
+            pstmt = null;
 
             try {
                 String query = "SELECT * FROM bid b1 WHERE username != ? AND price > (SELECT price FROM bid b2 WHERE b2.toy_id = b1.toy_id AND b2.username = ?)";
@@ -86,9 +79,19 @@
                 while (rs.next()) {
                     // Display bid information
                     out.println("<li>Bid ID: " + rs.getInt("b_id") + ", Price: " + rs.getDouble("price") + "</li>");
-                    // Add general_alert into general_alert table
-                    // insertAlert(conn, username, "Another user bid higher
-                    than you on Bid ID " + rs.getInt("b_id"));
+
+                    // Insert into alert table
+                    String alertMessage = "Another user bid higher than you on Bid ID " + rs.getInt("b_id");
+                    String insertQuery = "INSERT INTO alert (name, max_price, category, min_price, age_range, username) VALUES (?, ?, ?, ?, ?, ?)";
+                    PreparedStatement insertStmt = conn.prepareStatement(insertQuery);
+                    insertStmt.setString(1, alertMessage);
+                    insertStmt.setDouble(2, 0.0);
+                    insertStmt.setString(3, "");
+                    insertStmt.setDouble(4, 0.0);
+                    insertStmt.setString(5, "");
+                    insertStmt.setString(6, username);
+                    insertStmt.executeUpdate();
+                    insertStmt.close();
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -106,13 +109,11 @@
         <%-- Display bids for listings that have ended --%>
         <%
             // Get current user's username
-            String username = (String) session.getAttribute("user");
+            username = (String) session.getAttribute("user");
 
-            // Create a new connection to the database
-            ApplicationDB db = new ApplicationDB();
-            Connection conn = db.getConnection();
-            PreparedStatement pstmt = null;
-            ResultSet rs = null;
+            db = new ApplicationDB();
+            conn = db.getConnection();
+            pstmt = null; // Reset pstmt
 
             try {
                 String query = "SELECT * FROM bid WHERE time < (SELECT closing_datetime FROM toy_listing WHERE toy_id = bid.toy_id)";
@@ -122,9 +123,19 @@
                 while (rs.next()) {
                     // Display bid information
                     out.println("<li>Bid ID: " + rs.getInt("b_id") + ", Price: " + rs.getDouble("price") + "</li>");
-                    // Add general_alert into general_alert table
-                    // insertAlert(conn, username, "Bid ID " + rs.getInt
-                    ("b_id") + " has ended.");
+
+                    // Insert into alert table
+                    String alertMessage = "Bid ID " + rs.getInt("b_id") + " has ended.";
+                    String insertQuery = "INSERT INTO alert (name, max_price, category, min_price, age_range, username) VALUES (?, ?, ?, ?, ?, ?)";
+                    PreparedStatement insertStmt = conn.prepareStatement(insertQuery);
+                    insertStmt.setString(1, alertMessage);
+                    insertStmt.setDouble(2, 0.0);
+                    insertStmt.setString(3, "");
+                    insertStmt.setDouble(4, 0.0);
+                    insertStmt.setString(5, "");
+                    insertStmt.setString(6, username);
+                    insertStmt.executeUpdate();
+                    insertStmt.close();
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -135,6 +146,3 @@
                 if (conn != null) conn.close();
             }
         %>
-    </ul>
-</body>
-</html>
