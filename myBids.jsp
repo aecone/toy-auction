@@ -36,7 +36,7 @@
 <%
         String username = request.getParameter("id");
         boolean isSessionUser = false;
-        if(username == null) {
+        if(username == null || username.equals(session.getAttribute("user"))) {
             isSessionUser = true;
             username = session.getAttribute("user").toString();
         }

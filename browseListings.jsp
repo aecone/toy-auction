@@ -256,7 +256,7 @@
                     ps.setInt(i+1, Integer.parseInt(params.get(i)));
                 }
             }
-            System.out.println(ps);
+//            System.out.println(ps);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     ToyListing tl = ToyListingData.extractToyListing(rs);

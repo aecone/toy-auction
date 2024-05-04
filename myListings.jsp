@@ -34,7 +34,12 @@
 
 <%
     // Get current user's username
-    String username = (String) session.getAttribute("user");
+    String username = request.getParameter("id");
+    boolean isSessionUser = false;
+    if(username == null || username.equals(session.getAttribute("user"))){
+        isSessionUser = true;
+        username = (String) session.getAttribute("user");
+    }
 
 // Create a connection to the database
     ApplicationDB db = new ApplicationDB();
@@ -52,19 +57,27 @@
         else {
             rs.beforeFirst(); //reset rs cursor to front
             out.println("<p><table>");
-            out.println("<tr><th>Category</th><th>Name</th><th>Initial Price</th><th>Increment</th>" +
-                    "<th>Secret Min Price</th><th>Start Date Time</th><th>Closing Date Time</th></tr>");
+            String header = "<tr><th>Category</th><th>Name</th><th>Initial Price</th><th>Increment</th>";
+            if(isSessionUser){
+                header+="<th>Secret Min Price</th>";
+            }
+            header+="<th>Start Date Time</th><th>Closing Date Time</th></tr>";
+            out.println(header);
             while (rs.next()) {
                 String category = rs.getString("category");
                 int id = rs.getInt("toy_id");
                 String url = "myListingDetails.jsp?id=" + id + "&category=" + category;
+                if(!isSessionUser){
+                    url="listingDetails.jsp?id=" + id;
+                }
                 out.println("<tr data-href=\"" + url + "\" class = \"listing-tr\">");
                 category = category.replace("_", " ");
                 out.println("<td>" + category + "</td>");
                 out.println("<td>" + rs.getString("name") + "</td>");
                 out.println("<td>" + rs.getDouble("initial_price") + "</td>");
                 out.println("<td>" + rs.getDouble("increment") + "</td>");
-                out.println("<td>" + rs.getDouble("secret_min_price") + "</td>");
+                if(isSessionUser)
+                    out.println("<td>" + rs.getDouble("secret_min_price") + "</td>");
 
                 LocalDateTime startTime = rs.getTimestamp("start_datetime").toLocalDateTime();
                 // Define the format with AM/PM and without seconds
