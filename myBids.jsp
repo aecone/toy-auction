@@ -40,24 +40,29 @@
         BidData bidData = new BidData(conn);
         ToyListingData tlData = new ToyListingData(conn);
         List<Bid> bids = bidData.getBidsByUser(session.getAttribute("user").toString());
+        if(bids==null || bids.isEmpty()){
+            out.println("You have no bids.");
+        }
+        else {
         %>
 <table>
 <tr><th>Bid Time</th><th>Name</th><th>Bid Price</th> <th>Is Auto Bid</th></tr>
     <%
-        for (Bid b : bids) {
-            int id = b.getToyId();
-            ToyListing toyListing = tlData.getToyListingDetails(id, true);
-            String category = toyListing.getCategory();
-            String name = toyListing.getName();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a");
-            String bidTime = b.getTime().format(formatter);
-            String url = "listingDetails.jsp?id=" + id + "&category=" + category;
-            out.println("<tr data-href=\"" + url + "\" class = \"listing-tr\">");
-            out.println("<td>"+bidTime+"</td>");
-            out.println("<td>"+name+"</td>");
-            out.println("<td>"+b.getPrice()+"</td>");
-            out.println("<td>"+b.isAutoBid()+ "</td>");
-            out.println("</tr>");
+            for (Bid b : bids) {
+                int id = b.getToyId();
+                ToyListing toyListing = tlData.getToyListingDetails(id, true);
+                String category = toyListing.getCategory();
+                String name = toyListing.getName();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a");
+                String bidTime = b.getTime().format(formatter);
+                String url = "listingDetails.jsp?id=" + id + "&category=" + category;
+                out.println("<tr data-href=\"" + url + "\" class = \"listing-tr\">");
+                out.println("<td>" + bidTime + "</td>");
+                out.println("<td>" + name + "</td>");
+                out.println("<td>" + b.getPrice() + "</td>");
+                out.println("<td>" + b.isAutoBid() + "</td>");
+                out.println("</tr>");
+            }
         }
     %>
 </table>

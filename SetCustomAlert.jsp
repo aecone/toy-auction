@@ -4,6 +4,7 @@
 <head>
     <title>Create Custom Alert</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
+
 </head>
 <body>
 <form action="insertAlert.jsp" method="POST" onsubmit="return validateForm()">

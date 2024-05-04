@@ -40,6 +40,7 @@
 
 
     </script>
+
 </head>
 
 <div class="row search-row">
@@ -91,7 +92,7 @@
     try {
         List<ToyListing> toys;
         if (search_query != null){
-            System.out.println("hi from view");
+            out.println("hi from view");
             toys = tld.getAllListingsWithSearch(search_query);
         }else{
             toys = tld.getAllListings();

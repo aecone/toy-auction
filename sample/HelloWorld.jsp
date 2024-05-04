@@ -9,6 +9,12 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 		<title>Hi Beer World</title>
+		<style>
+			input[type="submit"]:hover {
+				background-color: #4c8cc0;
+				cursor: pointer;
+			}
+		</style>
 	</head>
 	
 	<body>

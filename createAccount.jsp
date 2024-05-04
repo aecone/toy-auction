@@ -14,6 +14,7 @@
 <head>
     <link rel="stylesheet" type="text/css" href="styles.css">
     <title>Create Account</title>
+
 </head>
 <body>
 <h1>Create Customer Account</h1>
