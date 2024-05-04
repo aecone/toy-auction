@@ -126,23 +126,38 @@
             }
 
         %>
-        <%if(tl.getOpenStatus()){%>
+
         <div class="column">
-            <form id="bidForm" action="/placeBid" method="POST" onsubmit="return validateBid()">
+            <%if(tl.getOpenStatus()){%>
+            <form id="bidForm" action="/placeBid" method="POST" >
                 <input type="hidden" name="id" value=<%=id%>>
                 <p>Bid: <input type="number" name="bidAmt" step="0.01" placeholder="<%= minBidPriceStr %>"
-                               min="<%= minBidPriceStr %>"/></p>
+                               min="<%= minBidPriceStr %>"required/></p>
                 <p>Automatic Bid: <input type="checkbox" id="autoBidCheckbox" name="isAutoBid"
                                          onchange="toggleAutoBidSection()"/></p>
                 <div id="autoBidSection" style="display: none;">
-                    <p>Max Bid: <input type="number" name="maxBid" required/></p>
-                    <p>Bid Increment: <input type="number" name="autoBidIncrement" step="0.01" required/></p>
+                    <p>Max Bid: <input type="number" name="maxBid" /></p>
+                    <p>Bid Increment: <input type="number" name="autoBidIncrement" step="0.01" /></p>
                 </div>
                 <input type="submit" value="Place Bid"/>
             </form>
-
+            <%}
+            else{
+                SaleData sd = new SaleData(conn);
+                Sale sale = sd.saleGivenId(id);
+                if(sale!= null){
+                    int bidId = sale.getBidId();
+                    Bid b = bidData.getBidById(bidId);
+                    double salePrice = b.getPrice();
+                    String buyer = b.getUsername();
+                    out.println("<p>"+buyer+" purchased "+ tl.getName()+" for $"+salePrice+".</p>");
+                }
+                else{
+                    out.println("<p>No sale was made.</p>");
+                }
+                 }%>
         </div>
-    <%}%>
+
     </div>
     <div class="row">
         <h3>Bidding history</h3>
@@ -180,20 +195,20 @@
 %>
 
     <a href="browseListings.jsp">Back to All Listings</a>
-    <script>
-        function validateBid() {
-            var bidAmt = parseFloat(document.getElementById('bidAmt').value);
-            var maxBid = parseFloat(document.getElementById('maxBid').value);
-            console.log("Bid Amount:", bidAmt);
-            console.log("Max Bid:", maxBid);
-            if (maxBid <= bidAmt) {
-                alert('Max bid must be higher than the bid amount.');
-                return false; // Prevent form submission
-            }
+<%--    <script>--%>
+<%--        function validateBid() {--%>
+<%--            var bidAmt = parseFloat(document.getElementById('bidAmt').value);--%>
+<%--            var maxBid = parseFloat(document.getElementById('maxBid').value);--%>
+<%--            console.log("Bid Amount:", bidAmt);--%>
+<%--            console.log("Max Bid:", maxBid);--%>
+<%--            if (maxBid <= bidAmt) {--%>
+<%--                alert('Max bid must be higher than the bid amount.');--%>
+<%--                return false; // Prevent form submission--%>
+<%--            }--%>
 
-            return true; // Allow form submission
-        }
-    </script>
+<%--            return true; // Allow form submission--%>
+<%--        }--%>
+<%--    </script>--%>
 </body>
 </html>
 

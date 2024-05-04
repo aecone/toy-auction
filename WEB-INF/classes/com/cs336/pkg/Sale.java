@@ -3,23 +3,23 @@ package com.cs336.pkg;
 import java.time.LocalDateTime;
 
 public class Sale {
-    private String saleId;
+    private int saleId;
     private LocalDateTime date;
     private int toyId;
     private int bidId;
 
-    public Sale(String saleId, LocalDateTime date, int toyId, int bidId) {
+    public Sale(int saleId, LocalDateTime date, int toyId, int bidId) {
         this.saleId = saleId;
         this.date = date;
         this.toyId = toyId;
         this.bidId = bidId;
     }
-
-    public String getSaleId() {
+    public Sale() {}
+    public int getSaleId() {
         return saleId;
     }
 
-    public void setSaleId(String saleId) {
+    public void setSaleId(int saleId) {
         this.saleId = saleId;
     }
 

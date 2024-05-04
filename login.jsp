@@ -29,7 +29,7 @@
 
     <p><a href="createAccount.jsp">Create Account</a></p>
 
-    <p><a href="AdminRepLogin.jsp">Admin or Customer Rep Login Page</a></p>
+    <p><a href="AdminRepLogin.jsp">Employee Login Page</a></p>
 </div>
 </body>
 </html>
