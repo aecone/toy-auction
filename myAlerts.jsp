@@ -11,7 +11,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>General Alerts</title>
-   <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
     <h1>Alerts</h1>
@@ -149,8 +149,54 @@
                 if (conn != null) conn.close();
             }
         %>
-        <br>
-        <p>
+    </ul>
+
+    <h2>Won Auctions:</h2>
+    <ul>
+        <%-- Display bids that the user won --%>
+        <%
+            username = (String) session.getAttribute("user");
+
+            db = new ApplicationDB();
+            conn = db.getConnection();
+            pstmt = null;
+
+            try {
+                String query = "SELECT * FROM bid WHERE username = ? AND bid_status = 'won'";
+                pstmt = conn.prepareStatement(query);
+                pstmt.setString(1, username);
+                rs = pstmt.executeQuery();
+
+                while (rs.next()) {
+                    // Display bid information
+                    out.println("<li>Bid ID: " + rs.getInt("b_id") + ", Price: " + rs.getDouble("price") + "</li>");
+
+                    // Insert into alert table
+                    String alertMessage = "Congratulations! You won Bid ID " + rs.getInt("b_id");
+                    String insertQuery = "INSERT INTO alert (name, max_price, category, min_price, age_range, username) VALUES (?, ?, ?, ?, ?, ?)";
+                    PreparedStatement insertStmt = conn.prepareStatement(insertQuery);
+                    insertStmt.setString(1, alertMessage);
+                    insertStmt.setDouble(2, 0.0);
+                    insertStmt.setString(3, "");
+                    insertStmt.setDouble(4, 0.0);
+                    insertStmt.setString(5, "");
+                    insertStmt.setString(6, username);
+                    insertStmt.executeUpdate();
+                    insertStmt.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                // Close resources
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            }
+        %>
+    </ul>
+
+    <br>
+    <p>
         <a href="CustomerMain.jsp">Home</a>
-        </p>
+    </p>
 </body>
