@@ -3,6 +3,8 @@
          pageEncoding="ISO-8859-1" import="com.cs336.pkg.*"%>
 <%@ page import="javax.servlet.http.*,javax.servlet.*" %>
 <%@ page import="java.time.LocalDateTime, java.time.format.DateTimeFormatter" %>
+<%@ page import="java.time.format.DecimalStyle" %>
+<%@ page import="java.text.DecimalFormat" %>
 <html>
 <html lang="en">
 <head>
@@ -122,7 +124,8 @@
 
                 while (rs.next()) {
                     // Display bid information
-                    out.println("<li>Bid ID: " + rs.getInt("b_id") + ", Price: " + rs.getDouble("price") + "</li>");
+                    DecimalFormat df = new DecimalFormat("#.##");
+                    out.println("<li>Bid ID: " + rs.getInt("b_id") + ", Price: " + df.format(rs.getDouble("price")) + "</li>");
 
                     // Insert into alert table
                     String alertMessage = "Bid ID " + rs.getInt("b_id") + " has ended.";
