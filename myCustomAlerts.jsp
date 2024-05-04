@@ -4,11 +4,13 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Alerts</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
     <h1>My Custom Alerts</h1>
+    <div class = "scrollable-container">
     <table>
         <thead>
             <tr>
@@ -60,6 +62,7 @@
             %>
         </tbody>
     </table>
+    </div>
     <br>
     <a href="CustomerMain.jsp">Home</a>
 </body>

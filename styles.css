@@ -36,7 +36,10 @@ table input:hover {
     color: #1c2541;
     cursor: pointer;
 }
-
+.scrollable-container {
+    max-height: 80vh; /* Adjust height as needed */
+    overflow-y: auto;
+}
 .center-texts {
     text-align: center;
     display: block;
