@@ -41,6 +41,7 @@ CREATE TABLE action_figure
     character_name VARCHAR(50),
     PRIMARY KEY (toy_id),
     FOREIGN KEY (toy_id) REFERENCES toy_listing (toy_id) ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
 
 CREATE TABLE board_game
@@ -51,6 +52,7 @@ CREATE TABLE board_game
     is_cards_game BOOLEAN,
     PRIMARY KEY (toy_id),
     FOREIGN KEY (toy_id) REFERENCES toy_listing (toy_id) ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
 
 CREATE TABLE stuffed_animal
@@ -61,6 +63,7 @@ CREATE TABLE stuffed_animal
     animal VARCHAR(100),
     PRIMARY KEY (toy_id),
     FOREIGN KEY (toy_id) REFERENCES toy_listing (toy_id) ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
 
 CREATE TABLE admin
@@ -121,7 +124,8 @@ CREATE TABLE bid
     PRIMARY KEY (b_id),
     FOREIGN KEY (username) REFERENCES user(username)ON DELETE CASCADE
         ON UPDATE CASCADE,
-    FOREIGN KEY (toy_id) REFERENCES toy_listing(toy_id)
+    FOREIGN KEY (toy_id) REFERENCES toy_listing(toy_id) ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
 
 CREATE TABLE sale
@@ -131,8 +135,10 @@ CREATE TABLE sale
     toy_id  INT NOT NULL,
     b_id    INT NOT NULL,
     PRIMARY KEY (sale_id),
-    FOREIGN KEY (toy_id) REFERENCES toy_listing(toy_id),
-    FOREIGN KEY (b_id) REFERENCES bid(b_id)
+    FOREIGN KEY (toy_id) REFERENCES toy_listing(toy_id) ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY (b_id) REFERENCES bid(b_id)ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
 
 CREATE TABLE report
@@ -144,7 +150,8 @@ CREATE TABLE report
     earnings_per   DOUBLE,
     best_selling   VARCHAR(100),
     PRIMARY KEY (report_id),
-    FOREIGN KEY (admin_id) REFERENCES admin(id)
+    FOREIGN KEY (admin_id) REFERENCES admin(id)ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
 
 CREATE TABLE automatic_bid
@@ -156,8 +163,10 @@ CREATE TABLE automatic_bid
     toy_id           INT NOT NULL,
     active           boolean default 1,
     PRIMARY KEY (ab_id, last_bid_id),
-    FOREIGN KEY (toy_id) REFERENCES toy_listing(toy_id),
+    FOREIGN KEY (toy_id) REFERENCES toy_listing(toy_id)ON DELETE CASCADE
+        ON UPDATE CASCADE,
     FOREIGN KEY (last_bid_id) REFERENCES bid(b_id) ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
 
 CREATE TABLE question
@@ -176,8 +185,10 @@ CREATE TABLE answer
     c_id        VARCHAR(30),
     answer_text VARCHAR(500),
     PRIMARY KEY (q_id),
-    FOREIGN KEY(q_id) REFERENCES question(q_id),
-    FOREIGN KEY(c_id) REFERENCES customer_representative(id)
+    FOREIGN KEY(q_id) REFERENCES question(q_id) ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY(c_id) REFERENCES customer_representative(id) ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
 --
 -- MOCKS

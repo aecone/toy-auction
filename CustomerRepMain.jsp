@@ -123,7 +123,7 @@
 <%
     ResultSet accountsQuery = st.executeQuery("SELECT username FROM user");
 %>
-<form action="EditUserAccount.jsp" method="post">
+<form action="EditBidAuc.jsp" method="post">
     <table>
         <%
             if (!accountsQuery.next()) {

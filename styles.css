@@ -5,8 +5,6 @@ html, body {
     justify-content: center; /* Center content horizontally */
     align-items: center; /* Center content vertically */
     flex-direction: column;
-    overflow-x: clip;
-    overflow-y: scroll;
 }
 
 body, input, select {
