@@ -44,6 +44,9 @@
             border: 2px black solid;
             margin: 20px 0;
         }
+        h2{
+            margin-bottom: 0px;
+        }
     </style>
 </head>
 <body>
@@ -85,7 +88,37 @@
     </table>
     <input type="hidden" name="q_id" id="questionInput">
 </form>
+<h2>Auctions and Bids</h2>
+<%
+    ResultSet bidquery = st.executeQuery("SELECT toy_id, name, category, initial_price FROM toy_listing");
+%>
+<form action="EditUserAccount.jsp" method="post">
+    <table>
+        <%
+            if (!bidquery.next()) {
+        %>
+        <tr>
+            <td>None</td>
+        </tr>
+        <%
+        } else {
+            bidquery.beforeFirst();
+            while (bidquery.next()) {
+        %>
+        <tr class="clickable-row" onclick="submitForm('<%= bidquery.getString(1) %>', 'bidForm')">
+            <td><%= bidquery.getString(1) %></td>
+            <td><%= bidquery.getString(2) %></td>
+            <td><%= bidquery.getString(3) %></td>
+            <td><%= bidquery.getString(4) %></td>
 
+        </tr>
+        <%
+                }
+            }
+        %>
+    </table>
+    <input type="hidden" name="username" id="userInput">
+</form>
 <h2>User Account Access</h2>
 <%
     ResultSet accountsQuery = st.executeQuery("SELECT username FROM user");
@@ -111,7 +144,7 @@
             }
         %>
     </table>
-    <input type="hidden" name="username" id="userInput">
+    <input type="hidden" name="username" >
 </form>
 
 <a class="back-button" href="logout.jsp">Logout</a>

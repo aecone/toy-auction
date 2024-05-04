@@ -25,6 +25,7 @@
       border: 2px solid darkred;
       color: darkred;
     }
+
   </style>
 </head>
 <body>
@@ -46,7 +47,7 @@
 %>
 <h1>Edit <%=username%>'s Account</h1>
 <div class="center-texts">
-  <form action="checkLoginDetails.jsp" method="POST">
+  <form action="updateUserAccount.jsp" method="POST">
     <p><strong>Current Username: </strong><%= username %></p>
     <p><strong>Current password: </strong><%= rs.getString(1) %><p>
     <hr/>
@@ -56,9 +57,13 @@
     <input type="submit" value="Update"/>
 
     <input type="hidden" name="del_user" value="<%= username %>"/>
+
+  <button name="delete" style=" margin-top:40px; margin-bottom:40px; width:130px" type="submit" value="true">Delete Account</button>
+    <br/>
+    <br/>
   </form>
-  <button name="delete" style=" margin-top:50px; margin-bottom:40px; width:130px" type="submit" value="true">Delete Account</button>
-  <br/>
+
+
   <a class="back-button" href="CustomerRepMain.jsp">Back</a>
 
 </div>
