@@ -78,14 +78,19 @@
                 }else{
                     url.searchParams.delete("category");
                 }
-
+                let sort = document.querySelector("#sort-select").value;
+                if (sort){
+                    url.searchParams.set("sort",  sort);
+                }else{
+                    url.searchParams.delete("sort");
+                }
                 window.history.replaceState({}, '', url.toString());
                 location.reload();
 
             });
 
             let div = document.querySelector(".filter-controls");
-            if ([...new URL(window.location.href).searchParams.keys()].some(el => el === "priceMin" || el === "priceMax" || el === "ageMin" || el === "ageMax" || el === "category")){
+            if ([...new URL(window.location.href).searchParams.keys()].some(el => el === "priceMin" || el === "priceMax" || el === "ageMin" || el === "ageMax" || el === "category" || el == "sort")){
                 div.style.display = "block"
             }else{
                 div.style.display = "none"
@@ -102,9 +107,25 @@
     <div class="row search-row">
         <input  type="text" placeholder=" Search by product name" id= "search-input"/>
         <input type="submit" value="Search" id="search-btn"/>
-        <input type="submit" value="Show filters" id="filter-toggle"/>
+        <input type="submit" value="Advanced Search" id="filter-toggle"/>
     </div>
     <div class="filter-controls" style="display: none">
+        <div class="row filter-row">
+            <p>Sort By</p>
+            <div class="column">
+                <div class="row">
+                    <select name="category" id="sort-select" >
+                        <option value="" selected >default</option>
+                        <option value="price_desc">Current Price: High to Low</option>
+                        <option value="price_asc">Current Price: Low to High </option>
+                        <option value="time_desc">Start Time: Newest</option>
+                        <option value="time_asc">Start Time: Oldest</option>
+
+                    </select>
+                </div>
+            </div>
+        </div>
+
         <div class="row filter-row">
             <p>Price Range</p>
             <div class="column">
@@ -129,11 +150,12 @@
             </div>
         </div>
 
+
         <div class="row filter-row">
             <p>Category</p>
             <div class="column">
                 <div class="row">
-                    <select name="category" id="category-select" onchange="showAdditionalFields()">
+                    <select name="category" id="category-select" >
                         <option value="" selected >select a toy category</option>
                         <option value="action_figure">action figure</option>
                         <option value="stuffed_animal">stuffed animal</option>
@@ -163,6 +185,7 @@
     String price_max = request.getParameter("priceMax");
 
     String categoryParam = request.getParameter("category");
+    String sort = request.getParameter("sort");
 
     String userParam = request.getParameter("id");
     List<String> params = new ArrayList<>();
@@ -212,8 +235,17 @@
             sql += " AND user = ?";
             params.add(userParam);
             types.add(true);
-
-
+        }
+        if (sort != null){
+            if ("price_desc".equals(sort)){
+                sql += " ORDER BY (SELECT price FROM bid WHERE toy_id = tl.toy_id ORDER BY price DESC LIMIT 1 ) DESC";
+            } else if ("price_asc".equals(sort)){
+                sql += " ORDER BY (SELECT price FROM bid WHERE toy_id = tl.toy_id ORDER BY price DESC LIMIT 1 ) ASC";
+            } else if ("time_asc".equals(sort)){
+                sql += " ORDER BY start_datetime ASC";
+            } else if ("time_desc".equals(sort)){
+                sql += " ORDER BY start_datetime DESC";
+            }
         }
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
