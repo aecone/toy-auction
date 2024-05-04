@@ -54,7 +54,7 @@
 <table>
 <tr><th>Bid Time</th><th>Name</th><th>Bid Price</th>
     <%if(isSessionUser){%>
-    <th>Is Auto Bid</th>
+    <th>Is Auto Bid</th><th>Max Auto Bid</th> <th>Auto Bid Increment</th>
         <%}
     %></tr>
     <%
@@ -70,8 +70,21 @@
                 out.println("<td>" + bidTime + "</td>");
                 out.println("<td>" + name + "</td>");
                 out.println("<td>$ " + b.formattedPrice() + "</td>");
-                if(isSessionUser)
+                if(isSessionUser) {
                     out.println("<td>" + b.isAutoBid() + "</td>");
+                    String maxBid = "n/a";
+                    String bidInc = "n/a";
+                    if(b.isAutoBid()){
+                        AutomaticBidData abd = new AutomaticBidData(conn);
+                        AutomaticBid ab = abd.getAutomaticBid(b.getBidId());
+                        if(ab!=null) {
+                            maxBid = "$ "+String.valueOf(ab.getSecretMaxPrice());
+                            bidInc = "$ "+String.valueOf(ab.getIncrement());
+                        }
+                    }
+                    out.println("<td>" + maxBid + "</td>");
+                    out.println("<td>" + bidInc + "</td>");
+                }
                 out.println("</tr>");
             }
         }

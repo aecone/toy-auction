@@ -14,9 +14,9 @@ public class AutomaticBidData {
         this.conn = conn;
     }
 
-    public List<AutomaticBid> getAutomaticBidsByToyId(int toyId) throws SQLException {
+    public List<AutomaticBid> getActiveAutomaticBidsByToyId(int toyId) throws SQLException {
         List<AutomaticBid> automaticBids = new ArrayList<>();
-        String query = "SELECT * FROM automatic_bid WHERE toy_id = ?";
+        String query = "SELECT * FROM automatic_bid WHERE toy_id = ? AND active = 1";
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, toyId);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -45,13 +45,11 @@ public class AutomaticBidData {
         }
     }
 
-    public void deleteAutomaticBid(int abId) throws SQLException {
-        String deleteSQL = "DELETE FROM automatic_bid WHERE ab_id = ?";
-        try (PreparedStatement pstmt = conn.prepareStatement(deleteSQL)) {
+    public void deactivateAutomaticBid(int abId) throws SQLException {
+        String sql = "UPDATE automatic_bid SET active = 0 WHERE ab_id = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, abId);
             pstmt.executeUpdate();
-        }catch(SQLException e){
-            System.out.println(e);
         }
     }
 
@@ -64,6 +62,17 @@ public class AutomaticBidData {
         }catch(SQLException e){
             System.out.println(e);
         }
+    }
+    public AutomaticBid getAutomaticBid(int bidId) throws SQLException {
+        String updatesql = "SELECT * from automatic_bid WHERE last_bid_id = ?";
+        AutomaticBid automaticBid = null;
+        try (PreparedStatement updateStmt = conn.prepareStatement(updatesql)) {
+            updateStmt.setInt(1, bidId);
+            ResultSet rs = updateStmt.executeQuery();
+            if(rs.next())
+                automaticBid = extractAutomaticBidFromResultSet(rs);
+        }
+        return automaticBid;
     }
 
     // Helper method to extract an AutomaticBid object from the ResultSet
@@ -109,7 +118,7 @@ public class AutomaticBidData {
 
                     if (newBid > secretMaxPrice) {
                         // Delete this automatic bid because it can't outcompete current bid
-                        deleteAutomaticBid(ab_id);
+                        deactivateAutomaticBid(ab_id);
                         //@TODO create alert for this user saying they were outbid
                     } else {
                         // Create new bid for user

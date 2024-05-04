@@ -149,6 +149,7 @@ CREATE TABLE automatic_bid
     secret_max_price DOUBLE,
     last_bid_id      INT NOT NULL,
     toy_id           INT NOT NULL,
+    active           boolean default 1,
     PRIMARY KEY (ab_id, last_bid_id),
     FOREIGN KEY (toy_id) REFERENCES toy_listing(toy_id),
     FOREIGN KEY (last_bid_id) REFERENCES bid(b_id) ON DELETE CASCADE
