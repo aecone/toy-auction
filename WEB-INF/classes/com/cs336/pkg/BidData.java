@@ -74,7 +74,14 @@ public class BidData {
         }
         return -1;
     }
-
+    public void setBidStatus(int b_id, String status) throws SQLException {
+        String sql = "UPDATE bid SET bid_status = ? WHERE b_id = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, status);
+            pstmt.setInt(2, b_id);
+            pstmt.executeUpdate();
+        }
+    }
     public Bid highestBidObj(int toyId) throws SQLException{
         String priceQuery = "SELECT * FROM bid WHERE toy_id = ? ORDER BY price DESC LIMIT 1";
         try(PreparedStatement pstmt = conn.prepareStatement(priceQuery)) {

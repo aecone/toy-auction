@@ -114,6 +114,7 @@ CREATE TABLE bid
     username    VARCHAR(30) NOT NULL,
     toy_id      INT NOT NULL,
     is_auto_bid BOOLEAN,
+    bid_status varchar(10) default 'active',
     PRIMARY KEY (b_id),
     FOREIGN KEY (username) REFERENCES user(username),
     FOREIGN KEY (toy_id) REFERENCES toy_listing(toy_id)
@@ -396,3 +397,13 @@ VALUES      ('4',
             ('2',
              'sammy',
              'We have not set up one, but you can contact us directly if you have any questions.');
+-- Insert an auto bid into the bid table
+INSERT INTO bid (time, price, username, toy_id, is_auto_bid)
+VALUES (NOW(), 20, 'testUser', 2, 1);
+
+-- Insert an automatic bid into the automatic_bid table
+INSERT INTO automatic_bid (increment, secret_max_price, last_bid_id, toy_id)
+VALUES (.6, 40, LAST_INSERT_ID(), 2);
+
+INSERT INTO bid (time, price, username, toy_id, is_auto_bid)
+VALUES (DATE_ADD(NOW(), INTERVAL 1 MINUTE), 24, 'jane_smith', 2, 0);

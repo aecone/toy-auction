@@ -72,7 +72,7 @@
             pstmt = null;
 
             try {
-                String query = "SELECT * FROM bid b1 WHERE username != ? AND price > (SELECT price FROM bid b2 WHERE b2.toy_id = b1.toy_id AND b2.username = ?)";
+                String query = "SELECT * FROM bid b1 WHERE username != ? AND price > all (SELECT price FROM bid b2 WHERE b2.toy_id = b1.toy_id AND b2.username = ?)";
                 pstmt = conn.prepareStatement(query);
                 pstmt.setString(1, username);
                 pstmt.setString(2, username);

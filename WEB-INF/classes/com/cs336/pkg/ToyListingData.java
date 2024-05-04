@@ -201,7 +201,6 @@ public class ToyListingData {
                 //highest bid is winner, add this bid to sale table
                 System.out.println("highest bid found for " + toyId+" is " + highestBid);
                 bidId = highestBidObj.getBidId();
-                //@TODO alert winner of auction
             }
             return bidId;
         }
@@ -229,6 +228,7 @@ public class ToyListingData {
                     if(bidId == -1) {
                         SaleData sd = new SaleData(conn);
                         sd.insertSale(toyId, bidId);
+                        bidData.setBidStatus(bidId,"won");
                     }
                 }
             } catch (SQLException e) {
