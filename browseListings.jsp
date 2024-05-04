@@ -36,51 +36,95 @@
                 location.reload();
 
             });
+            document.querySelector("#filter-btn").addEventListener('click', ()=>{
+                let url = new URL(window.location.href);
+                let priceMin = document.querySelector("#price-min").valueAsNumber;
+                if (!isNaN(priceMin)) {
+                    url.searchParams.set("priceMin", priceMin);
+                }
+
+                let priceMax = document.querySelector("#price-max").valueAsNumber;
+                if (!isNaN(priceMax)) {
+                    url.searchParams.set("priceMax", priceMax);
+                }
+
+                let ageMin = document.querySelector("#age-min").valueAsNumber;
+                if (!isNaN(ageMin)) {
+                    url.searchParams.set("ageMin", ageMin);
+                }
+
+                let ageMax = document.querySelector("#age-max").valueAsNumber;
+                if (!isNaN(ageMax)) {
+                    url.searchParams.set("ageMax", ageMax);
+                }
+                let category = document.querySelector("#category-select").value;
+                if (category){
+                    url.searchParams.set("category",  category);
+                }
+
+                window.history.replaceState({}, '', url.toString());
+                location.reload();
+
+            });
+            document.querySelector("#filter-toggle").addEventListener('click', ()=>{
+                let div = document.querySelector(".filter-controls");
+                div.style.display = div.style.display == "none" ? "block" : "none";
+            });
         };
 
 
     </script>
-
 </head>
+<div class="search-controls">
+    <div class="row search-row">
+        <input  type="text" placeholder=" Search by product name" id= "search-input"/>
+        <input type="submit" value="Search" id="search-btn"/>
+        <input type="submit" value="Show filters" id="filter-toggle"/>
+    </div>
+    <div class="filter-controls" style="display: none">
+        <div class="row filter-row">
+            <p>Price Range</p>
+            <div class="column">
+                <div class="row">
+                    <p>min</p>
+                    <input id="price-min" class="filter-input"  type="number"  />
+                    <p>max</p>
+                    <input id="price-max" class="filter-input" type="number" />
+                </div>
+            </div>
+        </div>
 
-<div class="row search-row">
-    <input  type="text" placeholder=" Search by product name" id= "search-input"/>
-    <input type="submit" value="search" id="search-btn"/>
+        <div class="row filter-row">
+            <p>Age</p>
+            <div class="column">
+                <div class="row">
+                    <p>min</p>
+                    <input id="age-min" class="filter-input" type="number" />
+                    <p>max</p>
+                    <input id="age-max" class="filter-input" type="number"  />
+                </div>
+            </div>
+        </div>
 
-</div>
+        <div class="row filter-row">
+            <p>Category</p>
+            <div class="column">
+                <div class="row">
+                    <select name="category" id="category-select" onchange="showAdditionalFields()">
+                        <option value="" selected >select a toy category</option>
+                        <option value="action_figure">action figure</option>
+                        <option value="stuffed_animal">stuffed animal</option>
+                        <option value="board_game">board game</option>
 
-<div class="row filter-row">
-    <p>price range</p>
-    <div class="column">
-        <div class="row">
-            <input class="filter-input"  type="number" value="min price" />
-            <input class="filter-input" type="number" value="max price" />
+                    </select>
+                    <input type="submit" value="Apply filters" id="filter-btn"/>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-
-<div class="row filter-row">
-    <p>age</p>
-    <div class="column">
-        <div class="row">
-            <input class="filter-input" type="number" value="min price" />
-            <input class="filter-input" type="number" value="max price" />
-        </div>
-    </div>
-</div>
-
-<div class="row filter-row">
-    <p>Category</p>
-     <select name="category" onchange="showAdditionalFields()">
-        <option value="" disabled selected hidden>select a toy category</option>
-        <option value="action_figure">action figure</option>
-        <option value="stuffed_animal">stuffed animal</option>
-        <option value="board_game">board game</option>
-
-    </select>
-    <input type="submit" value="apply filters" id="filter-btn"/>
 
 </div>
+
 <%
 
 // Create a connection to the database
@@ -92,7 +136,6 @@
     try {
         List<ToyListing> toys;
         if (search_query != null){
-            out.println("hi from view");
             toys = tld.getAllListingsWithSearch(search_query);
         }else{
             toys = tld.getAllListings();

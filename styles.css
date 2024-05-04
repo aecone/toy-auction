@@ -122,12 +122,37 @@ input, select{
 }
 
 .search-row{
-    margin: 2em 0;
+    margin: 1em 0;
     justify-content: center;
+    width: unset;
 }
 .filter-input{
     width: 80px;
 }
 .filter-row{
     width: 438px;
+}
+.search-controls{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 5em;
+}
+
+.search-controls .row{
+    width: 100%;
+    justify-content: flex-end;
+    align-items: center;
+}
+#filter-toggle{
+    background: none;
+    color: #1c2541;
+    border: none;
+    text-decoration: underline;
+}
+#search-input{
+    width: 100%;
+}
+.filter-controls{
+    width: 100%;
 }
