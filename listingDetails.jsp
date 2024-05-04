@@ -155,10 +155,9 @@
                 }
                  }%>
         </div>
-
     </div>
-    <div class="row">
-        <h3>Bidding history</h3>
+    <h3 class="listing-sub-title">Bidding history</h3>
+
     </div>
         <%
            query = "SELECT * FROM  bid WHERE toy_id = ?";
@@ -178,9 +177,23 @@
         <p class="column">bidder: <a href=<%=buyerBidsURL%>><%= bid.getUsername() %></a>
         </p>
     </div>
-        <%
+<% }%>
+    <h3 class="listing-sub-title">Similar past auctions</h3>
+    <ul>
+
+    <%
+        query = "select * from toy_listing as tl WHERE  toy_id <> ? AND category = (SELECT category from toy_listing WHERE toy_id = ?) AND start_datetime BETWEEN DATE_SUB(NOW(), INTERVAL 1 MONTH) AND NOW();";
+           pstmt = conn.prepareStatement(query);
+            pstmt.setInt(1, id);
+            pstmt.setInt(2, id);
+           rs = pstmt.executeQuery();
+           while (rs.next()) {
+               ToyListing toyListing = ToyListingData.extractToyListing(rs);
+    %>
+        <li><a href="?id=<%=toyListing.getToyId() %>"><%=toyListing.getName()%></a></li>
+        <%}
 }
-       }
+
         rs.close();
         pstmt.close();
         conn.close();
@@ -188,6 +201,7 @@
         out.println("<p>Error: " + e.getMessage() + "</p>");
     }
 %>
+    </ul>
     <a href="browseListings.jsp">Back to All Listings</a>
 <%--    <script>--%>
 <%--        function validateBid() {--%>
