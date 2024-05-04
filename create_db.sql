@@ -320,22 +320,21 @@ VALUES      ('2024-05-10 12:05:00',
 
 -- Mock data for alert table
 INSERT INTO alert
-(alert_id,
+(
  name,
  max_price,
  category,
  min_price,
  age_range,
  username)
-VALUES      ('AL001',
+VALUES      (
              'Spiderman action_figure Alert',
              30.00,
              'action_figure',
              10.00,
              '5-10',
              'john_doe'),
-            ('AL002',
-             'Monopoly Alert',
+            ('Monopoly Alert',
              20.00,
              'board_game',
              8.00,
