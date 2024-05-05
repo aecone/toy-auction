@@ -49,10 +49,6 @@
         rs.close();
         checkStmt.close();
         con.close();
-
-
 %>
 </body>
 </html>
-
-

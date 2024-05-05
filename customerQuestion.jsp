@@ -107,10 +107,8 @@
         }
       %>
     </table>
-
   </div>
 </div>
 <a class="back-button" href="CustomerMain.jsp">Back</a>
-
 </body>
 </html>
