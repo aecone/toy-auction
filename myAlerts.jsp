@@ -80,7 +80,7 @@
 <%--        %>--%>
 <%--    </ul>--%>
 
-    <h2>Another user bid higher than your bid for:</h2>
+    <h2>Active listings you were outbid on:</h2>
     <ul>
         <%-- Display bids when someone else bid higher than the user --%>
         <%
@@ -126,7 +126,7 @@
             }
         %>
     </ul>
-    <h2>Inactive Bids</h2>
+    <h2>Bids that didn't win:</h2>
     <ul>
         <%-- Display bids for listings that have ended --%>
 
@@ -139,7 +139,7 @@
             pstmt = null; // Reset pstmt
 
             try {
-                String query = "SELECT * FROM bid WHERE (bid_status = 'inactive' or bid_status = 'won')and username = ?";
+                String query = "SELECT * FROM bid WHERE (bid_status = 'inactive')and username = ?";
                 pstmt = conn.prepareStatement(query);
                 pstmt.setString(1, username);
                 rs = pstmt.executeQuery();
