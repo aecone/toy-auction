@@ -19,6 +19,8 @@
                 <th>Max Price</th>
                 <th>Min Price</th>
                 <th>Age Range</th>
+                <th>Custom Alert Status</th>
+                <th>Satisfied Item</th>
             </tr>
         </thead>
         <tbody>
@@ -31,7 +33,10 @@
 
                 try {
                     conn = db.getConnection();
-                    String query = "SELECT * FROM alert WHERE username = ? AND is_custom_alert=true";
+                    String query = "SELECT a.alert_id, a.name, a.category, a.max_price, a.min_price, a.age_range, a.custom_alert_status, t.name AS satisfied_item, t.toy_id " +
+                                    "FROM alert a " +
+                                    "LEFT JOIN toy_listing t ON a.category = t.category AND a.max_price >= t.initial_price AND a.min_price <= t.initial_price " +
+                                    "WHERE a.username = ?";
                     pstmt = conn.prepareStatement(query);
                     pstmt.setString(1, username);
                     rs = pstmt.executeQuery();
@@ -42,6 +47,9 @@
                         double maxPrice = rs.getDouble("max_price");
                         double minPrice = rs.getDouble("min_price");
                         String ageRange = rs.getString("age_range");
+                        boolean customAlertStatus = rs.getBoolean("custom_alert_status");
+                        String satisfiedItem = rs.getString("satisfied_item");
+                        int toyId = rs.getInt("toy_id");
 
                         out.println("<tr>");
                         out.println("<td>" + alertName + "</td>");
@@ -49,6 +57,16 @@
                         out.println("<td>" + maxPrice + "</td>");
                         out.println("<td>" + minPrice + "</td>");
                         out.println("<td>" + ageRange + "</td>");
+                        out.println("<td>" + (customAlertStatus ? "Found" : "Not Found") + "</td>");
+                        out.println("<td>");
+                        // Check if satisfied item exists
+                        if (satisfiedItem != null) {
+                            // Generate hyperlink to toy details page
+                            out.println("<a href='listingDetails.jsp?id=" + toyId + "'>" + satisfiedItem + "</a>");
+                        } else {
+                            out.println("No item satisfies this alert");
+                        }
+                        out.println("</td>");
                         out.println("</tr>");
                     }
                 } catch (SQLException e) {

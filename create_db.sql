@@ -93,6 +93,7 @@ CREATE TABLE alert(
                       age_range char(5),
                       username varchar(30) NOT NULL,
                       is_custom_alert boolean default false,
+                      custom_alert_status boolean default false,
                       Primary key (alert_id),
                       Foreign key (username) references user(username) ON DELETE CASCADE
                           ON UPDATE CASCADE);
