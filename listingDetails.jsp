@@ -190,7 +190,7 @@
            while (rs.next()) {
                ToyListing toyListing = ToyListingData.extractToyListing(rs);
     %>
-        <li><a href="?id=<%=toyListing.getToyId() %>"><%=toyListing.getName()%></a></li>
+        <li><a href="listingDetails.jsp?id=<%=toyListing.getToyId() %>"><%=toyListing.getName()%></a></li>
         <%}
 }
 
