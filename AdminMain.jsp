@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: andreakim
-  Date: 4/21/24
-  Time: 6:43 PM
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
          pageEncoding="ISO-8859-1" import="com.cs336.pkg.*"%>
 <%@ page import="java.io.*,java.util.*,java.sql.*"%>
@@ -90,10 +83,17 @@
                     <tr>
                         <th>Start Date</th>
                         <th>End Date</th>
+                        <th>Description</th>
                     </tr>
                     <tr>
                         <td ><input type="datetime-local" required name="date1"></td>
                         <td><input type="datetime-local" required name="date2"></td>
+                        <td>Generates various sales reports based on the
+                        specified date range. These reports will provide
+                        insights into various aspects of sales performance,
+                        including total earnings, earnings per item, earnings
+                        per item type, earnings per end-user, and best-selling
+                        items and end-users.</td>
                     </tr>
                     <tr>
                         <td colspan="2" style="text-align: center;"><input type="submit" value="Create" style="width: 100px;"/></td>
@@ -103,11 +103,6 @@
         </div>
     </div>
 </div>
-
-</body>
-</html>
-
-
 <a class="back-button" href="logout.jsp">Logout</a>
 </body>
 </html>

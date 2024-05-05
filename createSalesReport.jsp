@@ -26,198 +26,264 @@
     try {
         // Total Earnings Report
         PreparedStatement totalEarningsPS = con.prepareStatement(
-                "SELECT SUM(initial_price) " +
-                        "FROM toy_listing tl " +
-                        "WHERE " +
-                        "closing_datetime >= ? AND closing_datetime <= ? AND openStatus = 0 " +
-                        "AND tl.toy_id IN (SELECT s.toy_id FROM sale s)"
+            "SELECT SUM(total_earnings) AS total_earnings FROM report WHERE date BETWEEN ? AND ?;"
         );
         totalEarningsPS.setTimestamp(1, date1);
         totalEarningsPS.setTimestamp(2, date2);
         ResultSet totalEarningsRS = totalEarningsPS.executeQuery();
-        String totalEarnings = "0.00";
+        %>
+        <h3> Total Earnings:</h3>
+        <%
+
         if (totalEarningsRS.next()) {
-            totalEarnings = totalEarningsRS.getString(1);
+        %>
+        <p> From: <%= printer.format(date1) %> To: <%= printer.format(date2) %> </p>
+        <p> $<%=totalEarningsRS.getDouble("total_earnings")%>
+        </p>
+
+        <%
+        } else {
+        %>
+        <p> No data available for Total Earnings Report </p>
+        <%
         }
 
         // Earnings Per Item Report
         PreparedStatement earningsPerItemPS = con.prepareStatement(
-                "SELECT name, SUM(initial_price) " +
-                        "FROM toy_listing tl " +
-                        "JOIN sale s ON tl.toy_id = s.toy_id " +
-                        "WHERE closing_datetime >= ? AND closing_datetime <= ? AND openStatus = 0 " +
-                        "GROUP BY name"
+            "SELECT " +
+            "tl.category AS item_type," +
+            "tl.name AS item," +
+            "AVG(r.earnings_per) AS earnings_per_item " + // Added space before FROM
+            "FROM report r " +
+            "JOIN toy_listing tl ON r.best_selling = tl.name " +
+            "WHERE r.date BETWEEN ? AND ? " +
+            "GROUP BY tl.name, tl.category;"
         );
         earningsPerItemPS.setTimestamp(1, date1);
         earningsPerItemPS.setTimestamp(2, date2);
         ResultSet earningsPerItemRS = earningsPerItemPS.executeQuery();
         Map<String, Double> earningsPerItem = new HashMap<>();
+        boolean hasEarningsPerItemData = false;
+
         while (earningsPerItemRS.next()) {
-            earningsPerItem.put(earningsPerItemRS.getString(1), earningsPerItemRS.getDouble(2));
+            String itemName = earningsPerItemRS.getString("item");
+            Double earnings = earningsPerItemRS.getDouble("earnings_per_item");
+            earningsPerItem.put(itemName, earnings);
+            hasEarningsPerItemData = true; // Data is available
+        }
+        %>
+                <h3> Earning Per Item</h3>
+                <%
+
+        if (!hasEarningsPerItemData) {
+        %>
+        <h3> No data available for Earnings Per Item Report </h3>
+        <%
+        } else {
+            for (Map.Entry<String, Double> entry : earningsPerItem.entrySet()) {
+                String itemName = entry.getKey();
+                Double earnings = entry.getValue();
+        %>
+
+        <p> Item: <%= itemName %>, Earnings Per Item: $<%= earnings %></p>
+        <%
+            }
         }
 
         // Earnings Per Item Type Report
         PreparedStatement earningsPerItemTypePS = con.prepareStatement(
-                "SELECT category, SUM(initial_price) " +
-                        "FROM toy_listing tl " +
-                        "JOIN sale s ON tl.toy_id = s.toy_id " +
-                        "WHERE closing_datetime >= ? AND closing_datetime <= ? AND openStatus = 0 " +
-                        "GROUP BY category"
+            "SELECT " +
+            "tl.name AS item, " +
+            "SUM(r.total_earnings) AS total_earnings " +
+            "FROM " +
+            "report r " +
+            "JOIN " +
+            "toy_listing tl ON r.best_selling = tl.name " +
+            "WHERE " +
+            "r.date BETWEEN ? AND ? " +
+            "GROUP BY " +
+            "tl.name"
         );
         earningsPerItemTypePS.setTimestamp(1, date1);
         earningsPerItemTypePS.setTimestamp(2, date2);
         ResultSet earningsPerItemTypeRS = earningsPerItemTypePS.executeQuery();
         Map<String, Double> earningsPerItemType = new HashMap<>();
+        boolean hasEarningsPerItemTypeData = false;
+
         while (earningsPerItemTypeRS.next()) {
-            earningsPerItemType.put(earningsPerItemTypeRS.getString(1), earningsPerItemTypeRS.getDouble(2));
+            String itemName = earningsPerItemTypeRS.getString("item");
+            Double earnings = earningsPerItemTypeRS.getDouble("total_earnings");
+            earningsPerItemType.put(itemName, earnings);
+            hasEarningsPerItemTypeData = true;
+        }
+
+        %>
+           <h3> Earning Per Item Type</h3>
+        <%
+
+        if (!hasEarningsPerItemTypeData) {
+        %>
+        <p> No data available for Earnings Per Item Type Report </p>
+        <%
+        } else {
+            for (Map.Entry<String, Double> entry : earningsPerItemType.entrySet()) {
+                String itemName = entry.getKey();
+                Double earnings = entry.getValue();
+        %>
+        <p> Item: <%= itemName %>, Total Earnings Per Item: $<%= earnings
+        %></p>
+        <%
+            }
         }
 
         // Earnings Per End-User Report
+        // NEED DATA TO TEST
         PreparedStatement earningsPerEndUserPS = con.prepareStatement(
-                "SELECT u.username, SUM(initial_price) " +
-                        "FROM toy_listing tl " +
-                        "JOIN sale s ON tl.toy_id = s.toy_id " +
-                        "JOIN user u ON s.username = u.username " +
-                        "WHERE closing_datetime >= ? AND closing_datetime <= ? AND openStatus = 0 " +
-                        "GROUP BY u.username"
+            "SELECT " +
+            "u.username AS end_user, " +
+            "SUM(r.total_earnings) AS total_earnings " +
+            "FROM " +
+            "report r " +
+            "JOIN " +
+            "admin a ON r.admin_id = a.id " +
+            "JOIN " +
+            "user u ON a.id = u.username " +
+            "WHERE " +
+            "r.date BETWEEN ? AND ? " +
+            "GROUP BY " +
+            "u.username"
         );
         earningsPerEndUserPS.setTimestamp(1, date1);
         earningsPerEndUserPS.setTimestamp(2, date2);
         ResultSet earningsPerEndUserRS = earningsPerEndUserPS.executeQuery();
         Map<String, Double> earningsPerEndUser = new HashMap<>();
+        boolean hasEarningsPerEndUserData = false;
+
         while (earningsPerEndUserRS.next()) {
-            earningsPerEndUser.put(earningsPerEndUserRS.getString(1), earningsPerEndUserRS.getDouble(2));
+            String endUserName = earningsPerEndUserRS.getString("end_user");
+            Double earnings = earningsPerEndUserRS.getDouble("total_earnings");
+            earningsPerEndUser.put(endUserName, earnings);
+            hasEarningsPerEndUserData = true;
+        }
+
+        %>
+           <h3> Earning Per End-User</h3>
+        <%
+
+        if (!hasEarningsPerEndUserData) {
+        %>
+        <p> No data available for Earnings Per End-User Report </p>
+        <%
+        } else {
+            for (Map.Entry<String, Double> entry : earningsPerEndUser.entrySet()) {
+                String endUserName = entry.getKey();
+                Double earnings = entry.getValue();
+        %>
+        <p> End User: <%= endUserName %>, Total Earnings Per End User: $<%=
+        earnings %></p>
+        <%
+            }
         }
 
         // Best-Selling Items Report
         PreparedStatement bestSellingItemsPS = con.prepareStatement(
-                "SELECT name, COUNT(*) " +
-                        "FROM sale s " +
-                        "JOIN toy_listing tl ON s.toy_id = tl.toy_id " +
-                        "WHERE closing_datetime >= ? AND closing_datetime <= ? AND openStatus = 0 " +
-                        "GROUP BY name " +
-                        "ORDER BY COUNT(*) DESC"
+            "SELECT " +
+                "tl.name AS best_selling_item, " +
+                "u.username AS end_user, " +
+                "COUNT(*) AS total_sales " +
+                "FROM " +
+                "sale s " +
+                "JOIN " +
+                "toy_listing tl ON s.toy_id = tl.toy_id " +
+                "JOIN " +
+                "bid b ON s.b_id = b.b_id " +
+                "JOIN " +
+                "user u ON b.username = u.username " +
+                "WHERE " +
+                "s.date BETWEEN ? AND ? " +
+                "GROUP BY " +
+                "tl.name, u.username " +
+                "ORDER BY " +
+                "total_sales DESC"
         );
         bestSellingItemsPS.setTimestamp(1, date1);
         bestSellingItemsPS.setTimestamp(2, date2);
         ResultSet bestSellingItemsRS = bestSellingItemsPS.executeQuery();
         Map<String, Integer> bestSellingItems = new LinkedHashMap<>();
+        boolean hasBestSellingItemsData = false;
+
         while (bestSellingItemsRS.next()) {
-            bestSellingItems.put(bestSellingItemsRS.getString(1), bestSellingItemsRS.getInt(2));
+            String itemName = bestSellingItemsRS.getString("best_selling_item");
+            Integer sales = bestSellingItemsRS.getInt("total_sales");
+            bestSellingItems.put(itemName, sales);
+            hasBestSellingItemsData = true;
+        }
+        %>
+           <h3> Best Selling Items:</h3>
+        <%
+
+        if (!hasBestSellingItemsData) {
+        %>
+        <p> No data available for Best-Selling Items Report </p>
+        <%
+        } else {
+            for (Map.Entry<String, Integer> entry : bestSellingItems.entrySet()) {
+                String itemName = entry.getKey();
+                Integer sales = entry.getValue();
+        %>
+        <p> Best Selling Item: <%= itemName %>, Total Sales: <%= sales %></p>
+        <%
+            }
         }
 
         // Best Buyers Report
         PreparedStatement bestBuyersPS = con.prepareStatement(
-                "SELECT u.username, COUNT(*) " +
-                        "FROM sale s " +
-                        "JOIN user u ON s.username = u.username " +
-                        "WHERE s.closing_datetime >= ? AND s.closing_datetime <= ? " +
-                        "GROUP BY u.username " +
-                        "ORDER BY COUNT(*) DESC"
+            "SELECT " +
+            "u.username AS buyer," +
+            "COUNT(*) AS total_purchases " +
+            "FROM " +
+                "sale s " +
+            "JOIN " +
+                "bid b ON s.b_id = b.b_id " +
+            "JOIN " +
+                "user u ON b.username = u.username " +
+            "WHERE " +
+                "s.date BETWEEN ? AND ? " +
+            "GROUP BY " +
+                "u.username " +
+            "ORDER BY " +
+                "COUNT(*) DESC"
         );
         bestBuyersPS.setTimestamp(1, date1);
         bestBuyersPS.setTimestamp(2, date2);
         ResultSet bestBuyersRS = bestBuyersPS.executeQuery();
         Map<String, Integer> bestBuyers = new LinkedHashMap<>();
+        boolean hasBestBuyersData = false;
+
         while (bestBuyersRS.next()) {
-            bestBuyers.put(bestBuyersRS.getString(1), bestBuyersRS.getInt(2));
+            String buyerName = bestBuyersRS.getString("buyer");
+            Integer purchases = bestBuyersRS.getInt("total_purchases");
+            bestBuyers.put(buyerName, purchases);
+            hasBestBuyersData = true; // Data is available
+        }
+        %>
+           <h3> Best Buyers</h3>
+        <%
+
+        if (!hasBestBuyersData) {
+        %>
+        <p> No data available for Best Buyers Report </p>
+        <%
+        } else {
+            for (Map.Entry<String, Integer> entry : bestBuyers.entrySet()) {
+                String buyerName = entry.getKey();
+                Integer purchases = entry.getValue();
+        %>
+        <p> Buyer: <%= buyerName %>, Total Purchases: <%= purchases %></p>
+        <%
+            }
         }
 %>
-<div style="text-align:center">
-    <h1>Sales Report</h1>
-    <h3>DATE: <%= printer.format(fmt.parse(start)) %> --- <%= printer.format(fmt.parse(end)) %></h3>
-    <h3>Total Earnings: $<%= totalEarnings %></h3>
-
-    <h3>Earnings Per Item:</h3>
-    <% if (earningsPerItem.isEmpty()) { %>
-        <h3>No data available for the selected period.</h3>
-    <% } else { %>
-        <table border="1">
-            <tr>
-                <th>Item Name</th>
-                <th>Total Earnings</th>
-            </tr>
-            <% for (Map.Entry<String, Double> entry : earningsPerItem.entrySet()) { %>
-            <tr>
-                <td><%= entry.getKey() %></td>
-                <td>$<%= entry.getValue() %></td>
-            </tr>
-            <% } %>
-        </table>
-    <% } %>
-
-    <h3>Earnings Per Item Type:</h3>
-    <% if (earningsPerItemType.isEmpty()) { %>
-        <h3>No data available for the selected period.</h3>
-    <% } else { %>
-        <table border="1">
-            <tr>
-                <th>Item Type</th>
-                <th>Total Earnings</th>
-            </tr>
-            <% for (Map.Entry<String, Double> entry : earningsPerItemType.entrySet()) { %>
-            <tr>
-                <td><%= entry.getKey() %></td>
-                <td>$<%= entry.getValue() %></td>
-            </tr>
-            <% } %>
-        </table>
-    <% } %>
-
-    <h3>Earnings Per End-User:</h3>
-    <% if (earningsPerEndUser.isEmpty()) { %>
-        <h3>No data available for the selected period.</h3>
-    <% } else { %>
-        <table border="1">
-            <tr>
-                <th>End-User</th>
-                <th>Total Earnings</th>
-            </tr>
-            <% for (Map.Entry<String, Double> entry : earningsPerEndUser.entrySet()) { %>
-            <tr>
-                <td><%= entry.getKey() %></td>
-                <td>$<%= entry.getValue() %></td>
-            </tr>
-            <% } %>
-        </table>
-    <% } %>
-
-    <h3>Best-Selling Items:</h3>
-    <% if (bestSellingItems.isEmpty()) { %>
-        <h3>No data available for the selected period.</h3>
-    <% } else { %>
-        <table border="1">
-            <tr>
-                <th>Item Name</th>
-                <th>Sales Count</th>
-            </tr>
-            <% for (Map.Entry<String, Integer> entry : bestSellingItems.entrySet()) { %>
-            <tr>
-                <td><%= entry.getKey() %></td>
-                <td><%= entry.getValue() %></td>
-            </tr>
-            <% } %>
-        </table>
-    <% } %>
-
-    <h3>Best Buyers:</h3>
-    <% if (bestBuyers.isEmpty()) { %>
-        <h3>No data available for the selected period.</h3>
-    <% } else { %>
-        <table border="1">
-            <tr>
-                <th>End-User</th>
-                <th>Sales Count</th>
-            </tr>
-            <% for (Map.Entry<String, Integer> entry : bestBuyers.entrySet()) { %>
-            <tr>
-                <td><%= entry.getKey() %></td>
-                <td><%= entry.getValue() %></td>
-            </tr>
-            <% } %>
-        </table>
-    <% } %>
-</div>
 <%
     } catch (Exception e) {
         e.printStackTrace();
