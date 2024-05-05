@@ -69,7 +69,7 @@
   resultset = ps.executeQuery();
 %>
 <h1>Customer Service</h1>
-<div style="display: flex; min-width: 150vh; padding:0 200px;">
+<div style="display: flex; min-width: 150vh;">
   <div style="flex: 1; padding-right: 50px;  align-items: center; flex-direction: column;">
     <h3 style="text-align: center;" >Contact Us</h3>
     <form method="post" action="checkQuestion.jsp" class="form-container">

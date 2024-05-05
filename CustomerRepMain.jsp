@@ -106,7 +106,7 @@
             if (!bidquery.next()) {
         %>
         <tr>
-            <td>None</td>
+            <td colspan="4">None</td>
         </tr>
         <%
         } else {

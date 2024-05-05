@@ -20,7 +20,7 @@
     PreparedStatement ps = con.prepareStatement("DELETE FROM toy_listing WHERE toy_id = ?");
     ps.setString(1, tl_id);
     ps.executeUpdate();
-    response.sendRedirect("CustomerRepMain.jsp"); /
+    response.sendRedirect("CustomerRepMain.jsp");
   } else if (deleteBid != null) {
     PreparedStatement ps = con.prepareStatement("DELETE FROM bid WHERE b_id = ?");
     ps.setString(1, deleteBid);
