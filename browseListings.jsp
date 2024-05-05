@@ -308,8 +308,7 @@
                     out.println("<td>auction starting soon</td>");
                 }
                 else{
-                    if(toy.getOpenStatus())
-                        tld.deactivateToyListing(id);
+                    tld.deactivateToyListing(id);
                     out.println("<td>auction done</td>");
                 }
                 out.println("</tr>");

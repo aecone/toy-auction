@@ -130,6 +130,7 @@ public class ToyListingData {
         return -1;
     }
 
+
     public static ToyListing extractToyListing(ResultSet rs) throws SQLException {
         double initialPrice = rs.getDouble("initial_price");
         String category = rs.getString("category");
@@ -151,7 +152,32 @@ public class ToyListingData {
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, toyId);
             pstmt.executeUpdate();
-            System.out.println("Deactivated toy " + toyId);
+
+            BidData bd = new BidData(conn);
+
+            SaleData sd = new SaleData(conn);
+            Sale sale = sd.saleGivenId(toyId);
+
+            if (sale == null) {
+                Bid highestBidObj = bd.highestBidObj(toyId);
+                if (highestBidObj != null) {
+                    ToyListing tl = getToyListingDetails(toyId,false);
+                    double minPrice = tl.getSecretMinPrice();
+                    double highestBid = highestBidObj.getPrice();
+
+                    if (highestBid >= minPrice) {
+                        int bidId = highestBidObj.getBidId();
+                        sd.insertSale(toyId, bidId);
+                        bd.setBidStatus(bidId, "won");
+                    }
+                }
+            }
+            //mark all bids for this listing inactive if not won
+            query = "UPDATE bid SET bid_status = 'inactive' WHERE toy_id = ? and bid_status != 'won'";
+            PreparedStatement pstmt2 = conn.prepareStatement(query);
+            pstmt2.setInt(1, toyId);
+            pstmt2.executeUpdate();
+            pstmt2.close();
         }
     }
     private CategoryDetails extractCategoryDetailsFromResultSet(String category, ResultSet rs) throws SQLException {
@@ -182,7 +208,7 @@ public class ToyListingData {
         }
         return null;
     }
-    class DetermineWinnerTask extends TimerTask {
+    public class DetermineWinnerTask extends TimerTask {
         int toyId;
         private Connection conn;
         public DetermineWinnerTask(int toyId, Connection conn){
@@ -225,7 +251,7 @@ public class ToyListingData {
                     ToyListing tl = getToyListingDetails(toyId, false);
                     double minPrice = tl.getSecretMinPrice();
                     int bidId = winningBid(highestBidObj, minPrice);
-                    if(bidId == -1) {
+                    if(bidId != -1) {
                         SaleData sd = new SaleData(conn);
                         sd.insertSale(toyId, bidId);
                         bidData.setBidStatus(bidId,"won");

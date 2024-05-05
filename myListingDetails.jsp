@@ -142,15 +142,23 @@
                     out.println("<p>"+buyer+" purchased "+ tl.getName()+" for $"+salePrice+".</p>");
                 }
                 else{
-                    Bid highestBid = bidData.highestBidObj(id);
-                    if(highestBid!=null){
-                        sd.insertSale(id, highestBid.getBidId());
-                        double salePrice = highestBid.getPrice();
-                        String buyer = highestBid.getUsername();
-                        out.println("<p>"+buyer+" purchased "+ tl.getName()+" for $"+salePrice+".</p>");
-                    }
-                    else
+                    // listings inserted in create_db don't have timer task to determine winner
+                    tld.deactivateToyListing(id);
+                    Bid highestBidObj = bidData.highestBidObj(id);
+                    if (highestBidObj == null) {
                         out.println("<p>No sale was made.</p>");
+                    } else {
+                        double minPrice = tl.getSecretMinPrice();
+                        double highestBid = highestBidObj.getPrice();
+
+                        if (highestBid >= minPrice) {
+                            int bidId = highestBidObj.getBidId();
+                            sd.insertSale(id, bidId);
+                            bidData.setBidStatus(bidId, "won");
+                            String buyer = highestBidObj.getUsername();
+                            out.println("<p>" + buyer + " purchased " + tl.getName() + " for $" + highestBid + ".</p>");
+                        }
+                    }
                 }}
             %>
         </div>

@@ -93,7 +93,6 @@ CREATE TABLE alert(
                       age_range char(5),
                       username varchar(30) NOT NULL,
                       is_custom_alert boolean default false,
-                      custom_alert_status boolean default false,
                       Primary key (alert_id),
                       Foreign key (username) references user(username) ON DELETE CASCADE
                           ON UPDATE CASCADE);
@@ -232,11 +231,11 @@ INSERT INTO toy_listing
  username)
 VALUES      (20.00,
              'action_figure',
-             'Spiderman ',
+             'Spiderman',
              5,
              10,
-             15.00,
-             '2024-05-10 12:00:00',
+             25.00,
+             DATE_ADD(NOW(), INTERVAL 0.5 MINUTE),
              2.00,
              '2024-05-03 12:00:00',
              'john_doe'),
@@ -246,8 +245,8 @@ VALUES      (20.00,
              8,
              99,
              10.00,
-             '2024-05-15 18:00:00',
-             1.00,
+             DATE_ADD(NOW(), INTERVAL 2 MINUTE),
+             2.00,
              '2024-05-05 09:00:00',
              'jane_smith'),
             (10.00,
@@ -255,11 +254,31 @@ VALUES      (20.00,
              'Teddy Bear',
              0,
              5,
-             7.00,
+             15.00,
              '2024-05-08 15:00:00',
              0.50,
              '2024-05-01 10:00:00',
-             'bob_jones');
+             'bob_jones'),
+            (5.00,
+             'stuffed_animal',
+             'pokemon',
+             4,
+             10,
+             7.00,
+             '2024-05-05 18:00:00',
+             0.4,
+             '2024-05-03 10:00:00',
+             'testUser'),
+            (1.00,
+             'board_game',
+             'uno',
+             8,
+             99,
+             1.00,
+             DATE_ADD(NOW(), INTERVAL 5 MINUTE),
+             0.75,
+             '2024-05-04 09:00:00',
+             'testUser');
 
 -- Mock data for action_figure table
 INSERT INTO action_figure
@@ -281,7 +300,7 @@ INSERT INTO board_game
 VALUES      (2,
              4,
              'Hasbro',
-             false);
+             false),(5,8,'uno',true);
 
 -- Mock data for stuffed_animal table
 INSERT INTO stuffed_animal
@@ -292,7 +311,7 @@ INSERT INTO stuffed_animal
 VALUES      (3,
              'Brown',
              'Build-A-Bear',
-             'Bear');
+             'Bear'),(4, 'blue','toymaker','bird');
 
 -- Mock data for bid table
 INSERT INTO bid
@@ -317,18 +336,6 @@ VALUES      ('2024-05-05 12:30:00',
              2,
              true);
 
--- Mock data for sale table
-INSERT INTO sale
-(date,
- toy_id,
- b_id)
-VALUES      ('2024-05-10 12:05:00',
-             1,
-             1),
-            ('2024-05-08 15:10:00',
-             3,
-             2);
-
 -- Mock data for alert table
 INSERT INTO alert
 (
@@ -339,7 +346,7 @@ INSERT INTO alert
     age_range,
     username)
 VALUES      (
-                'Spiderman action_figure Alert',
+                'action figure alert',
                 30.00,
                 'action_figure',
                 10.00,
@@ -352,26 +359,6 @@ VALUES      (
              '8+',
              'jane_smith');
 
--- Mock data for report table
-INSERT INTO report
-(report_id,
- date,
- total_earnings,
- admin_id,
- earnings_per,
- best_selling)
-VALUES      ("id1",
-             '2024-05-10',
-             75.00,
-             'admin',
-             25.00,
-             'Spiderman action_figure'),
-            ("id2",
-             '2024-05-08',
-             30.00,
-             'admin',
-             15.00,
-             'Teddy Bear');
 
 -- Mock data for automatic_bid table
 INSERT INTO automatic_bid
@@ -379,14 +366,11 @@ INSERT INTO automatic_bid
  secret_max_price,
  last_bid_id,
  toy_id)
-VALUES      (2.00,
-             35.00,
-             1,
-             1),
+VALUES
             (1.00,
              18.00,
-             2,
-             3);
+             3,
+             2);
 
 -- Mock data for question table
 INSERT INTO question
@@ -417,14 +401,14 @@ VALUES      ('4',
 
 -- Insert an auto bid into the bid table
 INSERT INTO bid (time, price, username, toy_id, is_auto_bid)
-VALUES (NOW(), 20, 'testUser', 2, 1);
+VALUES (NOW(), 2, 'jane_smith', 5, 1);
 
 -- Insert an automatic bid into the automatic_bid table
 INSERT INTO automatic_bid (increment, secret_max_price, last_bid_id, toy_id)
-VALUES (.6, 40, LAST_INSERT_ID(), 2);
+VALUES (.6, 20, LAST_INSERT_ID(), 5);
 
 INSERT INTO bid (time, price, username, toy_id, is_auto_bid)
-VALUES (DATE_ADD(NOW(), INTERVAL 1 MINUTE), 24, 'jane_smith', 2, 0);
+VALUES (NOW(), 30, 'testUser',1 , 0);
 
 -- Inserting dummy data for custom alerts
 INSERT INTO alert (name, max_price, category, min_price, age_range, username, is_custom_alert)

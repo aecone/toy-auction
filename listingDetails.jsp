@@ -58,9 +58,9 @@
             String seller = tl.getUsername();
             out.println(categoryStr);
             out.println("<h2>" + tl.getName() + "</h2>");
-        %>
+%>
 <div class="row">
-    <div class="column" >
+    <div class="column">
         <p> Current Price: $ <%=priceStr %>
         </p>
         <%
@@ -77,7 +77,8 @@
         <p>Closing Time: <%=endDT%>
         </p>
         <%String userListingURL = "myListings.jsp?id=" + seller;%>
-        <p>Seller: <a href=<%=userListingURL%>><%=seller%></a></p>
+        <p>Seller: <a href=<%=userListingURL%>><%=seller%>
+        </a></p>
 
         <%
             //get category details
@@ -126,92 +127,104 @@
         %>
 
         <div class="column">
-            <%if(tl.getOpenStatus()){%>
-            <form id="bidForm" action="/placeBid" method="POST" >
+            <%if (tl.getOpenStatus()) {%>
+            <form id="bidForm" action="/placeBid" method="POST">
                 <input type="hidden" name="id" value=<%=id%>>
                 <p>Bid: <input type="number" name="bidAmt" step="0.01" placeholder="<%= minBidPriceStr %>"
-                               min="<%= minBidPriceStr %>"required/></p>
+                               min="<%= minBidPriceStr %>" required/></p>
                 <p>Automatic Bid: <input type="checkbox" id="autoBidCheckbox" name="isAutoBid"
                                          onchange="toggleAutoBidSection()"/></p>
                 <div id="autoBidSection" style="display: none;">
-                    <p>Max Bid: <input type="number" name="maxBid" /></p>
-                    <p>Bid Increment: <input type="number" name="autoBidIncrement" step="0.01" /></p>
+                    <p>Max Bid: <input type="number" name="maxBid"/></p>
+                    <p>Bid Increment: <input type="number" name="autoBidIncrement" step="0.01"/></p>
                 </div>
                 <input type="submit" value="Place Bid"/>
             </form>
-            <%}
-            else{
-                out.println("<p> This listing is closed. </p>");
-                SaleData sd = new SaleData(conn);
-                Sale sale = sd.saleGivenId(id);
-                if(sale!= null){
-                    int bidId = sale.getBidId();
-                    Bid b = bidData.getBidById(bidId);
-                    double salePrice = b.getPrice();
-                    String buyer = b.getUsername();
-                    out.println("<p>"+buyer+" purchased "+ tl.getName()+" for $"+salePrice+".</p>");
-                }
-                else{
-                    Bid highestBid = bidData.highestBidObj(id);
-                    if(highestBid!=null){
-                        sd.insertSale(id, highestBid.getBidId());
-                        double salePrice = highestBid.getPrice();
-                        String buyer = highestBid.getUsername();
-                        out.println("<p>"+buyer+" purchased "+ tl.getName()+" for $"+salePrice+".</p>");
+            <%
+                } else {
+                    out.println("<p> This listing is closed. </p>");
+                    SaleData sd = new SaleData(conn);
+                    Sale sale = sd.saleGivenId(id);
+
+                    if (sale != null) {
+                        int bidId = sale.getBidId();
+                        Bid b = bidData.getBidById(bidId);
+                        double salePrice = b.getPrice();
+                        String buyer = b.getUsername();
+                        out.println("<p>" + buyer + " purchased " + tl.getName() + " for $" + salePrice + ".</p>");
+                    } else {
+                        // listings inserted in create_db don't have timer task to determine winner
+                        tld.deactivateToyListing(id);
+                        Bid highestBidObj = bidData.highestBidObj(id);
+                        if (highestBidObj == null) {
+                            out.println("<p>No sale was made.</p>");
+                        } else {
+                            double minPrice = tl.getSecretMinPrice();
+                            double highestBid = highestBidObj.getPrice();
+
+                            if (highestBid >= minPrice) {
+                                int bidId = highestBidObj.getBidId();
+                                sd.insertSale(id, bidId);
+                                bidData.setBidStatus(bidId, "won");
+                                String buyer = highestBidObj.getUsername();
+                                out.println("<p>" + buyer + " purchased " + tl.getName() + " for $" + highestBid + ".</p>");
+                            }
+                        }
                     }
-                    else
-                        out.println("<p>No sale was made.</p>");
                 }
-                 }%>
+            %>
         </div>
     </div>
     <h3 class="listing-sub-title">Bidding history</h3>
 
-    </div>
-        <%
-           query = "SELECT * FROM  bid WHERE toy_id = ?";
-           pstmt = conn.prepareStatement(query);
-           pstmt.setInt(1, id);
-           rs = pstmt.executeQuery();
-           while (rs.next()) {
-               Bid bid  = bidData.extractBidFromResultSet(rs);
-               String buyerId = bid.getUsername();
-               String buyerBidsURL = "myBids.jsp?id=" + buyerId;
-    %>
-    <div class="row">
-        <p class="column">id: <%= bid.getBidId() %>
-        </p>
-        <p class="column">price: $<%= bid.formattedPrice() %>
-        </p>
-        <p class="column">bidder: <a href=<%=buyerBidsURL%>><%= bid.getUsername() %></a>
-        </p>
-    </div>
+</div>
+<%
+    query = "SELECT * FROM  bid WHERE toy_id = ?";
+    pstmt = conn.prepareStatement(query);
+    pstmt.setInt(1, id);
+    rs = pstmt.executeQuery();
+    while (rs.next()) {
+        Bid bid = bidData.extractBidFromResultSet(rs);
+        String buyerId = bid.getUsername();
+        String buyerBidsURL = "myBids.jsp?id=" + buyerId;
+%>
+<div class="row">
+    <p class="column">id: <%= bid.getBidId() %>
+    </p>
+    <p class="column">price: $<%= bid.formattedPrice() %>
+    </p>
+    <p class="column">bidder: <a href=<%=buyerBidsURL%>><%= bid.getUsername() %>
+    </a>
+    </p>
+</div>
 <% }%>
-    <h3 class="listing-sub-title">Similar past auctions</h3>
-    <ul>
+<h3 class="listing-sub-title">Similar past auctions</h3>
+<ul>
 
     <%
         query = "select * from toy_listing as tl WHERE  toy_id <> ? AND category = (SELECT category from toy_listing WHERE toy_id = ?) AND start_datetime BETWEEN DATE_SUB(NOW(), INTERVAL 1 MONTH) AND NOW();";
-           pstmt = conn.prepareStatement(query);
-            pstmt.setInt(1, id);
-            pstmt.setInt(2, id);
-           rs = pstmt.executeQuery();
-           while (rs.next()) {
-               ToyListing toyListing = ToyListingData.extractToyListing(rs);
+        pstmt = conn.prepareStatement(query);
+        pstmt.setInt(1, id);
+        pstmt.setInt(2, id);
+        rs = pstmt.executeQuery();
+        while (rs.next()) {
+            ToyListing toyListing = ToyListingData.extractToyListing(rs);
     %>
-        <li><a href="listingDetails.jsp?id=<%=toyListing.getToyId() %>"><%=toyListing.getName()%></a></li>
-        <%}
-}
+    <li><a href="listingDetails.jsp?id=<%=toyListing.getToyId() %>"><%=toyListing.getName()%>
+    </a></li>
+    <%
+                }
+            }
 
-        rs.close();
-        pstmt.close();
-        conn.close();
-    } catch (SQLException e) {
-        out.println("<p>Error: " + e.getMessage() + "</p>");
-    }
-%>
-    </ul>
-    <a href="browseListings.jsp">Back to All Listings</a>
+            rs.close();
+            pstmt.close();
+            conn.close();
+        } catch (SQLException e) {
+            out.println("<p>Error: " + e.getMessage() + "</p>");
+        }
+    %>
+</ul>
+<a href="browseListings.jsp">Back to All Listings</a>
 <%--    <script>--%>
 <%--        function validateBid() {--%>
 <%--            var bidAmt = parseFloat(document.getElementById('bidAmt').value);--%>
