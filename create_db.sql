@@ -344,20 +344,20 @@ INSERT INTO alert
     category,
     min_price,
     age_range,
-    username)
+    username, is_custom_alert)
 VALUES      (
                 'action figure alert',
                 30.00,
                 'action_figure',
                 10.00,
                 '5-10',
-                'john_doe'),
+                'john_doe', true),
             ('Monopoly Alert',
              20.00,
              'board_game',
              8.00,
              '8+',
-             'jane_smith');
+             'jane_smith', true);
 
 
 -- Mock data for automatic_bid table

@@ -119,6 +119,7 @@ public class AutomaticBidData {
                     if (newBid > secretMaxPrice) {
                         // Delete this automatic bid because it can't outcompete current bid
                         deactivateAutomaticBid(ab_id);
+                        bidData.setBidStatus(lastBidId, "outbid");
                         //@TODO create alert for this user saying they were outbid
                     } else {
                         // Create new bid for user

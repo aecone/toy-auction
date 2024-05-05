@@ -26,7 +26,26 @@
             ApplicationDB db = new ApplicationDB();
             Connection conn = db.getConnection();
             PreparedStatement pstmt = null;
-            ResultSet rs = null;%>
+            ResultSet rs = null;
+            ToyListingData tld = new ToyListingData(conn);
+            BidData bd = new BidData(conn);
+                try {
+                    tld.checkToyListings();
+                    String sql = "select toy_id from bid where username = ?";
+                    pstmt = conn.prepareStatement(sql);
+                    pstmt.setString(1, username);
+                    rs = pstmt.executeQuery();
+                    List<Integer> toysBidOn = new ArrayList<>();
+                    while (rs.next()) {
+                        toysBidOn.add(rs.getInt("toy_id"));
+                    }
+                    for(int id: toysBidOn) {
+                        bd.checkOutBids(id);
+                    }
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            %>
 
 <%--            try {--%>
 <%--                String query = "SELECT * FROM bid WHERE username = ? AND time < (SELECT closing_datetime FROM toy_listing WHERE toy_id = bid.toy_id)";--%>
@@ -61,7 +80,7 @@
 <%--        %>--%>
 <%--    </ul>--%>
 
-    <h2>Bids when someone else bid higher than you:</h2>
+    <h2>Another user bid higher than your bid for:</h2>
     <ul>
         <%-- Display bids when someone else bid higher than the user --%>
         <%
@@ -72,15 +91,17 @@
             pstmt = null;
 
             try {
-                String query = "SELECT * FROM bid b1 WHERE username != ? AND price > all (SELECT price FROM bid b2 WHERE b2.toy_id = b1.toy_id AND b2.username = ?)";
+                String query = "SELECT * FROM bid WHERE username = ? AND bid_status= 'outbid'";
                 pstmt = conn.prepareStatement(query);
                 pstmt.setString(1, username);
-                pstmt.setString(2, username);
                 rs = pstmt.executeQuery();
 
                 while (rs.next()) {
                     // Display bid information
-                    out.println("<li>Bid ID: " + rs.getInt("b_id") + ", Price: " + rs.getDouble("price") + "</li>");
+                    Bid outbid = BidData.extractBidFromResultSet(rs);
+                    ToyListing tl = tld.getToyListingDetails(outbid.getToyId(), false);
+                    String msg = "<a href= listingDetails.jsp?id="+tl.getToyId()+">"+tl.getName()+"</a>";
+                    out.println("<li>"+msg+"</li>");
 
                     // Insert into alert table
                     String alertMessage = "Another user bid higher than you on Bid ID " + rs.getInt("b_id");
@@ -105,10 +126,10 @@
             }
         %>
     </ul>
-
-    <h2>Bids that ended:</h2>
+    <h2>Inactive Bids</h2>
     <ul>
         <%-- Display bids for listings that have ended --%>
+
         <%
             // Get current user's username
             username = (String) session.getAttribute("user");
@@ -118,14 +139,19 @@
             pstmt = null; // Reset pstmt
 
             try {
-                String query = "SELECT * FROM bid WHERE time < (SELECT closing_datetime FROM toy_listing WHERE toy_id = bid.toy_id)";
+                String query = "SELECT * FROM bid WHERE (bid_status = 'inactive' or bid_status = 'won')and username = ?";
                 pstmt = conn.prepareStatement(query);
+                pstmt.setString(1, username);
                 rs = pstmt.executeQuery();
 
                 while (rs.next()) {
                     // Display bid information
                     DecimalFormat df = new DecimalFormat("#.##");
-                    out.println("<li>Bid ID: " + rs.getInt("b_id") + ", Price: " + df.format(rs.getDouble("price")) + "</li>");
+                    Bid inactiveBid = BidData.extractBidFromResultSet(rs);
+                    int toyId = inactiveBid.getToyId();
+                    ToyListing tl =tld.getToyListingDetails(toyId, false);
+                    String msg = "bid of $ "+inactiveBid.getPrice()+" for <a href= 'listingDetails.jsp?id="+tl.getToyId()+"'>"+tl.getName()+"</a>";
+                    out.println("<li>" + msg + "</li>");
 
                     // Insert into alert table
                     String alertMessage = "Bid ID " + rs.getInt("b_id") + " has ended.";
@@ -169,10 +195,14 @@
 
                 while (rs.next()) {
                     // Display bid information
-                    out.println("<li>Bid ID: " + rs.getInt("b_id") + ", Price: " + rs.getDouble("price") + "</li>");
+                    Bid b = BidData.extractBidFromResultSet(rs);
+                    int toyId = b.getToyId();
+                    ToyListing tl = tld.getToyListingDetails(toyId, false);
 
+                    String alertMessage = "Congratulations! You won the listing for <a href= 'listingDetails.jsp?id="+tl.getToyId()+"'>"+tl.getName()+"</a> with a bid of $"+b.getPrice();
+                    out.println("<li>"+alertMessage+". </li>");
+                    alertMessage = "Congratulations! You won Bid ID"+ b.getBidId();
                     // Insert into alert table
-                    String alertMessage = "Congratulations! You won Bid ID " + rs.getInt("b_id");
                     String insertQuery = "INSERT INTO alert (name, max_price, category, min_price, age_range, username) VALUES (?, ?, ?, ?, ?, ?)";
                     PreparedStatement insertStmt = conn.prepareStatement(insertQuery);
                     insertStmt.setString(1, alertMessage);

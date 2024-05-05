@@ -4,8 +4,6 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class BidData {
     private Connection conn;
@@ -30,6 +28,30 @@ public class BidData {
         }
         return null;
     }
+    public List<Bid> getBidsByToyId(int toy_id) throws SQLException {
+        String sql = "SELECT * FROM bid WHERE toy_id = ?";
+        List<Bid> bids = new ArrayList<>();
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, toy_id);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    bids.add(extractBidFromResultSet(rs));
+                }
+            }
+        }
+        return bids;
+    }
+    public void checkOutBids(int toyId) throws SQLException {
+        String sql = "UPDATE bid set bid_status = 'outbid' where toy_id = ? and price < ? and bid_status= 'active'";
+        double highestBid = highestBid(toyId);
+        if(highestBid!=-1) {
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setInt(1, toyId);
+                pstmt.setDouble(2, highestBid);
+                pstmt.executeUpdate();
+            }
+        }
+    }
 
     public int insertBid(double price, String username, int toyId, boolean isAutoBid) throws SQLException {
         String sql = "INSERT INTO bid (time, price, username, toy_id, is_auto_bid) VALUES (NOW(), ?, ?, ?,?)";
@@ -51,7 +73,7 @@ public class BidData {
         }
         return -1;
     }
-    public Bid extractBidFromResultSet(ResultSet rs) throws SQLException {
+    public static Bid extractBidFromResultSet(ResultSet rs) throws SQLException {
         int b_id = rs.getInt("b_id");
         double price = rs.getDouble("price");
         String username = rs.getString("username");

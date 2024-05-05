@@ -147,6 +147,15 @@ public class ToyListingData {
         return new ToyListing(initialPrice, category, name, startAge, endAge,
                 secretMinPrice, closingDateTime, increment, toyId, startDateTime, username);
     }
+    public void checkToyListings() throws SQLException{
+        List<ToyListing> all = getAllListings();
+        for (ToyListing tl : all) {
+            if(tl.getClosingDateTime().isBefore(LocalDateTime.now())){
+                deactivateToyListing(tl.getToyId());
+            }
+        }
+    }
+
     public void deactivateToyListing(int toyId) throws SQLException {
         String query = "UPDATE toy_listing SET openStatus = 0 WHERE toy_id = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
