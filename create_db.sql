@@ -423,3 +423,4 @@ VALUES (.6, 40, LAST_INSERT_ID(), 2);
 
 INSERT INTO bid (time, price, username, toy_id, is_auto_bid)
 VALUES (DATE_ADD(NOW(), INTERVAL 1 MINUTE), 24, 'jane_smith', 2, 0);
+
