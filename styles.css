@@ -1,9 +1,9 @@
 html, body {
-    margin: 0; /* Remove default margin */
-    padding: 2%; /* Remove default padding */
+    margin: 20px auto;
+    padding: 2%;
     display: flex;
-    justify-content: center; /* Center content horizontally */
-    align-items: center; /* Center content vertically */
+    justify-content: center;
+    align-items: center;
     flex-direction: column;
 }
 

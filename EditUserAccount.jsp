@@ -34,7 +34,7 @@
   Connection con = db.getConnection();
   String rep_id = (String) session.getAttribute("employeeid");
   if (rep_id == null) {
-    response.sendRedirect("Login.jsp");
+    response.sendRedirect("login.jsp");
   }
   String username = request.getParameter("username");
   PreparedStatement ps = con.prepareStatement(

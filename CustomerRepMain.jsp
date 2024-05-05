@@ -19,10 +19,10 @@
             width: 100%;
             border-collapse: collapse;
         }
-        tr:nth-child(even) {
+        tr:nth-child(odd) {
             background-color: #fffefe;
         }
-        tr:nth-child(odd) {
+        tr:nth-child(even) {
             background-color: #efefef;
         }
         tr:hover {
@@ -65,8 +65,10 @@
     Statement st = con.createStatement();
     ResultSet resultset = st.executeQuery("SELECT q_id, question_text FROM question");
 %>
-<form action="RepQuestionResponse.jsp" method="post">
+<form action="RepQuestionResponse.jsp" id="questionForm" method="post">
     <table>
+        <tr>
+        </tr>
         <%
             if (!resultset.next()) {
         %>
@@ -92,8 +94,14 @@
 <%
     ResultSet bidquery = st.executeQuery("SELECT toy_id, name, category, initial_price FROM toy_listing");
 %>
-<form action="EditUserAccount.jsp" method="post">
+<form action="EditBidAuc.jsp" id="bidForm" method="post">
     <table>
+        <tr>
+            <th>Toy ID</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Initial Price</th>
+        </tr>
         <%
             if (!bidquery.next()) {
         %>
@@ -117,14 +125,17 @@
             }
         %>
     </table>
-    <input type="hidden" name="username" id="userInput">
+    <input type="hidden" name="toy_id" id="toyInput">
 </form>
 <h2>User Account Access</h2>
 <%
     ResultSet accountsQuery = st.executeQuery("SELECT username FROM user");
 %>
-<form action="EditBidAuc.jsp" method="post">
+<form action="EditUserAccount.jsp" id="userForm" method="post">
     <table>
+        <tr>
+            <th>Username</th>
+        </tr>
         <%
             if (!accountsQuery.next()) {
         %>
@@ -144,17 +155,19 @@
             }
         %>
     </table>
-    <input type="hidden" name="username" >
+    <input type="hidden" name="username" id="userInput">
 </form>
 
 <a class="back-button" href="logout.jsp">Logout</a>
 <script>
     function submitForm(value, formId) {
-        const hiddenInput = document.getElementById(formId === 'questionForm' ? 'questionInput' : 'userInput');
+        const form = document.getElementById(formId);
+        const hiddenInput = form.querySelector('input[type=hidden]');
         hiddenInput.value = value;
-        hiddenInput.form.submit();
+        form.submit();
     }
 </script>
+
 </body>
 </html>
 
