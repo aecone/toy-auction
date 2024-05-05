@@ -92,6 +92,7 @@ CREATE TABLE alert(
                       min_price double,
                       age_range char(5),
                       username varchar(30) NOT NULL,
+                      is_custom_alert boolean default false,
                       Primary key (alert_id),
                       Foreign key (username) references user(username) ON DELETE CASCADE
                           ON UPDATE CASCADE);
@@ -424,3 +425,11 @@ VALUES (.6, 40, LAST_INSERT_ID(), 2);
 INSERT INTO bid (time, price, username, toy_id, is_auto_bid)
 VALUES (DATE_ADD(NOW(), INTERVAL 1 MINUTE), 24, 'jane_smith', 2, 0);
 
+-- Inserting dummy data for custom alerts
+INSERT INTO alert (name, max_price, category, min_price, age_range, username, is_custom_alert)
+VALUES
+    ('Action Figure Alert', 20.99, 'action_figure', 10.00, '5-10', 'testUser',
+     true),
+    ('Stuffed Animal Alert', 15.50, 'stuffed_animal', 5.00, '3-8', 'testUser',
+     true),
+    ('Board Game Alert', 29.99, 'board_game', 15.00, '8-12', 'testUser', true);

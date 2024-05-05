@@ -31,7 +31,7 @@
 
                 try {
                     conn = db.getConnection();
-                    String query = "SELECT * FROM alert WHERE username = ?";
+                    String query = "SELECT * FROM alert WHERE username = ? AND is_custom_alert=true";
                     pstmt = conn.prepareStatement(query);
                     pstmt.setString(1, username);
                     rs = pstmt.executeQuery();
