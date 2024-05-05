@@ -10,22 +10,26 @@ public class Bid {
     private String username;
     private int toyId;
     private boolean isAutoBid;
+    private String status;
 
     // Constructors
     public Bid() {
     }
 
-    public Bid(int bidId, LocalDateTime time, double price, String username, int toyId, boolean isAutoBid) {
+    public Bid(int bidId, LocalDateTime time, double price, String username, int toyId, boolean isAutoBid, String status) {
         this.bidId = bidId;
         this.time = time;
         this.price = price;
         this.username = username;
         this.toyId = toyId;
         this.isAutoBid = isAutoBid;
+        this.status = status;
     }
 
     // Getters and Setters
-
+    public String getStatus() {
+        return status;
+    }
     public boolean isAutoBid() {
         return isAutoBid;
     }

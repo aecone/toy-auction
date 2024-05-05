@@ -52,7 +52,7 @@
         else {
         %>
 <table>
-<tr><th>Bid Time</th><th>Name</th><th>Bid Price</th>
+<tr><th>Bid Time</th><th>Listing Name</th><th>Bid Price</th><th>Status</th>
     <%if(isSessionUser){%>
     <th>Is Auto Bid</th><th>Max Auto Bid</th> <th>Auto Bid Increment</th>
         <%}
@@ -63,6 +63,7 @@
                 ToyListing toyListing = tlData.getToyListingDetails(id, true);
                 String category = toyListing.getCategory();
                 String name = toyListing.getName();
+                String status = b.getStatus();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a");
                 String bidTime = b.getTime().format(formatter);
                 String url = "listingDetails.jsp?id=" + id + "&category=" + category;
@@ -70,10 +71,12 @@
                 out.println("<td>" + bidTime + "</td>");
                 out.println("<td>" + name + "</td>");
                 out.println("<td>$ " + b.formattedPrice() + "</td>");
+                out.println("<td>" + status + "</td>");
                 if(isSessionUser) {
                     out.println("<td>" + b.isAutoBid() + "</td>");
                     String maxBid = "n/a";
                     String bidInc = "n/a";
+
                     if(b.isAutoBid()){
                         AutomaticBidData abd = new AutomaticBidData(conn);
                         AutomaticBid ab = abd.getAutomaticBid(b.getBidId());

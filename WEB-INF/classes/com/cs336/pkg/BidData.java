@@ -81,7 +81,8 @@ public class BidData {
         Timestamp time = rs.getTimestamp("time");
         LocalDateTime dateTime = time.toLocalDateTime();
         boolean isAutoBid = rs.getBoolean("is_auto_bid");
-        return new Bid(b_id, dateTime,price, username, toyId, isAutoBid);
+        String status = rs.getString("bid_status");
+        return new Bid(b_id, dateTime,price, username, toyId, isAutoBid, status);
     }
 
     public double highestBid(int toyId) throws SQLException {
