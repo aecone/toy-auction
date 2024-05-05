@@ -142,7 +142,15 @@
                     out.println("<p>"+buyer+" purchased "+ tl.getName()+" for $"+salePrice+".</p>");
                 }
                 else{
-                    out.println("<p>No sale was made.</p>");
+                    Bid highestBid = bidData.highestBidObj(id);
+                    if(highestBid!=null){
+                        sd.insertSale(id, highestBid.getBidId());
+                        double salePrice = highestBid.getPrice();
+                        String buyer = highestBid.getUsername();
+                        out.println("<p>"+buyer+" purchased "+ tl.getName()+" for $"+salePrice+".</p>");
+                    }
+                    else
+                        out.println("<p>No sale was made.</p>");
                 }}
             %>
         </div>
