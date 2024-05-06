@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1" import="java.sql.*, com.cs336.pkg.*, java.util.ArrayList, java.util.List" %>
+<%@ page import="java.util.stream.Stream" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -28,81 +29,83 @@
             </thead>
             <tbody>
                 <%
-                try {
                     ApplicationDB db = new ApplicationDB();
                     Connection conn = db.getConnection();
 
                     String category = "action_figure"; // Change this to the desired category
                     String username = session.getAttribute("user").toString();
-                    String min_price = request.getParameter("min_price");
-                    String max_price = request.getParameter("max_price");
-                    String start_age = request.getParameter("start_age");
-                    String end_age = request.getParameter("end_age");
-                    String height = request.getParameter("height");
-                    String can_move = request.getParameter("can_move");
-                    String character_name = request.getParameter("character_name");
-
-                    String sqlActionFigure = buildActionFigureSQL(category, username, min_price, max_price, start_age, end_age, height, can_move, character_name);
-
+                    try{
+                    List<CustomAlert> alerts = CustomAlert.getCustomAlerts(username, conn);
+                    List<CustomAlert> afAlerts = CustomAlert.byCategory("action_figure", alerts);
+                    for(CustomAlert a : afAlerts) {
+                        String alertName = a.getAlertName();
+                        double min_price = a.getMinPrice();
+                        double max_price = a.getMaxPrice();
+                        int start_age = a.getStartAge();
+                        int end_age = a.getEndAge();
+                        double height = a.getHeight();
+                        boolean can_move = a.getCanMove();
+                        String character_name = a.getCharacterName();
+                        %>
+                <tr>
+                    <td><%= alertName %></td>
+                    <td><%= max_price %></td>
+                    <td><%= min_price %></td>
+                    <td><%= start_age %> - <%= end_age %></td>
+                    <td><%= height %> inches</td>
+                    <td><%=can_move ? "Yes" : "No" %></td>
+                    <td><%= character_name %></td>
+                <%
                     // Prepare the statement
+                    String sqlActionFigure = buildActionFigureSQL(height, can_move, character_name);
                     try (PreparedStatement ps = conn.prepareStatement(sqlActionFigure)) {
                         // Set parameter values
-                        List<Object> params = new ArrayList<>();
                         int index = 1;
                         ps.setString(index++, category);
-                        if (username != null) {
-                            ps.setString(index++, username);
+                        ps.setString(index++, username);
+
+                        if (min_price != -1) {
+                            ps.setDouble(index++, min_price);
                         }
-                        if (min_price != null) {
-                            ps.setDouble(index++, Double.parseDouble(min_price));
+                        if (max_price != -1) {
+                            ps.setDouble(index++, max_price);
                         }
-                        if (max_price != null) {
-                            ps.setDouble(index++, Double.parseDouble(max_price));
+                        if (start_age != -1) {
+                            ps.setInt(index++, start_age);
                         }
-                        if (start_age != null) {
-                            ps.setInt(index++, Integer.parseInt(start_age));
+                        if (end_age != -1) {
+                            ps.setInt(index++, end_age);
                         }
-                        if (end_age != null) {
-                            ps.setInt(index++, Integer.parseInt(end_age));
+                        if (height!=-1) {
+                            ps.setDouble(index++, height);
                         }
-                        if (height != null && !height.isEmpty()) {
-                            ps.setInt(index++, Integer.parseInt(height));
-                        }
-                        if (can_move != null && !can_move.isEmpty()) {
-                            ps.setBoolean(index++, Boolean.parseBoolean(can_move));
-                        }
+                        ps.setBoolean(index++,(can_move));
+
                         if (character_name != null && !character_name.isEmpty()) {
                             ps.setString(index++, character_name);
                         }
-
                         try (ResultSet rs = ps.executeQuery()) {
-                            boolean found = false;
+                            List<Integer> toyIds = new ArrayList<>();
                             while (rs.next()) {
-                                found = true;
-                %>
-                                <tr>
-                                    <td><%= rs.getString("alert_name") %></td>
-                                    <td><%= rs.getDouble("max_price") %></td>
-                                    <td><%= rs.getDouble("min_price") %></td>
-                                    <td><%= rs.getInt("start_age") %> - <%= rs.getInt("end_age") %></td>
-                                    <td><%= rs.getInt("height") %> inches</td>
-                                    <td><%= rs.getBoolean("can_move") ? "Yes" : "No" %></td>
-                                    <td><%= rs.getString("character_name") %></td>
-                                    <td>Yes</td>
-                                    <td><a href="listingDetails.jsp?id=<%= rs.getInt("toy_id") %>">Check Listing</a></td>
-                                </tr>
-                <%
+                                toyIds.add(rs.getInt("toy_id"));
                             }
-                            if (!found) {
-                %>
-                                <tr>
-                                    <td colspan="9">No results found</td>
-                                </tr>
-                <%
+                            if(toyIds.isEmpty()){
+                                out.println("<td colspan=\"9\">No match</>");
                             }
+                            else{
+                                out.println("<td>Yes</><td>");
+                                for(Integer toyId : toyIds) {%>
+                    <a href="listingDetails.jsp?id=<%= toyId %>">Check Listing</a>
+                    <%}
+                                out.println("</td>");
+                            }  %>
+                </tr>
+                <%}
+                        catch (SQLException e) {
+                            e.printStackTrace();
                         }
                     }
-                    conn.close();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -127,77 +130,66 @@
             <tbody>
                 <%
                 try {
-                    ApplicationDB db = new ApplicationDB();
-                    Connection conn = db.getConnection();
+                    category = "board_game";
+                    List<CustomAlert> alerts = CustomAlert.getCustomAlerts(username, conn);
+                    List<CustomAlert> bgAlerts = CustomAlert.byCategory(category, alerts);
+                    for(CustomAlert a : bgAlerts) {
+                    %>
+                <tr>
+                    <td><%= a.getAlertName() %></td>
+                    <td><%= a.getMaxPrice() %></td>
+                    <td><%= a.getMinPrice() %></td>
+                    <td><%= a.getStartAge() %> - <%= a.getEndAge() %></td>
+                    <td><%= a.getPlayerCount() %></td>
+                    <td><%= a.getGameBrand() %></td>
 
-                    String category = "board_game";
-                    String username = session.getAttribute("user").toString();
-                    String min_price = request.getParameter("min_price");
-                    String max_price = request.getParameter("max_price");
-                    String start_age = request.getParameter("start_age");
-                    String end_age = request.getParameter("end_age");
-                    String player_count = request.getParameter("player_count");
-                    String game_brand = request.getParameter("game_brand");
-
-                    String sqlBoardGame = buildBoardGameSQL(category, username, min_price, max_price, start_age, end_age, player_count, game_brand);
-
-                    // Prepare the statement
+                    <%
+                    String sqlBoardGame = buildBoardGameSQL(a.getPlayerCount(), a.getGameBrand());
                     try (PreparedStatement ps = conn.prepareStatement(sqlBoardGame)) {
                         // Set parameter values
-                        List<Object> params = new ArrayList<>();
                         int index = 1;
                         ps.setString(index++, category);
                         if (username != null) {
                             ps.setString(index++, username);
                         }
-                        if (min_price != null) {
-                            ps.setDouble(index++, Double.parseDouble(min_price));
+                        if (a.getMinPrice() != -1) {
+                            ps.setDouble(index++, a.getMinPrice());
                         }
-                        if (max_price != null) {
-                            ps.setDouble(index++, Double.parseDouble(max_price));
+                        if (a.getMaxPrice() != -1) {
+                            ps.setDouble(index++, a.getMaxPrice());
                         }
-                        if (start_age != null) {
-                            ps.setInt(index++, Integer.parseInt(start_age));
+                        if (a.getStartAge() != -1) {
+                            ps.setInt(index++, a.getStartAge());
                         }
-                        if (end_age != null) {
-                            ps.setInt(index++, Integer.parseInt(end_age));
+                        if (a.getEndAge() != -1) {
+                            ps.setInt(index++, a.getEndAge());
                         }
-                        if (player_count != null && !player_count.isEmpty()) {
-                            ps.setInt(index++, Integer.parseInt(player_count));
+                        if (a.getPlayerCount() != 1) {
+                            ps.setInt(index++, a.getPlayerCount());
                         }
-                        if (game_brand != null && !game_brand.isEmpty()) {
-                            ps.setString(index++, game_brand);
+                        if (a.getGameBrand() != null && !a.getGameBrand().isEmpty()) {
+                            ps.setString(index++, a.getGameBrand());
                         }
 
                         try (ResultSet rs = ps.executeQuery()) {
-                            boolean found = false;
+                            List<Integer> toyIds = new ArrayList<>();
                             while (rs.next()) {
-                                found = true;
-                %>
-                                <tr>
-                                    <!-- Populate table rows here -->
-                                    <td><%= rs.getString("alert_name") %></td>
-                                    <td><%= rs.getDouble("max_price") %></td>
-                                    <td><%= rs.getDouble("min_price") %></td>
-                                    <td><%= rs.getInt("start_age") %> - <%= rs.getInt("end_age") %></td>
-                                    <td> <%= rs.getInt("player_count") %></td>
-                                    <td> <%= rs.getString("game_brand") %></td>
-                                    <td>
-                                        <a href="listingDetails.jsp?id=<%= rs.getInt("toy_id") %>">Check Listing</a>
-                                    </td>
-                                </tr>
-                <%
+                                toyIds.add(rs.getInt("toy_id"));
                             }
-                            if (!found) {
-                %>
-                                <tr>
-                                    <td colspan="8">No results found</td>
-                                </tr>
-                <%
+                            if(toyIds.isEmpty()){
+                                out.println("<td colspan=\"9\">No match</>");
                             }
+                            else{
+                                out.println("<td>Yes</><td>");
+                                for(Integer toyId : toyIds) {%>
+                    <a href="listingDetails.jsp?id=<%= toyId %>">Check Listing</a>
+                    <%
+                        out.println("</td>");
+                    }  %>
+                </tr>
+                <%}}
                         }
                     }
-                    conn.close();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -223,12 +215,8 @@
             <tbody>
                 <%
                 try {
-                    ApplicationDB db = new ApplicationDB();
-                    Connection conn = db.getConnection();
-
-                    String category = "stuffed_animal"; // Change this to the desired category
-                    String username = session.getAttribute("user").toString();
-                    String min_price = request.getParameter("min_price");
+                    category = "stuffed_animal"; // Change this to the desired category
+                     String min_price = request.getParameter("min_price");
                     String max_price = request.getParameter("max_price");
                     String start_age = request.getParameter("start_age");
                     String end_age = request.getParameter("end_age");
@@ -300,36 +288,36 @@
  <%!
 
 public String buildActionFigureSQL(String category, String username, String min_price, String max_price, String start_age, String end_age, String height, String can_move, String character_name) {
-    StringBuilder sql = new StringBuilder("SELECT sa.*, tl.toy_id FROM stuffed_animal sa INNER JOIN custom_alerts ca ON sa.animal = ca.animal INNER JOIN toy_listing tl ON ca.username = tl.username WHERE ca.username = ?");
+    StringBuilder sql = new StringBuilder("SELECT ca.*, tl.toy_id FROM action_figure sa INNER JOIN toy_listing tl ON sa.toy_id=tl.toy_id INNER JOIN custom_alerts ca using(category) WHERE category = ? and ca.username = ?");
     List<Object> params = new ArrayList<>();
     params.add(username);
 
     if (min_price != null) {
-        sql.append(" AND ca.min_price >= ?");
+        sql.append(" AND tl.initial_price >= ?");
         params.add(Double.parseDouble(min_price));
     }
     if (max_price != null) {
-        sql.append(" AND ca.max_price <= ?");
+        sql.append(" AND tl.initial_price <= ?");
         params.add(Double.parseDouble(max_price));
     }
     if (start_age != null) {
-        sql.append(" AND ca.start_age >= ?");
+        sql.append(" AND tl.start_age >= ?");
         params.add(Integer.parseInt(start_age));
     }
     if (end_age != null) {
-        sql.append(" AND ca.end_age <= ?");
+        sql.append(" AND tl.end_age <= ?");
         params.add(Integer.parseInt(end_age));
     }
     if (height != null && !height.isEmpty()) {
-        sql.append(" AND ca.height = ?");
+        sql.append(" AND sa.height = ?");
         params.add(Integer.parseInt(height));
     }
     if (can_move != null && !can_move.isEmpty()) {
-        sql.append(" AND ca.can_move = ?");
+        sql.append(" AND sa.can_move = ?");
         params.add(Boolean.parseBoolean(can_move));
     }
     if (character_name != null && !character_name.isEmpty()) {
-        sql.append(" AND ca.character_name = ?");
+        sql.append(" AND sa.character_name = ?");
         params.add(character_name);
     }
 
@@ -337,71 +325,113 @@ public String buildActionFigureSQL(String category, String username, String min_
 }
 
 public String buildBoardGameSQL(String category, String username, String min_price, String max_price, String start_age, String end_age, String player_count, String game_brand) {
-    StringBuilder sql = new StringBuilder("SELECT sa.*, tl.toy_id FROM stuffed_animal sa INNER JOIN custom_alerts ca ON sa.animal = ca.animal INNER JOIN toy_listing tl ON ca.username = tl.username WHERE ca.username = ?");
+    StringBuilder sql = new StringBuilder("SELECT ca.*, tl.toy_id FROM board_game sa INNER JOIN toy_listing tl ON sa.toy_id=tl.toy_id INNER JOIN custom_alerts ca using(category) WHERE category = ? and ca.username = ?");
     List<Object> params = new ArrayList<>();
     params.add(category);
     params.add(username);
 
     if (min_price != null) {
-        sql.append(" AND ca.min_price >= ?");
+        sql.append(" AND tl.initial_price >= ?");
         params.add(Double.parseDouble(min_price));
     }
     if (max_price != null) {
-        sql.append(" AND ca.max_price <= ?");
+        sql.append(" AND tl.initial_price <= ?");
         params.add(Double.parseDouble(max_price));
     }
     if (start_age != null) {
-        sql.append(" AND ca.start_age >= ?");
+        sql.append(" AND tl.start_age >= ?");
         params.add(Integer.parseInt(start_age));
     }
     if (end_age != null) {
-        sql.append(" AND ca.end_age <= ?");
+        sql.append(" AND tl.end_age <= ?");
         params.add(Integer.parseInt(end_age));
     }
     if (player_count != null && !player_count.isEmpty()) {
-        sql.append(" AND ca.player_count = ?");
+        sql.append(" AND sa.player_count = ?");
         params.add(Integer.parseInt(player_count));
     }
     if (game_brand != null && !game_brand.isEmpty()) {
-        sql.append(" AND ca.game_brand = ?");
+        sql.append(" AND sa.game_brand = ?");
         params.add(game_brand);
     }
 
     return sql.toString();
 }
+     public String buildBoardGameSQL(int player_count, String game_brand){
+         String sql = buildSQL("board_game");
+         if (player_count != -1) {
+             sql += " AND sa.player_count = ?";
+         }
+         if (game_brand != null && !game_brand.isEmpty()) {
+             sql += " AND sa.brand = ?";
+         }
+         return sql;
+     }
+public String buildSQL(String category){
+    String sql= "SELECT ca.*, tl.toy_id FROM "+category+" sa INNER JOIN toy_listing tl ON sa.toy_id=tl.toy_id INNER JOIN custom_alerts ca using(category) WHERE category = ? and ca.username = ?";
+    sql+=" AND tl.initial_price >= ?";
+    sql+=" AND tl.initial_price <= ?";
+    sql+=" AND tl.start_age >= ?";
+    sql+=" AND tl.end_age <= ?";
+    return sql;
+}
+public String buildActionFigureSQL(double height, boolean can_move, String character_name){
+    String sql = buildSQL("action_figure");
+    if (height != -1) {
+        sql+= " AND sa.height = ?";
+    }
+    sql+= " AND sa.can_move = ?";
 
+    if (character_name != null && !character_name.isEmpty()) {
+        sql+= " AND sa.character_name = ?";
+    }
+    return sql;
+}
+     public String buildStuffedAnimalSQL(String color, String animal, String brand){
+         String sql = buildSQL("stuffed_animal");
+         if (color != null && !color.isEmpty()) {
+             sql+= " AND sa.color = ?";
+         }
+         if (animal != null && !animal.isEmpty()) {
+             sql+= " AND sa.animal = ?";
+         }
+         if (brand != null && !brand.isEmpty()) {
+             sql += " AND sa.brand = ?";
+         }
+         return sql;
+     }
 public String buildStuffedAnimalSQL(String category, String username, String min_price, String max_price, String start_age, String end_age, String color, String animal, String brand) {
-    StringBuilder sql = new StringBuilder("SELECT sa.*, tl.toy_id FROM stuffed_animal sa INNER JOIN custom_alerts ca ON sa.animal = ca.animal INNER JOIN toy_listing tl ON ca.username = tl.username WHERE ca.username = ?");
+    StringBuilder sql = new StringBuilder("SELECT ca.*, tl.toy_id FROM stuffed_animal sa INNER JOIN toy_listing tl ON sa.toy_id=tl.toy_id INNER JOIN custom_alerts ca using(category) WHERE category = ? and ca.username = ?");
     List<Object> params = new ArrayList<>();
     params.add(category);
     params.add(username);
 
     if (min_price != null) {
-        sql.append(" AND ca.min_price >= ?");
+        sql.append(" AND tl.initial_price >= ?");
         params.add(Double.parseDouble(min_price));
     }
     if (max_price != null) {
-        sql.append(" AND ca.max_price <= ?");
+        sql.append(" AND tl.initial_price <= ?");
         params.add(Double.parseDouble(max_price));
     }
     if (start_age != null) {
-        sql.append(" AND ca.start_age >= ?");
+        sql.append(" AND tl.start_age >= ?");
         params.add(Integer.parseInt(start_age));
     }
     if (end_age != null) {
-        sql.append(" AND ca.end_age <= ?");
+        sql.append(" AND tl.end_age <= ?");
         params.add(Integer.parseInt(end_age));
     }
     if (color != null && !color.isEmpty()) {
-        sql.append(" AND ca.color = ?");
+        sql.append(" AND sa.color = ?");
         params.add(color);
     }
     if (animal != null && !animal.isEmpty()) {
-        sql.append(" AND ca.animal = ?");
+        sql.append(" AND sa.animal = ?");
         params.add(animal);
     }
     if (brand != null && !brand.isEmpty()) {
-        sql.append(" AND ca.brand = ?");
+        sql.append(" AND sa.brand = ?");
         params.add(brand);
     }
     return sql.toString();

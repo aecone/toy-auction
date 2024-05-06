@@ -15,7 +15,7 @@
     double minPrice = Double.parseDouble(request.getParameter("minPrice"));
     int startAge = Integer.parseInt(request.getParameter("startAge"));
     int endAge = Integer.parseInt(request.getParameter("endAge"));
-    int height = request.getParameter("height") != null && !request.getParameter("height").isEmpty() ? Integer.parseInt(request.getParameter("height")) : 0;
+    double height = request.getParameter("height") != null && !request.getParameter("height").isEmpty() ? Double.parseDouble(request.getParameter("height")) : 0;
     boolean canMove = request.getParameter("canMove") != null;
     String character = request.getParameter("character");
     String color = request.getParameter("color");
