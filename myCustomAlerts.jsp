@@ -16,73 +16,35 @@
     <div class="scrollable-container">
         <h2 class="center-texts">Action Figure Alerts</h2>
         <table class="center-texts">
-            <thead>
-                <tr>
-                    <th>Alert Name</th>
-                    <th>Max Price</th>
-                    <th>Min Price</th>
-                    <th>Age Range</th>
-                    <th>Height</th>
-                    <th>Can Move</th>
-                    <th>Character Name</th>
-                    <th>Status</th>
-                    <th>Matching Listing</th>
-                </tr>
-            </thead>
-            <tbody>
                 <%
                     ApplicationDB db = new ApplicationDB();
                     Connection conn = db.getConnection();
 
                     String category = "action_figure"; // Change this to the desired category
                     String username = session.getAttribute("user").toString();
+                    String headerStart = "<thead>\n" +
+                            "<tr>\n" +
+                            "<th>Alert Name</th>\n" +
+                            "<th>Min Price</th>\n" +
+                            "<th>Max Price</th>\n" +
+                            "<th>Age Range</th>\n";
+                    String headerEnd =  "<th>Status</th>\n" +
+                            "<th>Matching Listing</th>\n" +
+                            "</tr>\n" +
+                            "</thead>\n" +
+                            "<tbody>";
+                    String AFheader = headerStart+"<th>Height</th>\n" +
+                            "<th>Can Move</th>\n" +
+                            "<th>Character Name</th>\n"+headerEnd;
+                    String BGheader = headerStart+"<th>Players</th>\n" +
+                            "<th>Game Brand</th>"+headerEnd;
+                    String SAheader = headerStart+"<th>Animal</th>\n" +
+                            "<th>Brand</th>\n" +
+                            "<th>Status</th>"+ headerEnd;
                     try{
                     List<CustomAlert> alerts = CustomAlert.getCustomAlerts(username, conn);
                     List<CustomAlert> afAlerts = CustomAlert.byCategory("action_figure", alerts);
-                    for(CustomAlert a : afAlerts) {
-                        String alertName = a.getAlertName();
-                        double min_price = a.getMinPrice();
-                        double max_price = a.getMaxPrice();
-                        int start_age = a.getStartAge();
-                        int end_age = a.getEndAge();
-                        double height = a.getHeight();
-                        boolean can_move = a.getCanMove();
-                        String character_name = a.getCharacterName();
-                        %>
-                <tr>
-                    <td><%= alertName %></td>
-                    <td><%= max_price %></td>
-                    <td><%= min_price %></td>
-                    <td><%= start_age %> - <%= end_age %></td>
-                    <td><%= height %> inches</td>
-                    <td><%=can_move ? "Yes" : "No" %></td>
-                    <td><%= character_name %></td>
-                <%
-                    // Prepare the statement
-                    String sqlActionFigure = buildActionFigureSQL(height, can_move, character_name);
-                    try (PreparedStatement ps = setPstmt(conn, sqlActionFigure, a)) {
-                        try (ResultSet rs = ps.executeQuery()) {
-                            List<Integer> toyIds = new ArrayList<>();
-                            while (rs.next()) {
-                                toyIds.add(rs.getInt("toy_id"));
-                            }
-                            if(toyIds.isEmpty()){
-                                out.println("<td >No match</>");
-                            }
-                            else{
-                                out.println("<td>Yes</><td>");
-                                for(Integer toyId : toyIds) {%>
-                    <a href="listingDetails.jsp?id=<%= toyId %>">Check Listing</a>
-                    <%}
-                                out.println("</td>");
-                            }  %>
-                </tr>
-                <%}
-                        catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    }
+                    out.println(generateCategoryAlertsHTML(AFheader,afAlerts,category,conn));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -92,56 +54,12 @@
 
         <h2 class="center-texts">Board Game Alerts</h2>
         <table class="center-texts">
-            <thead>
-                <tr>
-                    <th>Alert Name</th>
-                    <th>Max Price</th>
-                    <th>Min Price</th>
-                    <th>Age Range</th>
-                    <th>Players</th>
-                    <th>Game Brand</th>
-                    <th>Status</th>
-                    <th>Matching Listing</th>
-                </tr>
-            </thead>
-            <tbody>
                 <%
                 try {
                     category = "board_game";
                     List<CustomAlert> alerts = CustomAlert.getCustomAlerts(username, conn);
                     List<CustomAlert> bgAlerts = CustomAlert.byCategory(category, alerts);
-                    for(CustomAlert a : bgAlerts) {
-                    %>
-                <tr>
-                    <td><%= a.getAlertName() %></td>
-                    <td><%= a.getMaxPrice() %></td>
-                    <td><%= a.getMinPrice() %></td>
-                    <td><%= a.getStartAge() %> - <%= a.getEndAge() %></td>
-                    <td><%= a.getPlayerCount() %></td>
-                    <td><%= a.getGameBrand() %></td>
-
-                    <%
-                    String sqlBoardGame = buildBoardGameSQL(a.getPlayerCount(), a.getGameBrand());
-                    try (PreparedStatement ps = setPstmt(conn,sqlBoardGame,a)) {
-                        try (ResultSet rs = ps.executeQuery()) {
-                            List<Integer> toyIds = new ArrayList<>();
-                            while (rs.next()) {
-                                toyIds.add(rs.getInt("toy_id"));
-                            }
-                            if(toyIds.isEmpty()){
-                                out.println("<td >No match</>");
-                            }
-                            else{
-                                out.println("<td>Yes</><td>");
-                                for(Integer toyId : toyIds) {%>
-                    <a href="listingDetails.jsp?id=<%= toyId %>">Check Listing</a>
-                    <%
-                        out.println("</td>");
-                    }  %>
-                </tr>
-                <%}}
-                        }
-                    }
+                    out.println(generateCategoryAlertsHTML(BGheader,bgAlerts,category,conn));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -151,58 +69,12 @@
 
         <h2 class="center-texts">Stuffed Animal Alerts</h2>
         <table class="center-texts">
-            <thead>
-                <tr>
-                    <th>Alert Name</th>
-                    <th>Max Price</th>
-                    <th>Min Price</th>
-                    <th>Age Range</th>
-                    <th>Color</th>
-                    <th>Animal</th>
-                    <th>Brand</th>
-                    <th>Status</th>
-                    <th>Matching Listing</th>
-                </tr>
-            </thead>
-            <tbody>
             <%
                 try {
                     category = "stuffed_animal"; // Change this to the desired category
                     List<CustomAlert> alerts = CustomAlert.getCustomAlerts(username, conn);
                     List<CustomAlert> saAlerts = CustomAlert.byCategory(category, alerts);
-                    for(CustomAlert a : saAlerts) {
-            %>
-            <tr>
-                <td><%= a.getAlertName() %></td>
-                <td><%= a.getMaxPrice() %></td>
-                <td><%= a.getMinPrice() %></td>
-                <td><%= a.getStartAge() %> - <%= a.getEndAge() %></td>
-                <td><%= a.getColor() %></td>
-                <td><%= a.getAnimal() %></td>
-                <td><%= a.getBrand() %></td>
-                <%
-                    String sqlStuffedAnimal = buildStuffedAnimalSQL(a.getColor(), a.getAnimal(), a.getBrand());
-                    try (PreparedStatement ps = setPstmt(conn,sqlStuffedAnimal,a)) {
-                        try (ResultSet rs = ps.executeQuery()) {
-                            Set<Integer> toyIds = new HashSet<>();
-                            while (rs.next()) {
-                                toyIds.add(rs.getInt("toy_id"));
-                            }
-                            if(toyIds.isEmpty()){
-                                out.println("<td >No match</>");
-                            }
-                            else{
-                                out.println("<td>Yes</><td>");
-                                for(Integer toyId : toyIds) {%>
-                <a href="listingDetails.jsp?id=<%= toyId %>">Check Listing</a>
-                <%}
-                    out.println("</td>");
-                }
-                }
-                }
-                %>
-            </tr>
-            <%}
+                    out.println(generateCategoryAlertsHTML(SAheader,saAlerts,category,conn));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -302,6 +174,73 @@ public PreparedStatement setPstmt(Connection conn, String sql, CustomAlert a) th
     }
     return ps;
 }
+     public String generateCategoryAlertsHTML(String header,List<CustomAlert> alerts, String category, Connection conn) {
+         String htmlOutput = "";
+
+         // Check if there are any alerts for the given category
+         if (!alerts.isEmpty()) {
+             // Generate table header
+             htmlOutput += header;
+             // Iterate through alerts and generate table rows
+             for (CustomAlert a : alerts) {
+                 htmlOutput += "<tr>\n";
+                 htmlOutput += "<td>" + a.getAlertName() + "</td>\n";
+                 htmlOutput += "<td>" + a.getMinPrice() + "</td>\n";
+                 htmlOutput += "<td>" + a.getMaxPrice() + "</td>\n";
+                 htmlOutput += "<td>" + a.getStartAge() + " - " + a.getEndAge() + "</td>\n";
+                String sql="";
+                 // Additional columns based on category
+                 if (category.equals("action_figure")) {
+                     htmlOutput += "<td>" + a.getHeight() + " inches</td>\n";
+                     htmlOutput += "<td>" + (a.getCanMove() ? "Yes" : "No") + "</td>\n";
+                     htmlOutput += "<td>" + a.getCharacterName() + "</td>\n";
+                     sql = buildActionFigureSQL(a.getHeight(), a.getCanMove(), a.getCharacterName());
+                 } else if (category.equals("board_game")) {
+                     htmlOutput += "<td>" + a.getPlayerCount() + "</td>\n";
+                     htmlOutput += "<td>" + a.getGameBrand() + "</td>\n";
+                     sql= buildBoardGameSQL(a.getPlayerCount(), a.getGameBrand());
+                 } else if (category.equals("stuffed_animal")) {
+                     htmlOutput += "<td>" + a.getAnimal() + "</td>\n";
+                     htmlOutput += "<td>" + a.getBrand() + "</td>\n";
+                     sql = buildStuffedAnimalSQL(a.getColor(), a.getAnimal(), a.getBrand());
+                 }
+
+                 // Get matching listings and generate corresponding HTML
+                 Set<Integer> matchingListings = getMatchingListings(a,conn,sql);
+                 if (!matchingListings.isEmpty()) {
+                     htmlOutput += "<td>Yes</td>\n";
+                     htmlOutput += "<td>";
+                     for (int toyId : matchingListings) {
+                         htmlOutput += "<p><a href=\"listingDetails.jsp?id=" + toyId + "\">Check Listing</a></p>\n";
+                     }
+                     htmlOutput += "</td>\n";
+                 } else {
+                     htmlOutput += "<td>No matching listings</td>\n";
+                 }
+
+                 htmlOutput += "</tr>\n";
+             }
+         } else {
+             // No alerts for the given category
+             htmlOutput += "<tr><td colspan=\"9\">No alerts found for " + category.replace('_',' ') + "</td></tr>";
+         }
+
+         return htmlOutput;
+     }
+
+     // Method to get matching listings for a given alert
+     public Set<Integer> getMatchingListings(CustomAlert a, Connection conn, String sql) {
+         Set<Integer> toyIds = new HashSet<>();
+         try (PreparedStatement ps = setPstmt(conn, sql, a)) {
+             try (ResultSet rs = ps.executeQuery()) {
+                 while (rs.next()) {
+                     toyIds.add(rs.getInt("toy_id"));
+                 }
+             }} catch (SQLException e) {
+             throw new RuntimeException(e);
+         }
+         return toyIds;
+     }
  %>
 </body>
 </html>
