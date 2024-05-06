@@ -1,85 +1,232 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1" import="java.sql.*, com.cs336.pkg.*" %>
+    pageEncoding="ISO-8859-1" import="java.sql.*, com.cs336.pkg.*, java.util.ArrayList, java.util.List" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Alerts</title>
+    <title>My Custom Alerts</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
     <h1>My Custom Alerts</h1>
-    <div class = "scrollable-container">
-    <table>
-        <thead>
-            <tr>
-                <th>Alert Name</th>
-                <th>Category</th>
-                <th>Max Price</th>
-                <th>Min Price</th>
-                <th>Age Range</th>
-                <th>Custom Alert Status</th>
-                <th>Satisfied Item</th>
-            </tr>
-        </thead>
-        <tbody>
-            <%
-                String username = (String) session.getAttribute("user");
-                ApplicationDB db = new ApplicationDB();
-                Connection conn = null;
-                PreparedStatement pstmt = null;
-                ResultSet rs = null;
+    <div class="scrollable-container">
+        <h2 class="center-texts">Action Figure Alerts</h2>
+        <table class="center-texts">
+            <thead>
+                <tr>
+                    <th>Alert Name</th>
+                    <th>Max Price</th>
+                    <th>Min Price</th>
+                    <th>Age Range</th>
+                    <th>Height</th>
+                    <th>Can Move</th>
+                    <th>Character Name</th>
+                    <th>Matching Listing</th>
+                </tr>
+            </thead>
+            <tbody>
+                <%
+                class CustomAlertData {
+                    private Connection connection;
 
-                try {
-                    conn = db.getConnection();
-                    String query = "SELECT a.alert_id, a.name, a.category, a.max_price, a.min_price, a.age_range, a.custom_alert_status, t.name AS satisfied_item, t.toy_id " +
-                                    "FROM alert a " +
-                                    "LEFT JOIN toy_listing t ON a.category = t.category AND a.max_price >= t.initial_price AND a.min_price <= t.initial_price " +
-                                    "WHERE a.username = ?";
-                    pstmt = conn.prepareStatement(query);
-                    pstmt.setString(1, username);
-                    rs = pstmt.executeQuery();
-
-                    while (rs.next()) {
-                        String alertName = rs.getString("name");
-                        String category = rs.getString("category");
-                        double maxPrice = rs.getDouble("max_price");
-                        double minPrice = rs.getDouble("min_price");
-                        String ageRange = rs.getString("age_range");
-                        boolean customAlertStatus = rs.getBoolean("custom_alert_status");
-                        String satisfiedItem = rs.getString("satisfied_item");
-                        int toyId = rs.getInt("toy_id");
-
-                        out.println("<tr>");
-                        out.println("<td>" + alertName + "</td>");
-                        out.println("<td>" + category + "</td>");
-                        out.println("<td>" + maxPrice + "</td>");
-                        out.println("<td>" + minPrice + "</td>");
-                        out.println("<td>" + ageRange + "</td>");
-                        out.println("<td>" + (customAlertStatus ? "Found" : "Not Found") + "</td>");
-                        out.println("<td>");
-                        // Check if satisfied item exists
-                        if (satisfiedItem != null) {
-                            // Generate hyperlink to toy details page
-                            out.println("<a href='listingDetails.jsp?id=" + toyId + "'>" + satisfiedItem + "</a>");
-                        } else {
-                            out.println("No item satisfies this alert");
-                        }
-                        out.println("</td>");
-                        out.println("</tr>");
+                    public CustomAlertData(Connection connection) {
+                        this.connection = connection;
                     }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                } finally {
-                    // Close resources
-                    try { if (rs != null) rs.close(); } catch (SQLException e) { e.printStackTrace(); }
-                    try { if (pstmt != null) pstmt.close(); } catch (SQLException e) { e.printStackTrace(); }
-                    try { if (conn != null) conn.close(); } catch (SQLException e) { e.printStackTrace(); }
                 }
-            %>
-        </tbody>
-    </table>
+                try {
+                    ApplicationDB db = new ApplicationDB();
+                    Connection conn = db.getConnection();
+
+                    CustomAlertData customAlertData = new CustomAlertData(conn);
+                    String search_query = request.getParameter("search");
+                    String min_price = request.getParameter("min_price");
+                    String max_price = request.getParameter("max_price");
+                    String start_age = request.getParameter("start_age");
+                    String end_age = request.getParameter("end_age");
+                    String height = request.getParameter("height");
+                    String can_move = request.getParameter("can_move");
+                    String character_name = request.getParameter("character_name");
+                    String toyId = request.getParameter("toy_id");
+
+                    // List to store parameter values
+                    List<Object> params = new ArrayList<>();
+
+                    // StringBuilder to construct the SQL query
+                    StringBuilder sql = new StringBuilder("SELECT ca.*, tl.toy_id FROM custom_alerts ca INNER JOIN toy_listing tl ON ca.username = tl.username WHERE ca.category = 'action_figure'");
+
+                    if(search_query != null){
+                        sql.append(" AND alert_name LIKE ?");
+                        params.add("%" + search_query + "%");
+                    }
+
+                    if(min_price != null){
+                        sql.append(" AND min_price >= ?");
+                        params.add(Double.parseDouble(min_price));
+                    }
+                    if(max_price != null){
+                        sql.append(" AND max_price <= ?");
+                        params.add(Double.parseDouble(max_price));
+                    }
+
+                    if(start_age != null){
+                        sql.append(" AND start_age >= ?");
+                        params.add(Integer.parseInt(start_age));
+                    }
+                    if(end_age != null){
+                        sql.append(" AND end_age <= ?");
+                        params.add(Integer.parseInt(end_age));
+                    }
+
+                    if(height != null){
+                        sql.append(" AND height = ?");
+                        params.add(Integer.parseInt(height));
+                    }
+
+                    if(can_move != null){
+                        sql.append(" AND can_move = ?");
+                        params.add(Boolean.parseBoolean(can_move));
+                    }
+
+                    if(character_name != null){
+                        sql.append(" AND character_name = ?");
+                        params.add(character_name);
+                    }
+
+                    // Prepare the statement
+                    try (PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+                        // Set parameter values
+                        for (int i = 0; i < params.size(); i++) {
+                            ps.setObject(i + 1, params.get(i));
+                        }
+
+                        try (ResultSet rs = ps.executeQuery()) {
+                            while (rs.next()) {
+                                %>
+                                <tr>
+                                    <td><%= rs.getString("alert_name") %></td>
+                                    <td><%= rs.getDouble("max_price") %></td>
+                                    <td><%= rs.getDouble("min_price") %></td>
+                                    <td><%= rs.getInt("start_age") %> - <%= rs.getInt("end_age") %></td>
+                                    <td> <%= rs.getInt("height") %> inches </td>
+                                    <td><%= rs.getBoolean("can_move") ? "Yes" : "No" %></td>
+                                    <td><%= rs.getString("character_name") %></td>
+                                    <td>
+                                    <a href="listingDetails.jsp?id=<%= rs.getInt("toy_id") %>">Check Listing</a>
+                                    </td>
+                                </tr>
+                                <%
+                            }
+                        }
+                    }
+                    conn.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                %>
+            </tbody>
+        </table>
+
+        <h2 class="center-texts">Board Game Alerts</h2>
+        <table class="center-texts">
+            <thead>
+                <tr>
+                    <th>Alert Name</th>
+                    <th>Max Price</th>
+                    <th>Min Price</th>
+                    <th>Age Range</th>
+                    <th>Players</th>
+                    <th>Game Brand</th>
+                    <th>Matching Listing</th>
+                </tr>
+            </thead>
+            <tbody>
+                <%
+                try {
+                    // Create a connection to the database
+                    ApplicationDB db = new ApplicationDB();
+                    Connection conn = db.getConnection();
+
+                    // Prepare the statement
+                    try (PreparedStatement ps = conn.prepareStatement("SELECT ca.*, tl.toy_id FROM custom_alerts ca INNER JOIN toy_listing tl ON ca.username = tl.username WHERE ca.category = 'board_game'")) {
+                        try (ResultSet rs = ps.executeQuery()) {
+                            // Iterate over the result set and process the data
+                            while (rs.next()) {
+                                %>
+                                <tr>
+                                    <td><%= rs.getString("alert_name") %></td>
+                                    <td><%= rs.getDouble("max_price") %></td>
+                                    <td><%= rs.getDouble("min_price") %></td>
+                                    <td><%= rs.getInt("start_age") %> - <%= rs.getInt("end_age") %></td>
+                                    <td> <%= rs.getInt("player_count") %></td>
+                                    <td> <%= rs.getString("game_brand") %></td>
+                                    <td>
+                                    <a href="listingDetails.jsp?id=<%= rs.getInt("toy_id") %>">Check Listing</a>
+                                    </td>
+                                </tr>
+                                <%
+                            }
+                        }
+                    }
+                    conn.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                %>
+            </tbody>
+        </table>
+
+        <h2 class="center-texts">Stuffed Animal Alerts</h2>
+        <table class="center-texts">
+            <thead>
+                <tr>
+                    <th>Alert Name</th>
+                    <th>Max Price</th>
+                    <th>Min Price</th>
+                    <th>Age Range</th>
+                    <th>Color</th>
+                    <th>Animal</th>
+                    <th>Brand</th>
+                    <th>Matching Listing</th>
+                </tr>
+            </thead>
+            <tbody>
+                <%
+                try {
+                    // Create a connection to the database
+                    ApplicationDB db = new ApplicationDB();
+                    Connection conn = db.getConnection();
+
+                    // Prepare the statement
+                    try (PreparedStatement ps = conn.prepareStatement("SELECT ca.*, tl.toy_id FROM custom_alerts ca INNER JOIN toy_listing tl ON ca.username = tl.username WHERE ca.category = 'stuffed_animal'"))
+                    {
+                        try (ResultSet rs = ps.executeQuery()) {
+                            // Iterate over the result set and process the data
+                            while (rs.next()) {
+                                %>
+                                <tr>
+                                    <td><%= rs.getString("alert_name") %></td>
+                                    <td><%= rs.getDouble("max_price") %></td>
+                                    <td><%= rs.getDouble("min_price") %></td>
+                                    <td><%= rs.getInt("start_age") %> - <%= rs.getInt("end_age") %></td>
+                                    <td><%= rs.getString("color") %></td>
+                                    <td> <%= rs.getString("animal")%></td>
+                                    <td> <%= rs.getString("brand")%></td>
+                                    <td>
+                                    <a href="listingDetails.jsp?id=<%= rs.getInt("toy_id") %>">Check Listing</a>
+                                    </td>
+                                </tr>
+                                <%
+                            }
+                        }
+                    }
+                    conn.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                %>
+            </tbody>
+        </table>
     </div>
     <br>
     <a href="CustomerMain.jsp">Home</a>

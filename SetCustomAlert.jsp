@@ -32,7 +32,6 @@
 </head>
 <body>
 <form action="insertAlert.jsp" method="POST" onsubmit="return validateForm()">
-    <input type="hidden" name="customAlert" value="<%= customAlert %>"/>
     Alert Name: <input type="text" name="alertName" required/> <br>
     Category: <select name="category" onchange="showAdditionalFields()" required>
         <option value="" disabled selected hidden>select a toy category</option>
@@ -82,7 +81,6 @@
         var minPrice = parseFloat(document.getElementsByName("minPrice")[0].value);
         var startAge = parseInt(document.getElementsByName("startAge")[0].value);
         var endAge = parseInt(document.getElementsByName("endAge")[0].value);
-        var customAlert = "true";
 
         if (alertName === "" || category === "" || isNaN(maxPrice) || isNaN(minPrice) || isNaN(startAge) || isNaN(endAge)) {
             alert("Please fill in all fields.");

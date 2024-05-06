@@ -92,10 +92,31 @@ CREATE TABLE alert(
                       min_price double,
                       age_range char(5),
                       username varchar(30) NOT NULL,
-                      is_custom_alert boolean default false,
                       Primary key (alert_id),
                       Foreign key (username) references user(username) ON DELETE CASCADE
                           ON UPDATE CASCADE);
+
+CREATE TABLE custom_alerts (
+    alert_id INT AUTO_INCREMENT PRIMARY KEY,
+    alert_name VARCHAR(255) NOT NULL,
+    category VARCHAR(255) NOT NULL,
+    max_price DECIMAL(10, 2) NOT NULL,
+    min_price DECIMAL(10, 2) NOT NULL,
+    start_age INT NOT NULL,
+    end_age INT NOT NULL,
+    height INT,
+    can_move BOOLEAN default NULL,
+    character_name VARCHAR(255) default NULL,
+    color VARCHAR(255) default NULL,
+    brand VARCHAR(255) default NULL,
+    animal VARCHAR(255) default NULL,
+    player_count INT default NULL,
+    game_brand VARCHAR(255) default NULL,
+    is_cards_game BOOLEAN default NULL,
+    username VARCHAR(255) NOT NULL,
+    custom_alert_status BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (username) REFERENCES user(username)
+);
 
 INSERT INTO customer_representative
 VALUES      ('sammy',
@@ -411,10 +432,8 @@ INSERT INTO bid (time, price, username, toy_id, is_auto_bid)
 VALUES (NOW(), 30, 'testUser',1 , 0);
 
 -- Inserting dummy data for custom alerts
-INSERT INTO alert (name, max_price, category, min_price, age_range, username, is_custom_alert)
+INSERT INTO custom_alerts (alert_name, category, max_price, min_price, start_age, end_age, height, can_move, character_name, color, brand, animal, player_count, game_brand, is_cards_game, username, custom_alert_status)
 VALUES
-    ('Action Figure Alert', 20.99, 'action_figure', 10.00, '5-10', 'testUser',
-     true),
-    ('Stuffed Animal Alert', 15.50, 'stuffed_animal', 5.00, '3-8', 'testUser',
-     true),
-    ('Board Game Alert', 29.99, 'board_game', 15.00, '8-12', 'testUser', true);
+('Action Figure Alert', 'action_figure', 50.00, 20.00, 5, 10, 15, true, 'ActionMan', NULL, NULL, NULL, NULL, NULL, NULL, 'john_doe', false),
+('Stuffed Animal Alert', 'stuffed_animal', 30.00, 10.00, 3, 7, NULL, NULL, NULL, 'Blue', 'TeddyBear', 'Bear', NULL, NULL, NULL, 'jane_smith', false),
+('Board Game Alert', 'board_game', 40.00, 15.00, 8, 12, NULL, NULL, NULL, NULL, 'Hasbro', NULL, 4, 'Monopoly', true, 'john_doe', false);
