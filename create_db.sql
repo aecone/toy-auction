@@ -256,7 +256,7 @@ VALUES      (20.00,
              5,
              10,
              25.00,
-             DATE_ADD(NOW(), INTERVAL 0.5 MINUTE),
+             DATE_ADD(NOW(), INTERVAL 1.5 MINUTE),
              2.00,
              '2024-05-03 12:00:00',
              'john_doe'),
@@ -389,7 +389,7 @@ INSERT INTO automatic_bid
  toy_id)
 VALUES
             (1.00,
-             18.00,
+             35.00,
              3,
              2);
 
