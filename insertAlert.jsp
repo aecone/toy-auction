@@ -21,9 +21,9 @@
     String color = request.getParameter("color");
     String brand = request.getParameter("brand");
     String animal = request.getParameter("animal");
-    int playerCount = request.getParameter("playerCount") != null ? Integer.parseInt(request.getParameter("playerCount")) : 0;
+    int playerCount = (request.getParameter("playerCount") != null&& !request.getParameter("playerCount").isEmpty()) ? Integer.parseInt(request.getParameter("playerCount")) : 0;
     String gameBrand = request.getParameter("gameBrand");
-    boolean isCardsGame = request.getParameter("isCardsGame") != null;
+    boolean isCardsGame = (request.getParameter("isCardsGame") != null && !request.getParameter("playerCount").isEmpty())? request.getParameter("isCardsGame").equals("on"):false;
 
     try {
         // Get the database connection

@@ -39,7 +39,6 @@
                     Connection conn = db.getConnection();
 
                     CustomAlertData customAlertData = new CustomAlertData(conn);
-                    String search_query = request.getParameter("search");
                     String min_price = request.getParameter("min_price");
                     String max_price = request.getParameter("max_price");
                     String start_age = request.getParameter("start_age");
@@ -53,13 +52,8 @@
                     List<Object> params = new ArrayList<>();
 
                     // StringBuilder to construct the SQL query
-                    StringBuilder sql = new StringBuilder("SELECT ca.*, tl.toy_id FROM custom_alerts ca INNER JOIN toy_listing tl ON ca.username = tl.username WHERE ca.category = 'action_figure'");
-
-                    if(search_query != null){
-                        sql.append(" AND alert_name LIKE ?");
-                        params.add("%" + search_query + "%");
-                    }
-
+                    StringBuilder sql = new StringBuilder("SELECT ca.*, tl.toy_id FROM custom_alerts ca INNER JOIN toy_listing tl using(category) WHERE ca.category = 'action_figure' and ca.username= ?");
+                    params.add(session.getAttribute("user").toString());
                     if(min_price != null){
                         sql.append(" AND min_price >= ?");
                         params.add(Double.parseDouble(min_price));
@@ -102,6 +96,7 @@
 
                         try (ResultSet rs = ps.executeQuery()) {
                             while (rs.next()) {
+
                                 %>
                                 <tr>
                                     <td><%= rs.getString("alert_name") %></td>
@@ -146,9 +141,14 @@
                     // Create a connection to the database
                     ApplicationDB db = new ApplicationDB();
                     Connection conn = db.getConnection();
-
+                    List<Object> params = new ArrayList<>();
+                    StringBuilder sql = new StringBuilder("SELECT ca.*, tl.toy_id FROM custom_alerts ca INNER JOIN toy_listing tl using(category) WHERE ca.category = 'board_game' and ca.username= ?");
+                    params.add(session.getAttribute("user").toString());
                     // Prepare the statement
-                    try (PreparedStatement ps = conn.prepareStatement("SELECT ca.*, tl.toy_id FROM custom_alerts ca INNER JOIN toy_listing tl ON ca.username = tl.username WHERE ca.category = 'board_game'")) {
+                    try (PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+                        for (int i = 0; i < params.size(); i++) {
+                            ps.setObject(i + 1, params.get(i));
+                        }
                         try (ResultSet rs = ps.executeQuery()) {
                             // Iterate over the result set and process the data
                             while (rs.next()) {
@@ -198,7 +198,7 @@
                     Connection conn = db.getConnection();
 
                     // Prepare the statement
-                    try (PreparedStatement ps = conn.prepareStatement("SELECT ca.*, tl.toy_id FROM custom_alerts ca INNER JOIN toy_listing tl ON ca.username = tl.username WHERE ca.category = 'stuffed_animal'"))
+                    try (PreparedStatement ps = conn.prepareStatement("SELECT ca.*, tl.toy_id FROM custom_alerts ca INNER JOIN toy_listing tl using(category) WHERE ca.category = 'stuffed_animal'"))
                     {
                         try (ResultSet rs = ps.executeQuery()) {
                             // Iterate over the result set and process the data
