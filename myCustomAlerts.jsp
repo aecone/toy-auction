@@ -38,9 +38,8 @@
                             "<th>Character Name</th>\n"+headerEnd;
                     String BGheader = headerStart+"<th>Players</th>\n" +
                             "<th>Game Brand</th>"+headerEnd;
-                    String SAheader = headerStart+"<th>Animal</th>\n" +
-                            "<th>Brand</th>\n" +
-                            "<th>Status</th>"+ headerEnd;
+                    String SAheader = headerStart+"<th>Color</th>\n"+"<th>Animal</th>\n" +
+                            "<th>Brand</th>\n"+ headerEnd;
                     try{
                     List<CustomAlert> alerts = CustomAlert.getCustomAlerts(username, conn);
                     List<CustomAlert> afAlerts = CustomAlert.byCategory("action_figure", alerts);
@@ -74,6 +73,7 @@
                     category = "stuffed_animal"; // Change this to the desired category
                     List<CustomAlert> alerts = CustomAlert.getCustomAlerts(username, conn);
                     List<CustomAlert> saAlerts = CustomAlert.byCategory(category, alerts);
+
                     out.println(generateCategoryAlertsHTML(SAheader,saAlerts,category,conn));
             } catch (Exception e) {
                 e.printStackTrace();
@@ -127,6 +127,7 @@ public String buildActionFigureSQL(double height, boolean can_move, String chara
          if (brand != null && !brand.isEmpty()) {
              sql += " AND sa.brand = ?";
          }
+
          return sql;
      }
 public PreparedStatement setPstmt(Connection conn, String sql, CustomAlert a) throws SQLException {
@@ -200,6 +201,7 @@ public PreparedStatement setPstmt(Connection conn, String sql, CustomAlert a) th
                      htmlOutput += "<td>" + a.getGameBrand() + "</td>\n";
                      sql= buildBoardGameSQL(a.getPlayerCount(), a.getGameBrand());
                  } else if (category.equals("stuffed_animal")) {
+                     htmlOutput += "<td>" + a.getColor() + "</td>\n";
                      htmlOutput += "<td>" + a.getAnimal() + "</td>\n";
                      htmlOutput += "<td>" + a.getBrand() + "</td>\n";
                      sql = buildStuffedAnimalSQL(a.getColor(), a.getAnimal(), a.getBrand());
@@ -215,7 +217,7 @@ public PreparedStatement setPstmt(Connection conn, String sql, CustomAlert a) th
                      }
                      htmlOutput += "</td>\n";
                  } else {
-                     htmlOutput += "<td>No matching listings</td>\n";
+                     htmlOutput += "<td>No matching active listings</td>\n";
                  }
 
                  htmlOutput += "</tr>\n";
