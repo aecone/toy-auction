@@ -44,7 +44,7 @@
         <%
         } else {
         %>
-        <p> No data available for Total Earnings Report </p>
+        <p style="color:red;"> No data available for Total Earnings Report </p>
         <%
         }
 
@@ -77,7 +77,8 @@
 
         if (!hasEarningsPerItemData) {
         %>
-        <h3> No data available for Earnings Per Item Report </h3>
+        <p style="color:red;"> No data available for Earnings Per Item Report
+        </p>
         <%
         } else {
             for (Map.Entry<String, Double> entry : earningsPerItem.entrySet()) {
@@ -123,7 +124,7 @@
 
         if (!hasEarningsPerItemTypeData) {
         %>
-        <p> No data available for Earnings Per Item Type Report </p>
+        <p style="color:red;"> No data available for Earnings Per Item Type Report </p>
         <%
         } else {
             for (Map.Entry<String, Double> entry : earningsPerItemType.entrySet()) {
@@ -172,7 +173,7 @@
 
         if (!hasEarningsPerEndUserData) {
         %>
-        <p> No data available for Earnings Per End-User Report </p>
+        <p style="color:red;"> No data available for Earnings Per End-User Report </p>
         <%
         } else {
             for (Map.Entry<String, Double> entry : earningsPerEndUser.entrySet()) {
@@ -224,7 +225,7 @@
 
         if (!hasBestSellingItemsData) {
         %>
-        <p> No data available for Best-Selling Items Report </p>
+        <p style="color:red;"> No data available for Best-Selling Items Report </p>
         <%
         } else {
             for (Map.Entry<String, Integer> entry : bestSellingItems.entrySet()) {
@@ -272,7 +273,7 @@
 
         if (!hasBestBuyersData) {
         %>
-        <p> No data available for Best Buyers Report </p>
+        <p style="color:red;"> No data available for Best Buyers Report </p>
         <%
         } else {
             for (Map.Entry<String, Integer> entry : bestBuyers.entrySet()) {
