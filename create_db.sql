@@ -97,25 +97,25 @@ CREATE TABLE alert(
                           ON UPDATE CASCADE);
 
 CREATE TABLE custom_alerts (
-    alert_id INT AUTO_INCREMENT PRIMARY KEY,
-    alert_name VARCHAR(255) NOT NULL,
-    category VARCHAR(255) NOT NULL,
-    max_price DECIMAL(10, 2) NOT NULL,
-    min_price DECIMAL(10, 2) NOT NULL,
-    start_age INT NOT NULL,
-    end_age INT NOT NULL,
-    height double,
-    can_move BOOLEAN default NULL,
-    character_name VARCHAR(255) default NULL,
-    color VARCHAR(255) default NULL,
-    brand VARCHAR(255) default NULL,
-    animal VARCHAR(255) default NULL,
-    player_count INT default NULL,
-    game_brand VARCHAR(255) default NULL,
-    is_cards_game BOOLEAN default NULL,
-    username VARCHAR(255) NOT NULL,
-    custom_alert_status BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (username) REFERENCES user(username)
+                               alert_id INT AUTO_INCREMENT PRIMARY KEY,
+                               alert_name VARCHAR(255) NOT NULL,
+                               category VARCHAR(255) NOT NULL,
+                               max_price DECIMAL(10, 2) NOT NULL,
+                               min_price DECIMAL(10, 2) NOT NULL,
+                               start_age INT NOT NULL,
+                               end_age INT NOT NULL,
+                               height double,
+                               can_move BOOLEAN default NULL,
+                               character_name VARCHAR(255) default NULL,
+                               color VARCHAR(255) default NULL,
+                               brand VARCHAR(255) default NULL,
+                               animal VARCHAR(255) default NULL,
+                               player_count INT default NULL,
+                               game_brand VARCHAR(255) default NULL,
+                               is_cards_game BOOLEAN default NULL,
+                               username VARCHAR(255) NOT NULL,
+                               custom_alert_status BOOLEAN DEFAULT FALSE,
+                               FOREIGN KEY (username) REFERENCES user(username)
 );
 
 INSERT INTO customer_representative
@@ -194,7 +194,7 @@ CREATE TABLE automatic_bid
 CREATE TABLE question
 (
     question_text VARCHAR(500),
-    q_id          VARCHAR(30),
+    q_id          VARCHAR(550),
     username      VARCHAR(30),
     PRIMARY KEY (q_id),
     FOREIGN KEY (username) REFERENCES user(username) ON DELETE CASCADE ON
@@ -203,7 +203,7 @@ CREATE TABLE question
 
 CREATE TABLE answer
 (
-    q_id        VARCHAR(30),
+    q_id        VARCHAR(550),
     c_id        VARCHAR(30),
     answer_text VARCHAR(500),
     PRIMARY KEY (q_id),
@@ -388,10 +388,10 @@ INSERT INTO automatic_bid
  last_bid_id,
  toy_id)
 VALUES
-            (1.00,
-             35.00,
-             3,
-             2);
+    (1.00,
+     35.00,
+     3,
+     2);
 
 -- Mock data for question table
 INSERT INTO question
@@ -434,6 +434,6 @@ VALUES (NOW(), 30, 'testUser',1 , 0);
 -- Inserting dummy data for custom alerts
 INSERT INTO custom_alerts (alert_name, category, max_price, min_price, start_age, end_age, height, can_move, character_name, color, brand, animal, player_count, game_brand, is_cards_game, username, custom_alert_status)
 VALUES
-('Action Figure Alert', 'action_figure', 50.00, 20.00, 5, 10, 10.5, true, 'Spiderman', NULL, NULL, NULL, NULL, NULL, NULL, 'testUser', false),
-('Stuffed Animal Alert', 'stuffed_animal', 30.00, 10.00, 3, 7, NULL, NULL, NULL, 'Blue', 'TeddyBear', 'Bear', NULL, NULL, NULL, 'testUser', false),
-('Board Game Alert', 'board_game', 40.00, 1.00, 5, 99, NULL, NULL, NULL, NULL, NULL, NULL, 4, 'Hasbro', false, 'testUser', false);
+    ('Action Figure Alert', 'action_figure', 50.00, 20.00, 5, 10, 10.5, true, 'Spiderman', NULL, NULL, NULL, NULL, NULL, NULL, 'testUser', false),
+    ('Stuffed Animal Alert', 'stuffed_animal', 30.00, 10.00, 3, 7, NULL, NULL, NULL, 'Blue', 'TeddyBear', 'Bear', NULL, NULL, NULL, 'testUser', false),
+    ('Board Game Alert', 'board_game', 40.00, 1.00, 5, 99, NULL, NULL, NULL, NULL, NULL, NULL, 4, 'Hasbro', false, 'testUser', false);
