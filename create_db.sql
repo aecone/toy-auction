@@ -434,6 +434,6 @@ VALUES (NOW(), 30, 'testUser',1 , 0);
 -- Inserting dummy data for custom alerts
 INSERT INTO custom_alerts (alert_name, category, max_price, min_price, start_age, end_age, height, can_move, character_name, color, brand, animal, player_count, game_brand, is_cards_game, username, custom_alert_status)
 VALUES
-('Action Figure Alert', 'action_figure', 50.00, 20.00, 5, 10, 15, true, 'ActionMan', NULL, NULL, NULL, NULL, NULL, NULL, 'john_doe', false),
-('Stuffed Animal Alert', 'stuffed_animal', 30.00, 10.00, 3, 7, NULL, NULL, NULL, 'Blue', 'TeddyBear', 'Bear', NULL, NULL, NULL, 'jane_smith', false),
-('Board Game Alert', 'board_game', 40.00, 15.00, 8, 12, NULL, NULL, NULL, NULL, 'Hasbro', NULL, 4, 'Monopoly', true, 'john_doe', false);
+('Action Figure Alert', 'action_figure', 50.00, 20.00, 5, 10, 15, true, 'ActionMan', NULL, NULL, NULL, NULL, NULL, NULL, 'testUser', false),
+('Stuffed Animal Alert', 'stuffed_animal', 30.00, 10.00, 3, 7, NULL, NULL, NULL, 'Blue', 'TeddyBear', 'Bear', NULL, NULL, NULL, 'testUser', false),
+('Board Game Alert', 'board_game', 40.00, 15.00, 8, 12, NULL, NULL, NULL, NULL, 'Hasbro', NULL, 4, 'Monopoly', true, 'testUser', false);
