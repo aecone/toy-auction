@@ -39,8 +39,9 @@ public class PlaceBidServlet extends HttpServlet {
                 if(bidAmt>lastHighest) {
 
                     //insert new bid and get its id
-                    int bidId = bidData.insertBid(bidAmt, request.getSession().getAttribute("user").toString(), toyId, isAutoBid);
                     Bid lastHighestBid = bidData.highestBidObj(toyId);
+                    int bidId = bidData.insertBid(bidAmt, request.getSession().getAttribute("user").toString(), toyId, isAutoBid);
+
                     if(lastHighestBid!=null && !lastHighestBid.isAutoBid()) {
                         //@TODO alert last highest manual bid that they were out bid
                         bidData.setBidStatus(lastHighestBid.getBidId(),"outbid");

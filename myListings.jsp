@@ -44,9 +44,11 @@
 // Create a connection to the database
     ApplicationDB db = new ApplicationDB();
     Connection conn = db.getConnection();
+    ToyListingData tld = new ToyListingData(conn);
     try {
 
         // Prepare and execute SQL query to fetch toy listings for the current user
+        tld.checkToyListings();
         String query = "SELECT * FROM toy_listing WHERE username = ?";
         PreparedStatement pstmt = conn.prepareStatement(query);
         pstmt.setString(1, username);

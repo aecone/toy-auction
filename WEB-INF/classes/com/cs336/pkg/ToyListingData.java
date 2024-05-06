@@ -147,13 +147,16 @@ public class ToyListingData {
         return new ToyListing(initialPrice, category, name, startAge, endAge,
                 secretMinPrice, closingDateTime, increment, toyId, startDateTime, username);
     }
-    public void checkToyListings() throws SQLException{
+    public boolean checkToyListings() throws SQLException{
         List<ToyListing> all = getAllListings();
+        boolean change = false;
         for (ToyListing tl : all) {
             if(tl.getClosingDateTime().isBefore(LocalDateTime.now())){
                 deactivateToyListing(tl.getToyId());
+                change = true;
             }
         }
+        return change;
     }
 
     public void deactivateToyListing(int toyId) throws SQLException {

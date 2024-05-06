@@ -45,11 +45,23 @@
         Connection conn = db.getConnection();
         BidData bidData = new BidData(conn);
         ToyListingData tlData = new ToyListingData(conn);
-        List<Bid> bids = bidData.getBidsByUser(username);
+    try {
+        tlData.checkToyListings();
+    } catch (SQLException e) {
+        throw new RuntimeException(e);
+    }
+    List<Bid> bids = bidData.getBidsByUser(username);
         if(bids==null || bids.isEmpty()){
             out.println("You have no bids.");
         }
         else {
+            for(Bid bid : bids) {
+                try {
+                    bidData.checkOutBids(bid.getToyId());
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         %>
 <table>
 <tr><th>Bid Time</th><th>Listing Name</th><th>Bid Price</th><th>Status</th>
