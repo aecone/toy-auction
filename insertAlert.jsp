@@ -39,7 +39,7 @@
         pstmt.setDouble(4, minPrice);
         pstmt.setInt(5, startAge);
         pstmt.setInt(6, endAge);
-        pstmt.setInt(7, height);
+        pstmt.setDouble(7, height);
         pstmt.setBoolean(8, canMove);
         pstmt.setString(9, character);
         pstmt.setString(10, color);
