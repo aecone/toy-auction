@@ -48,6 +48,7 @@
                         // Set parameter values
                         List<Object> params = new ArrayList<>();
                         int index = 1;
+                        ps.setString(index++, category);
                         if (username != null) {
                             ps.setString(index++, username);
                         }
@@ -136,6 +137,7 @@
                         // Set parameter values
                         List<Object> params = new ArrayList<>();
                         int index = 1;
+                        ps.setString(index++, category);
                         if (username != null) {
                             ps.setString(index++, username);
                         }
@@ -163,6 +165,15 @@
                                 %>
                                 <tr>
                                     <!-- Populate table rows here -->
+                                    <td><%= rs.getString("alert_name") %></td>
+                                    <td><%= rs.getDouble("max_price") %></td>
+                                    <td><%= rs.getDouble("min_price") %></td>
+                                    <td><%= rs.getInt("start_age") %> - <%= rs.getInt("end_age") %></td>
+                                    <td> <%= rs.getInt("player_count") %></td>
+                                    <td> <%= rs.getString("game_brand") %></td>
+                                    <td>
+                                        <a href="listingDetails.jsp?id=<%= rs.getInt("toy_id") %>">Check Listing</a>
+                                    </td>
                                 </tr>
                                 <%
                             }
@@ -206,12 +217,12 @@
                     String brand = request.getParameter("brand");
 
                     String sqlStuffedAnimal = buildStuffedAnimalSQL(category, username, min_price, max_price, start_age, end_age, color, animal, brand);
-
                     // Prepare the statement
                     try (PreparedStatement ps = conn.prepareStatement(sqlStuffedAnimal)) {
                         // Set parameter values
                         List<Object> params = new ArrayList<>();
                         int index = 1;
+                        ps.setString(index++, category);
                         if (username != null) {
                             ps.setString(index++, username);
                         }
