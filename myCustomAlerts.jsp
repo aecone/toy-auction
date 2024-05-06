@@ -22,6 +22,7 @@
                     <th>Height</th>
                     <th>Can Move</th>
                     <th>Character Name</th>
+                    <th>Status</th>
                     <th>Matching Listing</th>
                 </tr>
             </thead>
@@ -75,22 +76,29 @@
                         }
 
                         try (ResultSet rs = ps.executeQuery()) {
+                            boolean found = false;
                             while (rs.next()) {
-
-                                %>
+                                found = true;
+                %>
                                 <tr>
                                     <td><%= rs.getString("alert_name") %></td>
                                     <td><%= rs.getDouble("max_price") %></td>
                                     <td><%= rs.getDouble("min_price") %></td>
                                     <td><%= rs.getInt("start_age") %> - <%= rs.getInt("end_age") %></td>
-                                    <td> <%= rs.getInt("height") %> inches </td>
+                                    <td><%= rs.getInt("height") %> inches</td>
                                     <td><%= rs.getBoolean("can_move") ? "Yes" : "No" %></td>
                                     <td><%= rs.getString("character_name") %></td>
-                                    <td>
-                                    <a href="listingDetails.jsp?id=<%= rs.getInt("toy_id") %>">Check Listing</a>
-                                    </td>
+                                    <td>Yes</td>
+                                    <td><a href="listingDetails.jsp?id=<%= rs.getInt("toy_id") %>">Check Listing</a></td>
                                 </tr>
-                                <%
+                <%
+                            }
+                            if (!found) {
+                %>
+                                <tr>
+                                    <td colspan="9">No results found</td>
+                                </tr>
+                <%
                             }
                         }
                     }
@@ -112,6 +120,7 @@
                     <th>Age Range</th>
                     <th>Players</th>
                     <th>Game Brand</th>
+                    <th>Status</th>
                     <th>Matching Listing</th>
                 </tr>
             </thead>
@@ -121,7 +130,7 @@
                     ApplicationDB db = new ApplicationDB();
                     Connection conn = db.getConnection();
 
-                    String category = "board_game"; // Change this to the desired category
+                    String category = "board_game";
                     String username = session.getAttribute("user").toString();
                     String min_price = request.getParameter("min_price");
                     String max_price = request.getParameter("max_price");
@@ -161,8 +170,10 @@
                         }
 
                         try (ResultSet rs = ps.executeQuery()) {
+                            boolean found = false;
                             while (rs.next()) {
-                                %>
+                                found = true;
+                %>
                                 <tr>
                                     <!-- Populate table rows here -->
                                     <td><%= rs.getString("alert_name") %></td>
@@ -175,7 +186,14 @@
                                         <a href="listingDetails.jsp?id=<%= rs.getInt("toy_id") %>">Check Listing</a>
                                     </td>
                                 </tr>
-                                <%
+                <%
+                            }
+                            if (!found) {
+                %>
+                                <tr>
+                                    <td colspan="8">No results found</td>
+                                </tr>
+                <%
                             }
                         }
                     }
@@ -186,6 +204,7 @@
                 %>
             </tbody>
         </table>
+
         <h2 class="center-texts">Stuffed Animal Alerts</h2>
         <table class="center-texts">
             <thead>
@@ -197,6 +216,7 @@
                     <th>Color</th>
                     <th>Animal</th>
                     <th>Brand</th>
+                    <th>Status</th>
                     <th>Matching Listing</th>
                 </tr>
             </thead>
@@ -249,22 +269,21 @@
                         }
 
                         try (ResultSet rs = ps.executeQuery()) {
+                            boolean found = false;
                             while (rs.next()) {
-
-                                %>
+                                found = true;
+                %>
                                 <tr>
-                                    <td><%= rs.getString("alert_name") %></td>
-                                    <td><%= rs.getDouble("max_price") %></td>
-                                    <td><%= rs.getDouble("min_price") %></td>
-                                    <td><%= rs.getInt("start_age") %> - <%= rs.getInt("end_age") %></td>
-                                    <td><%= rs.getString("color") %></td>
-                                    <td> <%= rs.getString("animal") %></td>
-                                    <td> <%= rs.getString("brand") %></td>
-                                    <td>
-                                    <a href="listingDetails.jsp?id=<%= rs.getInt("toy_id") %>">Check Listing</a>
-                                    </td>
+                                    <!-- Populate table rows here -->
                                 </tr>
-                                <%
+                <%
+                            }
+                            if (!found) {
+                %>
+                                <tr>
+                                    <td colspan="9">No results found</td>
+                                </tr>
+                <%
                             }
                         }
                     }
@@ -281,9 +300,8 @@
  <%!
 
 public String buildActionFigureSQL(String category, String username, String min_price, String max_price, String start_age, String end_age, String height, String can_move, String character_name) {
-    StringBuilder sql = new StringBuilder("SELECT ca.*, tl.toy_id FROM custom_alerts ca INNER JOIN toy_listing tl using(category) WHERE ca.category = ? and ca.username= ?");
+    StringBuilder sql = new StringBuilder("SELECT sa.*, tl.toy_id FROM stuffed_animal sa INNER JOIN custom_alerts ca ON sa.animal = ca.animal INNER JOIN toy_listing tl ON ca.username = tl.username WHERE ca.username = ?");
     List<Object> params = new ArrayList<>();
-    params.add(category);
     params.add(username);
 
     if (min_price != null) {
@@ -319,7 +337,7 @@ public String buildActionFigureSQL(String category, String username, String min_
 }
 
 public String buildBoardGameSQL(String category, String username, String min_price, String max_price, String start_age, String end_age, String player_count, String game_brand) {
-    StringBuilder sql = new StringBuilder("SELECT ca.*, tl.toy_id FROM custom_alerts ca INNER JOIN toy_listing tl using(category) WHERE ca.category = ? and ca.username= ?");
+    StringBuilder sql = new StringBuilder("SELECT sa.*, tl.toy_id FROM stuffed_animal sa INNER JOIN custom_alerts ca ON sa.animal = ca.animal INNER JOIN toy_listing tl ON ca.username = tl.username WHERE ca.username = ?");
     List<Object> params = new ArrayList<>();
     params.add(category);
     params.add(username);
@@ -353,7 +371,7 @@ public String buildBoardGameSQL(String category, String username, String min_pri
 }
 
 public String buildStuffedAnimalSQL(String category, String username, String min_price, String max_price, String start_age, String end_age, String color, String animal, String brand) {
-    StringBuilder sql = new StringBuilder("SELECT ca.*, tl.toy_id FROM custom_alerts ca INNER JOIN toy_listing tl using(category) WHERE ca.category = ? and ca.username= ?");
+    StringBuilder sql = new StringBuilder("SELECT sa.*, tl.toy_id FROM stuffed_animal sa INNER JOIN custom_alerts ca ON sa.animal = ca.animal INNER JOIN toy_listing tl ON ca.username = tl.username WHERE ca.username = ?");
     List<Object> params = new ArrayList<>();
     params.add(category);
     params.add(username);
