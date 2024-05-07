@@ -115,7 +115,8 @@ CREATE TABLE custom_alerts (
     is_cards_game BOOLEAN default NULL,
     username VARCHAR(255) NOT NULL,
     custom_alert_status BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (username) REFERENCES user(username)
+    FOREIGN KEY (username) REFERENCES user(username) ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
 
 INSERT INTO customer_representative
