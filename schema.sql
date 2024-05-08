@@ -10,10 +10,6 @@ CREATE TABLE user
     password VARCHAR(30)
 );
 
-INSERT INTO user
-VALUES      ('testUser',
-             '0000');
-
 CREATE TABLE toy_listing
 (
     initial_price    DOUBLE,
@@ -73,10 +69,6 @@ CREATE TABLE admin
     PRIMARY KEY (id)
 );
 
-INSERT INTO admin
-VALUES      ('admin',
-             '1000');
-
 CREATE TABLE customer_representative
 (
     id       VARCHAR(30),
@@ -119,10 +111,6 @@ CREATE TABLE custom_alerts (
         ON UPDATE CASCADE
 );
 
-INSERT INTO customer_representative
-VALUES      ('sammy',
-             '1010');
-
 CREATE TABLE admin_creates
 (
     a_id VARCHAR(30),
@@ -130,10 +118,6 @@ CREATE TABLE admin_creates
     FOREIGN KEY(a_id) REFERENCES admin(id),
     FOREIGN KEY(c_id) REFERENCES customer_representative(id)
 );
-
-INSERT INTO admin_creates
-VALUES      ('admin',
-             'sammy');
 
 CREATE TABLE bid
 (
